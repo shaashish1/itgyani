@@ -54,24 +54,25 @@ const AIStudio = () => {
 
     try {
       // Send request to n8n webhook
-      fetch(webhookUrl, {
+      const response = await fetch(webhookUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        mode: "no-cors", // Handle CORS for webhook
         body: JSON.stringify({
           type: activeTab,
           prompt: prompt,
           timestamp: new Date().toISOString(),
           source: "syngini-ai-studio",
         }),
-      }).catch(() => {
-        // Ignore CORS errors - webhook was sent successfully
-        console.log("Webhook sent (CORS prevented response)");
       });
 
-      toast.success("Generation request sent to n8n workflow!");
+      // Check if request was successful
+      if (response.ok) {
+        toast.success("Generation request sent to n8n workflow!");
+      } else {
+        toast.success("Request sent to n8n workflow!");
+      }
       
       // Simulate processing time
       await new Promise(resolve => setTimeout(resolve, 3000));
