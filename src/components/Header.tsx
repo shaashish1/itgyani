@@ -37,9 +37,9 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 hover-lift">
-            <img src={logo} alt="NeuralFlow AI" className="h-10 w-10" />
+            <img src={logo} alt="SynGini" className="h-10 w-10" />
             <span className="text-2xl font-bold gradient-text">
-              NeuralFlow AI
+              SynGini
             </span>
           </Link>
 

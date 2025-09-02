@@ -58,7 +58,7 @@ const AIStudio = () => {
           type: activeTab,
           prompt: prompt,
           timestamp: new Date().toISOString(),
-          source: "neuralflow-ai-studio",
+          source: "syngini-ai-studio",
         }),
       });
 

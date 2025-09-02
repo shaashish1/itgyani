@@ -50,7 +50,7 @@ const About = () => {
           {/* Left Content */}
           <div>
             <Badge className="mb-6 px-4 py-2 bg-primary/20 text-primary border-primary/30">
-              About NeuralFlow AI
+              About SynGini
             </Badge>
             
             <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
@@ -59,7 +59,7 @@ const About = () => {
             </h2>
             
             <p className="text-lg text-foreground/80 mb-8 leading-relaxed">
-              At NeuralFlow AI, we believe that every business deserves to operate at peak efficiency. 
+              At SynGini, we believe that every business deserves to operate at peak efficiency. 
               Our mission is to democratize AI-powered automation, making sophisticated workflow solutions 
               accessible to companies of all sizes.
             </p>
@@ -115,7 +115,7 @@ const About = () => {
                 </p>
                 <div className="text-center mt-4">
                   <span className="text-sm text-primary font-semibold">
-                    — NeuralFlow AI Team
+                    — SynGini Team
                   </span>
                 </div>
               </CardContent>
