@@ -189,17 +189,13 @@ const Contact = () => {
                 </form>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Contact Info & Quick Actions */}
-          <div className="space-y-6">
-            {/* Contact Information */}
-            <Card className="glass-card">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-6">Contact Information</h3>
-                <div className="space-y-4">
-                  {contactInfo.map((info, index) => (
-                    <div key={index} className="flex items-start gap-4 p-3 rounded-lg hover:bg-muted/20 transition-colors">
+            {/* Contact Information Cards - Moved below form */}
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {contactInfo.map((info, index) => (
+                <Card key={index} className="glass-card hover-glow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center text-primary flex-shrink-0">
                         {info.icon}
                       </div>
@@ -208,30 +204,30 @@ const Contact = () => {
                         <div className="text-foreground/70 text-sm">{info.details}</div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Actions */}
-            <div className="space-y-4">
-              {quickActions.map((action, index) => (
-                <Card key={index} className="glass-card hover-glow">
-                  <CardContent className="p-6">
-                    <div className={`w-12 h-12 bg-${action.color}/20 rounded-lg flex items-center justify-center mb-4 text-${action.color}`}>
-                      {action.icon}
-                    </div>
-                    <h4 className="font-bold mb-2">{action.title}</h4>
-                    <p className="text-sm text-foreground/70 mb-4">
-                      {action.description}
-                    </p>
-                    <Button variant="ghost" className="btn-ghost w-full text-sm">
-                      {action.buttonText}
-                    </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
+          </div>
+
+          {/* Quick Actions Sidebar */}
+          <div className="space-y-6">
+            {quickActions.map((action, index) => (
+              <Card key={index} className="glass-card hover-glow">
+                <CardContent className="p-6">
+                  <div className={`w-12 h-12 bg-${action.color}/20 rounded-lg flex items-center justify-center mb-4 text-${action.color}`}>
+                    {action.icon}
+                  </div>
+                  <h4 className="font-bold mb-2">{action.title}</h4>
+                  <p className="text-sm text-foreground/70 mb-4">
+                    {action.description}
+                  </p>
+                  <Button variant="ghost" className="btn-ghost w-full text-sm">
+                    {action.buttonText}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
 

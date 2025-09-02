@@ -5,6 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AIStudio from "./pages/AIStudio";
+import BusinessAutomation from "./pages/services/BusinessAutomation";
+import AICustomerSupport from "./pages/services/AICustomerSupport";
+import DataIntegration from "./pages/services/DataIntegration";
+import EcommerceAutomation from "./pages/services/EcommerceAutomation";
+import MarketingAutomation from "./pages/services/MarketingAutomation";
+import SchedulingManagement from "./pages/services/SchedulingManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -18,6 +24,12 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/ai-studio" element={<AIStudio />} />
+          <Route path="/services/business-automation" element={<BusinessAutomation />} />
+          <Route path="/services/ai-customer-support" element={<AICustomerSupport />} />
+          <Route path="/services/data-integration" element={<DataIntegration />} />
+          <Route path="/services/ecommerce-automation" element={<EcommerceAutomation />} />
+          <Route path="/services/marketing-automation" element={<MarketingAutomation />} />
+          <Route path="/services/scheduling-management" element={<SchedulingManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

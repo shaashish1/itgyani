@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { 
   Workflow, 
   MessageSquare, 
@@ -13,6 +14,18 @@ import {
 } from "lucide-react";
 
 const Services = () => {
+  // Function to get service route based on title
+  const getServiceLink = (title: string) => {
+    const routes: { [key: string]: string } = {
+      "Business Process Automation": "/services/business-automation",
+      "AI-Powered Customer Support": "/services/ai-customer-support", 
+      "Data Integration & Sync": "/services/data-integration",
+      "E-commerce Automation": "/services/ecommerce-automation",
+      "Marketing Automation": "/services/marketing-automation",
+      "Scheduling & Resource Management": "/services/scheduling-management"
+    };
+    return routes[title] || "/";
+  };
   const services = [
     {
       icon: <Workflow className="h-8 w-8" />,
@@ -116,8 +129,10 @@ const Services = () => {
                   ))}
                 </ul>
 
-                <Button variant="ghost" className="btn-ghost w-full group-hover:bg-primary/10">
-                  Learn More
+                <Button variant="ghost" className="btn-ghost w-full group-hover:bg-primary/10" asChild>
+                  <Link to={getServiceLink(service.title)}>
+                    Learn More
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
@@ -143,8 +158,10 @@ const Services = () => {
           </div>
 
           <div className="text-center mt-12">
-            <Button className="btn-hero text-lg px-8 py-4">
-              Schedule Free Consultation
+            <Button className="btn-hero text-lg px-8 py-4" asChild>
+              <Link to="#contact">
+                Schedule Free Consultation
+              </Link>
             </Button>
           </div>
         </div>
