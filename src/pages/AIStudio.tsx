@@ -18,13 +18,19 @@ import {
   Zap,
   Upload,
   Settings,
-  Play
+  Play,
+  Edit3,
+  Save,
+  Brain
 } from "lucide-react";
 
 const AIStudio = () => {
   const [activeTab, setActiveTab] = useState("image");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false);
   const [webhookUrl, setWebhookUrl] = useState("");
+  const [isEditingWebhook, setIsEditingWebhook] = useState(false);
+  const [tempWebhookUrl, setTempWebhookUrl] = useState("");
   const [prompt, setPrompt] = useState("");
   const [generatedContent, setGeneratedContent] = useState<{
     type: 'image' | 'video';
@@ -96,6 +102,74 @@ const AIStudio = () => {
       document.body.removeChild(link);
       
       toast.success("Download started!");
+    }
+  };
+
+  const handleEditWebhook = () => {
+    setTempWebhookUrl(webhookUrl);
+    setIsEditingWebhook(true);
+  };
+
+  const handleSaveWebhook = () => {
+    setWebhookUrl(tempWebhookUrl);
+    setIsEditingWebhook(false);
+    toast.success("Webhook URL updated!");
+  };
+
+  const handleCancelEdit = () => {
+    setTempWebhookUrl("");
+    setIsEditingWebhook(false);
+  };
+
+  const enhancePrompt = async () => {
+    if (!prompt.trim()) {
+      toast.error("Please enter a prompt first");
+      return;
+    }
+
+    setIsEnhancingPrompt(true);
+    try {
+      // Simulate AI enhancement - in real implementation, this would call an AI service
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const enhancementPrefixes = {
+        image: [
+          "Ultra high-resolution, photorealistic",
+          "Professional photography style",
+          "Cinematic lighting, highly detailed",
+          "Award-winning digital art",
+          "Studio quality, perfect composition"
+        ],
+        video: [
+          "Smooth cinematic movement, professional grade",
+          "High-quality animation, fluid motion",
+          "Dynamic camera work, engaging visual flow",
+          "Broadcast quality, seamless transitions",
+          "Professional video production style"
+        ]
+      };
+
+      const qualityModifiers = [
+        "8K resolution, perfect clarity",
+        "masterpiece quality, trending on ArtStation",
+        "professional grade, commercial quality",
+        "award-winning, highly detailed",
+        "pristine quality, flawless execution"
+      ];
+
+      const randomPrefix = enhancementPrefixes[activeTab as keyof typeof enhancementPrefixes][
+        Math.floor(Math.random() * enhancementPrefixes[activeTab as keyof typeof enhancementPrefixes].length)
+      ];
+      
+      const randomModifier = qualityModifiers[Math.floor(Math.random() * qualityModifiers.length)];
+      
+      const enhancedPrompt = `${randomPrefix}, ${prompt}, ${randomModifier}`;
+      setPrompt(enhancedPrompt);
+      toast.success("Prompt enhanced with AI optimization!");
+    } catch (error) {
+      toast.error("Failed to enhance prompt");
+    } finally {
+      setIsEnhancingPrompt(false);
     }
   };
 
@@ -187,13 +261,53 @@ const AIStudio = () => {
                       <Settings className="h-5 w-5 text-secondary" />
                       <h4 className="font-semibold">n8n Webhook Configuration</h4>
                     </div>
-                    <Input
-                      type="url"
-                      placeholder="https://your-n8n-instance.com/webhook/ai-generator"
-                      value={webhookUrl}
-                      onChange={(e) => setWebhookUrl(e.target.value)}
-                      className="bg-input/50 border-border/50 focus:border-primary"
-                    />
+                    <div className="flex gap-2">
+                      {isEditingWebhook ? (
+                        <>
+                          <Input
+                            type="url"
+                            placeholder="https://your-n8n-instance.com/webhook/ai-generator"
+                            value={tempWebhookUrl}
+                            onChange={(e) => setTempWebhookUrl(e.target.value)}
+                            className="bg-input/50 border-border/50 focus:border-primary flex-1"
+                          />
+                          <Button
+                            onClick={handleSaveWebhook}
+                            variant="outline"
+                            size="icon"
+                            className="btn-ghost"
+                          >
+                            <Save className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            onClick={handleCancelEdit}
+                            variant="ghost"
+                            size="icon"
+                          >
+                            ×
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Input
+                            type="url"
+                            placeholder="https://your-n8n-instance.com/webhook/ai-generator"
+                            value={webhookUrl}
+                            onChange={(e) => setWebhookUrl(e.target.value)}
+                            className="bg-input/50 border-border/50 focus:border-primary flex-1"
+                            readOnly={!isEditingWebhook}
+                          />
+                          <Button
+                            onClick={handleEditWebhook}
+                            variant="outline"
+                            size="icon"
+                            className="btn-ghost"
+                          >
+                            <Edit3 className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
+                    </div>
                     <p className="text-sm text-foreground/60 mt-2">
                       Enter your n8n webhook URL that will handle the AI generation request.
                     </p>
@@ -201,16 +315,53 @@ const AIStudio = () => {
 
                   {/* Prompt Input */}
                   <div className="mb-8">
-                    <label className="block text-sm font-medium mb-3">
-                      Describe what you want to create *
-                    </label>
-                    <Textarea
-                      placeholder={`Describe the ${activeTab} you want to generate...`}
-                      value={prompt}
-                      onChange={(e) => setPrompt(e.target.value)}
-                      rows={4}
-                      className="bg-input/50 border-border/50 focus:border-primary resize-none"
-                    />
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="block text-sm font-medium">
+                        Describe what you want to create *
+                      </label>
+                      <Button
+                        onClick={enhancePrompt}
+                        disabled={isEnhancingPrompt || !prompt.trim()}
+                        variant="outline"
+                        size="sm"
+                        className="btn-ghost text-xs"
+                      >
+                        {isEnhancingPrompt ? (
+                          <>
+                            <Loader className="mr-1 h-3 w-3 animate-spin" />
+                            Enhancing...
+                          </>
+                        ) : (
+                          <>
+                            <Brain className="mr-1 h-3 w-3" />
+                            AI Enhance
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    <div className="relative">
+                      <Textarea
+                        placeholder={`Describe the ${activeTab} you want to generate...`}
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        rows={4}
+                        className="bg-input/50 border-border/50 focus:border-primary resize-none pr-12"
+                      />
+                      {prompt.trim() && (
+                        <Button
+                          onClick={enhancePrompt}
+                          disabled={isEnhancingPrompt}
+                          variant="ghost"
+                          size="sm"
+                          className="absolute top-2 right-2 h-8 w-8 p-0 hover:bg-primary/10"
+                        >
+                          <Sparkles className="h-4 w-4 text-primary" />
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-xs text-foreground/60 mt-2">
+                      💡 Click "AI Enhance" to optimize your prompt for better results
+                    </p>
                   </div>
 
                   {/* Example Prompts */}
