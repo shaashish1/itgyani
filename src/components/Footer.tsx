@@ -32,25 +32,25 @@ const Footer = () => {
       { name: "AI Studio", href: "/ai-studio" }
     ],
     resources: [
-      { name: "Documentation", href: "#" },
-      { name: "API Reference", href: "#" },
-      { name: "Tutorials", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Community", href: "#" }
+      { name: "Documentation", href: "/ai-studio" },
+      { name: "API Reference", href: "/ai-studio" },
+      { name: "Tutorials", href: "/#services" },
+      { name: "Blog", href: "/#about" },
+      { name: "Community", href: "/#contact" }
     ],
     legal: [
-      { name: "Privacy Policy", href: "#" },
-      { name: "Terms of Service", href: "#" },
-      { name: "Security", href: "#" },
-      { name: "Compliance", href: "#" }
+      { name: "Privacy Policy", href: "/#contact" },
+      { name: "Terms of Service", href: "/#contact" },
+      { name: "Security", href: "/#about" },
+      { name: "Compliance", href: "/#about" }
     ]
   };
 
   const socialLinks = [
-    { icon: <Twitter className="h-5 w-5" />, href: "#", label: "Twitter" },
-    { icon: <Linkedin className="h-5 w-5" />, href: "#", label: "LinkedIn" },
-    { icon: <Github className="h-5 w-5" />, href: "#", label: "GitHub" },
-    { icon: <Mail className="h-5 w-5" />, href: "#", label: "Email" }
+    { icon: <Twitter className="h-5 w-5" />, href: "https://twitter.com/syngini", label: "Twitter" },
+    { icon: <Linkedin className="h-5 w-5" />, href: "https://linkedin.com/company/syngini", label: "LinkedIn" },
+    { icon: <Github className="h-5 w-5" />, href: "https://github.com/syngini", label: "GitHub" },
+    { icon: <Mail className="h-5 w-5" />, href: "mailto:contact@syngini.com", label: "Email" }
   ];
 
   return (

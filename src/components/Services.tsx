@@ -159,7 +159,7 @@ const Services = () => {
 
           <div className="text-center mt-12">
             <Button className="btn-hero text-lg px-8 py-4" asChild>
-              <Link to="#contact">
+              <Link to="/#contact">
                 Schedule Free Consultation
               </Link>
             </Button>
