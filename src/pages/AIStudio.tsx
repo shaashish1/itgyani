@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -32,11 +33,27 @@ const AIStudio = () => {
   const [isEditingWebhook, setIsEditingWebhook] = useState(false);
   const [tempWebhookUrl, setTempWebhookUrl] = useState("");
   const [prompt, setPrompt] = useState("");
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [generatedContent, setGeneratedContent] = useState<{
     type: 'image' | 'video';
     url: string;
     filename: string;
   } | null>(null);
+
+  // Load saved webhook URL from localStorage on component mount
+  useEffect(() => {
+    const savedWebhookUrl = localStorage.getItem('n8n-webhook-url');
+    if (savedWebhookUrl) {
+      setWebhookUrl(savedWebhookUrl);
+    }
+  }, []);
+
+  // Save webhook URL to localStorage whenever it changes
+  const saveWebhookUrl = (url: string) => {
+    setWebhookUrl(url);
+    localStorage.setItem('n8n-webhook-url', url);
+    toast.success("Webhook URL saved locally!");
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -117,9 +134,8 @@ const AIStudio = () => {
   };
 
   const handleSaveWebhook = () => {
-    setWebhookUrl(tempWebhookUrl);
+    saveWebhookUrl(tempWebhookUrl);
     setIsEditingWebhook(false);
-    toast.success("Webhook URL updated!");
   };
 
   const handleCancelEdit = () => {
@@ -197,6 +213,79 @@ const AIStudio = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      
+      {/* Settings Button - Top Right */}
+      <div className="fixed top-24 right-6 z-40">
+        <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="glass-card hover:bg-primary/10"
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="glass-card">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5 text-primary" />
+                AI Studio Settings
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6 py-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  n8n Webhook URL
+                </label>
+                <Input
+                  type="url"
+                  placeholder="https://your-n8n-instance.com/webhook/ai-generator"
+                  value={tempWebhookUrl || webhookUrl}
+                  onChange={(e) => setTempWebhookUrl(e.target.value)}
+                  className="bg-input/50 border-border/50 focus:border-primary"
+                />
+                <p className="text-xs text-foreground/60 mt-2">
+                  This URL will be saved locally in your browser
+                </p>
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  onClick={() => {
+                    if (tempWebhookUrl.trim()) {
+                      saveWebhookUrl(tempWebhookUrl);
+                    }
+                    setIsSettingsOpen(false);
+                  }}
+                  className="btn-hero flex-1"
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Settings
+                </Button>
+                <Button
+                  onClick={() => {
+                    setTempWebhookUrl("");
+                    setIsSettingsOpen(false);
+                  }}
+                  variant="ghost"
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+
+              <div className="pt-4 border-t border-border/50">
+                <h4 className="font-medium mb-2 text-sm">Storage Information</h4>
+                <p className="text-xs text-foreground/60">
+                  🔒 Your webhook URL is stored locally in your browser using localStorage. 
+                  It's not sent to any external servers except when you generate content.
+                </p>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
       
       <main className="pt-24">
         {/* Hero Section */}
@@ -299,7 +388,7 @@ const AIStudio = () => {
                             type="url"
                             placeholder="https://your-n8n-instance.com/webhook/ai-generator"
                             value={webhookUrl}
-                            onChange={(e) => setWebhookUrl(e.target.value)}
+                            onChange={(e) => saveWebhookUrl(e.target.value)}
                             className="bg-input/50 border-border/50 focus:border-primary flex-1"
                             readOnly={!isEditingWebhook}
                           />
@@ -315,7 +404,11 @@ const AIStudio = () => {
                       )}
                     </div>
                     <p className="text-sm text-foreground/60 mt-2">
-                      Enter your n8n webhook URL that will handle the AI generation request.
+                      Enter your n8n webhook URL. It will be saved in your browser's local storage.
+                      <span className="inline-flex items-center gap-1 ml-2 px-2 py-1 rounded-full bg-green-500/20 text-green-600 text-xs">
+                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                        Auto-saved
+                      </span>
                     </p>
                   </div>
 
