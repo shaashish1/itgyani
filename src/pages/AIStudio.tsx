@@ -39,13 +39,20 @@ const AIStudio = () => {
     url: string;
     filename: string;
   } | null>(null);
+  // Built-in image generation (Replicate + Flux)
+  const [replicateToken, setReplicateToken] = useState("");
+  const [replicateModel, setReplicateModel] = useState<"flux-schnell" | "flux-dev">("flux-schnell");
 
-  // Load saved webhook URL from localStorage on component mount
+  // Load saved settings from localStorage on component mount
   useEffect(() => {
     const savedWebhookUrl = localStorage.getItem('n8n-webhook-url');
-    if (savedWebhookUrl) {
-      setWebhookUrl(savedWebhookUrl);
-    }
+    if (savedWebhookUrl) setWebhookUrl(savedWebhookUrl);
+
+    const savedReplicateToken = localStorage.getItem('replicate-api-token');
+    if (savedReplicateToken) setReplicateToken(savedReplicateToken);
+
+    const savedReplicateModel = localStorage.getItem('replicate-model') as ("flux-schnell" | "flux-dev") | null;
+    if (savedReplicateModel) setReplicateModel(savedReplicateModel);
   }, []);
 
   // Save webhook URL to localStorage whenever it changes
@@ -61,21 +68,72 @@ const AIStudio = () => {
       return;
     }
 
-    if (!webhookUrl.trim()) {
-      toast.error("Please enter your n8n webhook URL");
-      return;
-    }
-
     setIsGenerating(true);
     console.log(`Generating ${activeTab} with prompt:`, prompt);
 
     try {
-      // Send request to n8n webhook
+      if (activeTab === 'image' && replicateToken.trim()) {
+        // Built-in image generation via Replicate (Flux)
+        const modelId = replicateModel === 'flux-dev'
+          ? 'black-forest-labs/flux-dev'
+          : 'black-forest-labs/flux-schnell';
+
+        const res = await fetch(`https://api.replicate.com/v1/models/${modelId}/predictions`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${replicateToken.trim()}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Prefer': 'wait',
+          },
+          body: JSON.stringify({
+            input: {
+              prompt: prompt.trim(),
+            }
+          })
+        });
+
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(`Replicate error ${res.status}: ${errText}`);
+        }
+
+        const data = await res.json();
+        // Replicate returns output as array (strings or file objects)
+        let outputUrl: string | null = null;
+        const out = data?.output;
+        if (Array.isArray(out) && out.length > 0) {
+          const first = out[0];
+          if (typeof first === 'string') outputUrl = first;
+          else if (first?.url) outputUrl = first.url;
+          else if (first?.file) outputUrl = first.file;
+        } else if (typeof out === 'string') {
+          outputUrl = out;
+        }
+
+        if (!outputUrl) {
+          console.error('Unexpected Replicate response:', data);
+          throw new Error('No image URL returned by model');
+        }
+
+        setGeneratedContent({
+          type: 'image',
+          url: outputUrl,
+          filename: `flux_${replicateModel}_${Date.now()}.webp`,
+        });
+        toast.success('Image generated with Flux!');
+        return;
+      }
+
+      // Fallback: send to n8n (required for video, or when no Replicate token)
+      if (!webhookUrl.trim()) {
+        toast.error('Please enter your n8n webhook URL');
+        return;
+      }
+
       const response = await fetch(webhookUrl, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: activeTab,
           prompt: prompt,
@@ -84,30 +142,26 @@ const AIStudio = () => {
         }),
       });
 
-      // Check if request was successful
       if (response.ok) {
         toast.success("Generation request sent to n8n workflow!");
       } else {
         toast.success("Request sent to n8n workflow!");
       }
-      
-      // Simulate processing time
-      await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // Mock generated content - in real implementation, this would come from the second webhook
+      // Temporary mock until n8n returns content back
+      await new Promise(resolve => setTimeout(resolve, 3000));
       const mockContent = {
         type: activeTab as 'image' | 'video',
-        url: activeTab === 'image' 
-          ? `https://picsum.photos/512/512?random=${Date.now()}` 
+        url: activeTab === 'image'
+          ? `https://picsum.photos/512/512?random=${Date.now()}`
           : `https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4`,
         filename: `generated_${activeTab}_${Date.now()}.${activeTab === 'image' ? 'png' : 'mp4'}`
       };
-
       setGeneratedContent(mockContent);
       toast.success(`${activeTab === 'image' ? 'Image' : 'Video'} generated successfully!`);
     } catch (error) {
       console.error("Error generating content:", error);
-      toast.error("Failed to generate content. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to generate content. Please try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -249,6 +303,36 @@ const AIStudio = () => {
                   This URL will be saved locally in your browser
                 </p>
               </div>
+
+              <div>
+                <h4 className="font-medium mb-2 text-sm">AI Image Generation (Flux)</h4>
+                <div className="grid gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Replicate API Token</label>
+                    <Input
+                      type="password"
+                      placeholder="replicate_..."
+                      value={replicateToken}
+                      onChange={(e) => setReplicateToken(e.target.value)}
+                      className="bg-input/50 border-border/50 focus:border-primary"
+                    />
+                    <p className="text-xs text-foreground/60 mt-2">
+                      Used to run Flux models directly from your browser. Stored locally only.
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Flux model</label>
+                    <select
+                      value={replicateModel}
+                      onChange={(e) => setReplicateModel(e.target.value as "flux-schnell" | "flux-dev")}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="flux-schnell">FLUX.1 [schnell] — Fast</option>
+                      <option value="flux-dev">FLUX.1 [dev] — High quality</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
               
               <div className="flex gap-3 pt-4">
                 <Button
@@ -256,6 +340,10 @@ const AIStudio = () => {
                     if (tempWebhookUrl.trim()) {
                       saveWebhookUrl(tempWebhookUrl);
                     }
+                    // Save Replicate settings
+                    localStorage.setItem('replicate-api-token', replicateToken);
+                    localStorage.setItem('replicate-model', replicateModel);
+                    toast.success('AI generation settings saved locally!');
                     setIsSettingsOpen(false);
                   }}
                   className="btn-hero flex-1"
@@ -278,8 +366,8 @@ const AIStudio = () => {
               <div className="pt-4 border-t border-border/50">
                 <h4 className="font-medium mb-2 text-sm">Storage Information</h4>
                 <p className="text-xs text-foreground/60">
-                  🔒 Your webhook URL is stored locally in your browser using localStorage. 
-                  It's not sent to any external servers except when you generate content.
+                  🔒 Your webhook URL and Replicate token/model are stored locally in your browser using localStorage.
+                  They are only sent to their respective services when you generate content.
                 </p>
               </div>
             </div>
