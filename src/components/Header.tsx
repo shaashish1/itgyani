@@ -3,10 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "@/assets/logo.png";
+import AuthModal from "@/components/modals/AuthModal";
+import ConsultationModal from "@/components/modals/ConsultationModal";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [consultationModalOpen, setConsultationModalOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -62,10 +66,18 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="btn-ghost">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="btn-ghost"
+              onClick={() => setAuthModalOpen(true)}
+            >
               Sign In
             </Button>
-            <Button className="btn-hero">
+            <Button 
+              className="btn-hero"
+              onClick={() => setConsultationModalOpen(true)}
+            >
               Get Started
             </Button>
           </div>
@@ -98,10 +110,23 @@ const Header = () => {
                 </Link>
               ))}
               <div className="flex flex-col space-y-3 pt-4 border-t border-border">
-                <Button variant="ghost" className="btn-ghost justify-start">
+                <Button 
+                  variant="ghost" 
+                  className="btn-ghost justify-start"
+                  onClick={() => {
+                    setAuthModalOpen(true);
+                    setIsOpen(false);
+                  }}
+                >
                   Sign In
                 </Button>
-                <Button className="btn-hero justify-start">
+                <Button 
+                  className="btn-hero justify-start"
+                  onClick={() => {
+                    setConsultationModalOpen(true);
+                    setIsOpen(false);
+                  }}
+                >
                   Get Started
                 </Button>
               </div>
@@ -109,6 +134,16 @@ const Header = () => {
           </div>
         )}
       </nav>
+      
+      {/* Modals */}
+      <AuthModal 
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
+      <ConsultationModal
+        isOpen={consultationModalOpen}
+        onClose={() => setConsultationModalOpen(false)}
+      />
     </header>
   );
 };

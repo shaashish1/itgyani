@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import ConsultationModal from "@/components/modals/ConsultationModal";
 import { 
   Workflow, 
   MessageSquare, 
@@ -14,6 +16,8 @@ import {
 } from "lucide-react";
 
 const Services = () => {
+  const [consultationModalOpen, setConsultationModalOpen] = useState(false);
+
   // Function to get service route based on title
   const getServiceLink = (title: string) => {
     const routes: { [key: string]: string } = {
@@ -158,13 +162,20 @@ const Services = () => {
           </div>
 
           <div className="text-center mt-12">
-            <Button className="btn-hero text-lg px-8 py-4" asChild>
-              <Link to="/#contact">
-                Schedule Free Consultation
-              </Link>
+            <Button 
+              className="btn-hero text-lg px-8 py-4"
+              onClick={() => setConsultationModalOpen(true)}
+            >
+              Schedule Free Consultation
             </Button>
           </div>
         </div>
+
+        {/* Consultation Modal */}
+        <ConsultationModal
+          isOpen={consultationModalOpen}
+          onClose={() => setConsultationModalOpen(false)}
+        />
       </div>
     </section>
   );

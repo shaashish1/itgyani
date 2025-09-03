@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import NewsletterModal from "@/components/modals/NewsletterModal";
 import { 
   Github, 
   Linkedin, 
@@ -12,8 +14,16 @@ import {
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
+  const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
+  const [email, setEmail] = useState("");
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleQuickSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    setNewsletterModalOpen(true);
   };
 
   const footerLinks = {
@@ -67,14 +77,19 @@ const Footer = () => {
               Get the latest automation insights, AI trends, and exclusive tips delivered to your inbox.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <Input 
-                type="email" 
-                placeholder="Enter your email"
-                className="flex-1 bg-input/50 border-border/50 focus:border-primary"
-              />
-              <Button className="btn-hero px-6">
-                Subscribe
-              </Button>
+              <form onSubmit={handleQuickSubscribe} className="flex flex-col sm:flex-row gap-4 w-full">
+                <Input 
+                  type="email" 
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 bg-input/50 border-border/50 focus:border-primary"
+                  required
+                />
+                <Button type="submit" className="btn-hero px-6">
+                  Subscribe
+                </Button>
+              </form>
             </div>
           </div>
         </div>
@@ -200,6 +215,13 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      {/* Newsletter Modal */}
+      <NewsletterModal
+        isOpen={newsletterModalOpen}
+        onClose={() => setNewsletterModalOpen(false)}
+        initialEmail={email}
+      />
     </footer>
   );
 };

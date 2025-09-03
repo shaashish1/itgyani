@@ -3,10 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useState } from "react";
+import ConsultationModal from "@/components/modals/ConsultationModal";
 import { ArrowLeft, CheckCircle, Zap, Clock, DollarSign, Users, Workflow, BarChart, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const BusinessAutomation = () => {
+  const [consultationModalOpen, setConsultationModalOpen] = useState(false);
+
   const benefits = [
     {
       icon: <Clock className="h-6 w-6 text-primary" />,
@@ -87,10 +91,17 @@ const BusinessAutomation = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                <Button className="btn-hero text-lg px-8 py-4">
+                <Button 
+                  className="btn-hero text-lg px-8 py-4"
+                  onClick={() => setConsultationModalOpen(true)}
+                >
                   Schedule Free Consultation
                 </Button>
-                <Button variant="outline" className="btn-ghost text-lg px-8 py-4">
+                <Button 
+                  variant="outline" 
+                  className="btn-ghost text-lg px-8 py-4"
+                  onClick={() => setConsultationModalOpen(true)}
+                >
                   View Case Studies
                 </Button>
               </div>
@@ -195,7 +206,11 @@ const BusinessAutomation = () => {
                       </Badge>
                     </div>
                     <p className="text-foreground/70 mb-6">{useCase.description}</p>
-                    <Button variant="ghost" className="btn-ghost w-full">
+                    <Button 
+                      variant="ghost" 
+                      className="btn-ghost w-full"
+                      onClick={() => setConsultationModalOpen(true)}
+                    >
                       View Full Case Study
                     </Button>
                   </CardContent>
@@ -218,10 +233,17 @@ const BusinessAutomation = () => {
                   that delivers measurable results within 30 days.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button className="btn-hero text-lg px-8 py-4">
+                  <Button 
+                    className="btn-hero text-lg px-8 py-4"
+                    onClick={() => setConsultationModalOpen(true)}
+                  >
                     Get Free Process Analysis
                   </Button>
-                  <Button variant="outline" className="btn-ghost text-lg px-8 py-4">
+                  <Button 
+                    variant="outline" 
+                    className="btn-ghost text-lg px-8 py-4"
+                    onClick={() => setConsultationModalOpen(true)}
+                  >
                     Download ROI Calculator
                   </Button>
                 </div>
@@ -230,6 +252,13 @@ const BusinessAutomation = () => {
           </div>
         </section>
       </main>
+
+      {/* Consultation Modal */}
+      <ConsultationModal
+        isOpen={consultationModalOpen}
+        onClose={() => setConsultationModalOpen(false)}
+        serviceType="Business Process Automation"
+      />
 
       <Footer />
     </div>

@@ -22,10 +22,14 @@ import {
   Search 
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import ConsultationModal from "@/components/modals/ConsultationModal";
 import heroImage from "@/assets/hero-bg.jpg";
 import heroAnimatedBg from "@/assets/hero-animated-bg.jpg";
 
 const Hero = () => {
+  const [consultationModalOpen, setConsultationModalOpen] = useState(false);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -63,7 +67,10 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 animate-slide-up" style={{ animationDelay: "0.4s" }}>
-            <Button className="btn-hero text-lg px-8 py-6 hover-glow">
+            <Button 
+              className="btn-hero text-lg px-8 py-6 hover-glow"
+              onClick={() => setConsultationModalOpen(true)}
+            >
               Start Automating Now
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -110,6 +117,12 @@ const Hero = () => {
           <div className="w-1 h-3 bg-primary rounded-full mt-2 animate-bounce" />
         </div>
       </div>
+
+      {/* Consultation Modal */}
+      <ConsultationModal
+        isOpen={consultationModalOpen}
+        onClose={() => setConsultationModalOpen(false)}
+      />
     </section>
   );
 };

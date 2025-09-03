@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import ConsultationModal from "@/components/modals/ConsultationModal";
 import { 
   Mail, 
   Phone, 
@@ -18,6 +19,7 @@ import {
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [consultationModalOpen, setConsultationModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -222,9 +224,19 @@ const Contact = () => {
                   <p className="text-sm text-foreground/70 mb-4">
                     {action.description}
                   </p>
-                  <Button variant="ghost" className="btn-ghost w-full text-sm">
-                    {action.buttonText}
-                  </Button>
+                   <Button 
+                     variant="ghost" 
+                     className="btn-ghost w-full text-sm"
+                     onClick={() => {
+                       if (action.title.includes("Schedule")) {
+                         setConsultationModalOpen(true);
+                       } else {
+                         toast.info(`${action.title} feature coming soon!`);
+                       }
+                     }}
+                   >
+                     {action.buttonText}
+                   </Button>
                 </CardContent>
               </Card>
             ))}
@@ -242,6 +254,12 @@ const Contact = () => {
             </div>
           </div>
         </div>
+
+        {/* Consultation Modal */}
+        <ConsultationModal
+          isOpen={consultationModalOpen}
+          onClose={() => setConsultationModalOpen(false)}
+        />
       </div>
     </section>
   );
