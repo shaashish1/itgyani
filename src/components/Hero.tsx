@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Bot } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-bg.jpg";
+import heroAnimatedBg from "@/assets/hero-animated-bg.jpg";
 
 const Hero = () => {
   return (
