@@ -74,17 +74,58 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
-  /* Light mode variant (optional for this dark-first design) */
+  /* Light mode variant */
   .light {
     --background: 210 40% 98%;
     --foreground: 240 10% 8%;
-    --card: 210 40% 95%;
+
+    --card: 0 0% 100%;
     --card-foreground: 240 10% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
+
     --primary: 262 83% 58%;
     --primary-foreground: 210 40% 98%;
+    --primary-glow: 262 83% 68%;
+
+    --secondary: 180 100% 50%;
+    --secondary-foreground: 240 10% 8%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 215 20.2% 35.1%;
+
+    --accent: 262 83% 58%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 5% 90%;
+    --input: 240 5% 96%;
+    --ring: 262 83% 58%;
+
+    /* Light theme custom tokens */
     --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(180 100% 50%) 50%, hsl(262 83% 68%) 100%);
-    --glass-bg: hsl(210 40% 95% / 0.8);
-    --glass-border: hsl(262 83% 58% / 0.3);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.9) 0%, hsl(240 5% 96% / 0.8) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(262 83% 68%) 100%);
+    --gradient-glow: radial-gradient(600px circle at 50% 50%, hsl(262 83% 58% / 0.08), transparent 40%);
+    
+    --shadow-glow: 0 0 40px hsl(262 83% 58% / 0.15);
+    --shadow-card: 0 8px 32px hsl(240 10% 8% / 0.1);
+    --shadow-brutal: 0 25px 50px -12px hsl(240 10% 8% / 0.15);
+
+    --glass-bg: hsl(0 0% 100% / 0.8);
+    --glass-border: hsl(262 83% 58% / 0.2);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 

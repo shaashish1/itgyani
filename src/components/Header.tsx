@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import AuthModal from "@/components/modals/AuthModal";
 import ConsultationModal from "@/components/modals/ConsultationModal";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,6 +67,7 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
+            <ThemeToggle />
             <Button 
               variant="ghost" 
               size="sm" 

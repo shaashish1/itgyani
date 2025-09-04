@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
 import AIStudio from "./pages/AIStudio";
 import BusinessAutomation from "./pages/services/BusinessAutomation";
@@ -18,25 +19,27 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/ai-studio" element={<AIStudio />} />
-          <Route path="/services/business-automation" element={<BusinessAutomation />} />
-          <Route path="/services/ai-customer-support" element={<AICustomerSupport />} />
-          <Route path="/services/data-integration" element={<DataIntegration />} />
-          <Route path="/services/ecommerce-automation" element={<EcommerceAutomation />} />
-          <Route path="/services/marketing-automation" element={<MarketingAutomation />} />
-          <Route path="/services/scheduling-management" element={<SchedulingManagement />} />
-          <Route path="/automation/:toolName" element={<AutomationDetail />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/ai-studio" element={<AIStudio />} />
+            <Route path="/services/business-automation" element={<BusinessAutomation />} />
+            <Route path="/services/ai-customer-support" element={<AICustomerSupport />} />
+            <Route path="/services/data-integration" element={<DataIntegration />} />
+            <Route path="/services/ecommerce-automation" element={<EcommerceAutomation />} />
+            <Route path="/services/marketing-automation" element={<MarketingAutomation />} />
+            <Route path="/services/scheduling-management" element={<SchedulingManagement />} />
+            <Route path="/automation/:toolName" element={<AutomationDetail />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
