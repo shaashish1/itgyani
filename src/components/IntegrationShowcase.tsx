@@ -31,8 +31,15 @@ import {
   Activity
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 const IntegrationShowcase = () => {
+  const navigate = useNavigate();
+
+  const handleIntegrationClick = (integrationName: string) => {
+    const toolName = integrationName.toLowerCase().replace(/\s+/g, '-');
+    navigate(`/automation/${toolName}`);
+  };
   const integrationCategories = [
     {
       title: "Communication",
@@ -143,6 +150,7 @@ const IntegrationShowcase = () => {
                       key={integration.name} 
                       className="glass-card hover-glow group cursor-pointer transition-all duration-300 hover:scale-105"
                       style={{ animationDelay: `${(categoryIndex * 0.1) + (index * 0.05)}s` }}
+                      onClick={() => handleIntegrationClick(integration.name)}
                     >
                       <CardContent className="p-6 text-center">
                         <div className={`w-12 h-12 mx-auto mb-4 rounded-xl bg-${category.color}/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>

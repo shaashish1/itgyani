@@ -11,6 +11,7 @@ import DataIntegration from "./pages/services/DataIntegration";
 import EcommerceAutomation from "./pages/services/EcommerceAutomation";
 import MarketingAutomation from "./pages/services/MarketingAutomation";
 import SchedulingManagement from "./pages/services/SchedulingManagement";
+import AutomationDetail from "./pages/automations/AutomationDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/services/ecommerce-automation" element={<EcommerceAutomation />} />
           <Route path="/services/marketing-automation" element={<MarketingAutomation />} />
           <Route path="/services/scheduling-management" element={<SchedulingManagement />} />
+          <Route path="/automation/:toolName" element={<AutomationDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
