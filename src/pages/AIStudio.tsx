@@ -476,7 +476,7 @@ const AIStudio = () => {
                             type="url"
                             placeholder="https://your-n8n-instance.com/webhook/ai-generator"
                             value={webhookUrl}
-                            onChange={(e) => saveWebhookUrl(e.target.value)}
+                            autoComplete="off"
                             className="bg-input/50 border-border/50 focus:border-primary flex-1"
                             readOnly={!isEditingWebhook}
                           />
