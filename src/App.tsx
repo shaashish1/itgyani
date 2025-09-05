@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Index from "./pages/Index";
+import Services from "./pages/Services";
 import AIStudio from "./pages/AIStudio";
 import BusinessAutomation from "./pages/services/BusinessAutomation";
 import AICustomerSupport from "./pages/services/AICustomerSupport";
@@ -26,6 +27,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/services" element={<Services />} />
             <Route path="/ai-studio" element={<AIStudio />} />
             <Route path="/services/business-automation" element={<BusinessAutomation />} />
             <Route path="/services/ai-customer-support" element={<AICustomerSupport />} />
