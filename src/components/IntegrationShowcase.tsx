@@ -152,7 +152,7 @@ const IntegrationShowcase = () => {
                       style={{ animationDelay: `${(categoryIndex * 0.1) + (index * 0.05)}s` }}
                       onClick={() => handleIntegrationClick(integration.name)}
                     >
-                      <CardContent className="p-6 text-center">
+                      <CardContent className="p-6 text-center border-2 border-border/50 shadow-lg hover:shadow-brutal transition-all duration-300 rounded-lg bg-gradient-to-br from-card to-card/80">
                         <div className={`w-12 h-12 mx-auto mb-4 rounded-xl bg-${category.color}/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                           <IconComponent className={`h-6 w-6 text-${category.color}`} />
                         </div>
