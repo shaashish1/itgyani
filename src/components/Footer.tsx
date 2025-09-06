@@ -11,7 +11,6 @@ import {
   ArrowUp,
   Sparkles
 } from "lucide-react";
-import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
@@ -101,9 +100,8 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center space-x-3 mb-6">
-              <img src={logo} alt="SynGini" className="h-10 w-10" />
               <span className="text-2xl font-bold gradient-text">
-                SynGini
+                ITGYANI
               </span>
             </Link>
             <p className="text-foreground/70 mb-6 leading-relaxed">
@@ -199,7 +197,7 @@ const Footer = () => {
         <div className="container mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-foreground/60">
-              © 2024 SynGini. All rights reserved.
+              © 2024 ITGYANI. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
               <span className="text-xs text-foreground/50">Made with ❤️ for automation</span>

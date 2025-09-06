@@ -1,88 +1,152 @@
-import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, Bot, Workflow, Clock, Zap, Users, Target, TrendingUp, Building, Heart, ShoppingCart, Factory, Award } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight, Bot, TrendingUp, Zap, Play, ExternalLink, Star, Users, Clock, Target } from "lucide-react";
+import { Link } from "react-router-dom";
 import ConsultationModal from "@/components/modals/ConsultationModal";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import heroImage from "@/assets/hero-animated-bg.jpg";
 
 const Index = () => {
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
 
   const heroStats = [
-    { value: "100%", label: "Data Accuracy" },
-    { value: "24/7", label: "Operations" },
+    { value: "300%", label: "Efficiency Increase" },
+    { value: "24/7", label: "AI Agent Operations" },
     { value: "60%", label: "Cost Reduction" }
   ];
 
   const services = [
     {
       icon: Bot,
-      title: "Agents & Automation",
-      description: "Deploy AI that makes decisions, takes action, and manages customer interactions while delivering ROI.",
-      features: ["Simple AI with smart intent", "Built-in conversational AI", "Integration with popular platforms"],
-      percentage: "90%",
-      metric: "ROI Increase"
+      title: "AI Agents & Automation",
+      description: "Deploy intelligent agents that handle customer service, data processing, and decision-making 24/7.",
+      features: [
+        "Reduce response time by 90%",
+        "Handle 1000+ queries simultaneously", 
+        "Learn and improve continuously"
+      ],
+      metric: "90%",
+      metricLabel: "Faster Response",
+      href: "/services/ai-customer-support"
     },
     {
-      icon: Workflow,
+      icon: TrendingUp,
       title: "Algorithmic Trading",
-      description: "Advanced trading algorithms and market intelligence for optimal investment strategies.",
-      features: ["AI risk management system", "Real-time market analysis", "Automated portfolio optimization"],
-      percentage: "15%",
-      metric: "Monthly Returns"
+      description: "Advanced trading algorithms that analyze market patterns and execute profitable trades automatically.",
+      features: [
+        "Real-time market analysis",
+        "Risk management automation",
+        "Consistent profit generation"
+      ],
+      metric: "15%+",
+      metricLabel: "Annual Returns",
+      href: "/services/algorithmic-trading"
     },
     {
-      icon: Clock,
-      title: "API Workflow Automation",
-      description: "Connect and automate workflows across all your business applications seamlessly.",
-      features: ["Native integrations", "Custom API connections", "Real-time synchronization"],
-      percentage: "70%",
-      metric: "Time Saved"
+      icon: Zap,
+      title: "n8n Workflow Automation",
+      description: "Connect your entire tech stack with intelligent workflows that eliminate manual processes.",
+      features: [
+        "Connect 200+ applications",
+        "Zero-code automation",
+        "Custom business logic"
+      ],
+      metric: "70%",
+      metricLabel: "Time Saved",
+      href: "/services/business-automation"
+    }
+  ];
+
+  const problemSolutions = [
+    {
+      problem: "Manual Invoice Processing",
+      solution: "n8n + AI Document Extraction",
+      metric: "100%",
+      result: "Process 500+ invoices daily, zero manual entry"
+    },
+    {
+      problem: "Lead Qualification Bottleneck", 
+      solution: "AI Lead Scoring + CRM Automation",
+      metric: "10x",
+      result: "Qualify leads instantly, route to sales in seconds"
+    },
+    {
+      problem: "Cross-Platform Data Silos",
+      solution: "n8n Data Pipeline Integration", 
+      metric: "24/7",
+      result: "Sync Salesforce, Slack, Google Sheets in real-time"
     }
   ];
 
   const impactStats = [
-    { value: "$12.5M", label: "Cost Savings generated", sublabel: "across all customer projects" },
-    { value: "6,000", label: "Hours Automated", sublabel: "saving companies valuable time" },
-    { value: "97%", label: "Process Accuracy", sublabel: "maintaining high quality standards" },
-    { value: "500+", label: "Business Transformed", sublabel: "across various industries" },
-    { value: "2.4x", label: "Average Revenue 10x", sublabel: "return on AI investment" },
-    { value: "95.2%", label: "System Uptime", sublabel: "ensuring reliable operations" }
+    {
+      value: "$12.5M",
+      label: "Cost Savings Generated",
+      description: "For clients in the last 12 months",
+      change: "+180%"
+    },
+    {
+      value: "45,000",
+      label: "Hours Automated", 
+      description: "Manual processes eliminated monthly",
+      change: "+250%"
+    },
+    {
+      value: "97%",
+      label: "Process Accuracy",
+      description: "AI-driven decision making",
+      change: "+15%"
+    },
+    {
+      value: "500+",
+      label: "Businesses Transformed",
+      description: "Across 50+ industries", 
+      change: "+300%"
+    },
+    {
+      value: "2.4s",
+      label: "Average Response Time",
+      description: "AI agent customer interactions",
+      change: "-85%"
+    },
+    {
+      value: "99.2%",
+      label: "System Uptime",
+      description: "Enterprise-grade reliability",
+      change: "+2%"
+    }
   ];
 
   const industryStats = [
     {
       industry: "Financial Services",
-      metrics: [
-        { label: "Operational Savings", value: "+340%" },
-        { label: "Processing Speed", value: "+65%" },
-        { label: "Error Reduction", value: "+28%" }
-      ]
+      efficiency: "+340%",
+      costs: "-65%", 
+      revenue: "+28%",
+      highlight: "Algorithmic trading increased portfolio returns by 28%"
     },
     {
       industry: "E-commerce",
-      metrics: [
-        { label: "Revenue Growth", value: "+280%" },
-        { label: "Customer Satisfaction", value: "+45%" },
-        { label: "Order Processing", value: "+35%" }
-      ]
+      efficiency: "+280%",
+      costs: "-45%",
+      revenue: "+35%", 
+      highlight: "AI agents handle 95% of customer inquiries autonomously"
     },
     {
-      industry: "Manufacturing",
-      metrics: [
-        { label: "Production Efficiency", value: "+220%" },
-        { label: "Quality Control", value: "+55%" },
-        { label: "Waste Reduction", value: "+42%" }
-      ]
+      industry: "Manufacturing", 
+      efficiency: "+220%",
+      costs: "-55%",
+      revenue: "+22%",
+      highlight: "Predictive maintenance reduced downtime by 70%"
     },
     {
       industry: "Healthcare",
-      metrics: [
-        { label: "Patient Processing", value: "+190%" },
-        { label: "Diagnostic Accuracy", value: "+40%" },
-        { label: "Administrative Tasks", value: "+18%" }
-      ]
+      efficiency: "+190%",
+      costs: "-40%",
+      revenue: "+18%",
+      highlight: "Automated patient scheduling and record management"
     }
   ];
 
@@ -91,42 +155,62 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative pt-24 pb-20 overflow-hidden bg-gradient-to-br from-primary/10 via-secondary/5 to-primary/5">
-        <div className="container mx-auto px-6 relative">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8">
-              <Zap className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Most Innovative Live AI Automation API</span>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroImage})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-background/90 via-background/70 to-background/50" />
+        </div>
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
+                <Bot className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium text-primary">Next-Generation AI Automation</span>
+              </div>
+              
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold gradient-text">
+                Accelerate Your Business with{" "}
+                <span className="text-primary">Intelligent Automation</span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                Transform critical business processes with AI agents, algorithmic trading, and workflow automation. 
+                Reduce costs by 60%, increase efficiency by 300%, and scale without limits.
+              </p>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Accelerate Your Business with{" "}
-              <span className="gradient-text">Intelligent Automation</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-foreground/80 mb-12 max-w-3xl mx-auto">
-              Transform critical business functions with top AI algorithms, reduce costs by 60%, increase efficiency by 300%, and scale without limits.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button 
-                className="btn-hero text-lg px-8 py-6"
+                size="lg" 
+                className="group btn-hero text-lg px-8 py-6"
                 onClick={() => setConsultationModalOpen(true)}
               >
-                Get Your AI Transformation
-                <ArrowRight className="ml-2 h-5 w-5" />
+                Start Your AI Transformation
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button variant="outline" className="text-lg px-8 py-6">
-                Learn More
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="group bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 text-lg px-8 py-6"
+              >
+                <Play className="mr-2 h-5 w-5" />
+                Watch Demo
               </Button>
             </div>
-
+            
             {/* Hero Stats */}
-            <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
-              {heroStats.map((stat, index) => (
-                <div key={index} className="glass-card p-6 text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-                  <div className="text-sm text-foreground/70">{stat.label}</div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+              {heroStats.map((stat, idx) => (
+                <div key={idx} className="glass-card p-6 text-center">
+                  <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm font-medium text-muted-foreground">
+                    {stat.label}
+                  </div>
                 </div>
               ))}
             </div>
@@ -134,205 +218,218 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Transform Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              Transform Your Business with <span className="gradient-text">Intelligent Systems</span>
-            </h2>
-            <p className="text-xl text-foreground/70 max-w-3xl mx-auto">
-              Our AI solutions are built to add REAL business value by delivering outstanding while delivering value in days, not months.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {services.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <div key={index} className="glass-card p-8 hover-lift">
-                  <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mb-6">
-                    <IconComponent className="h-8 w-8 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">{service.title}</h3>
-                  <p className="text-foreground/70 mb-6">{service.description}</p>
-                  
-                  <ul className="space-y-2 mb-6">
-                    {service.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-sm">
-                        <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-foreground/80">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <div className="text-center pt-4 border-t border-border">
-                    <div className="text-3xl font-bold text-primary mb-1">{service.percentage}</div>
-                    <div className="text-sm text-foreground/70">{service.metric}</div>
-                  </div>
-                  
-                  <Button variant="outline" className="w-full mt-4">
-                    Learn More
-                  </Button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Ready to Deploy Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/5 to-secondary/5">
-        <div className="container mx-auto px-6 text-center">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold mb-6">
-              Ready-to-Deploy with <span className="gradient-text">Templates & Solutions</span>
-            </h2>
-            <p className="text-xl text-foreground/80 mb-8">
-              Jump start with 200+ pre-built templates and solutions. Choose from accounting, CRM, e-commerce, 
-              workflow systems, email marketing and custom designed platforms.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                className="btn-hero text-lg px-8 py-6"
-                onClick={() => setConsultationModalOpen(true)}
-              >
-                Browse Solutions Library
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button variant="outline" className="text-lg px-8 py-6">
-                Contact Support
-              </Button>
+      {/* AI-Powered Solutions */}
+      <section className="py-24 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+              <Zap className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary">AI-Powered Solutions</span>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Real Problems Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              Real Problems. <span className="gradient-text">AI Solutions.</span> Measurable Impact.
+            <h2 className="text-3xl md:text-5xl font-bold">
+              Transform Your Business with{" "}
+              <span className="gradient-text">Intelligent Systems</span>
             </h2>
-            <p className="text-xl text-foreground/70">
-              Our AI solutions deliver quantifiable results for common business challenges across enterprises
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Our AI solutions tackle your most critical business challenges while delivering measurable results and ROI.
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {impactStats.map((stat, index) => (
-              <div key={index} className="glass-card p-8 text-center hover-lift">
-                <div className="text-5xl font-bold text-primary mb-4">{stat.value}</div>
-                <h4 className="text-lg font-semibold mb-2">{stat.label}</h4>
-                <p className="text-sm text-foreground/70">{stat.sublabel}</p>
-              </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {services.map((service, idx) => (
+              <Card key={idx} className="glass-card hover-lift group cursor-pointer">
+                <CardContent className="p-8">
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                        <service.icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold text-primary">{service.metric}</div>
+                        <div className="text-xs text-muted-foreground">{service.metricLabel}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h3 className="text-xl font-semibold">{service.title}</h3>
+                      <p className="text-muted-foreground">{service.description}</p>
+                    </div>
+                    
+                    <ul className="space-y-2">
+                      {service.features.map((feature, featureIdx) => (
+                        <li key={featureIdx} className="flex items-center gap-2 text-sm">
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                          <span>{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    
+                    <Link to={service.href}>
+                      <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        Learn More
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Industry Impact Section */}
-      <section className="py-20 bg-muted/20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              Measurable Impact Across <span className="gradient-text">Every Industry</span>
+      {/* Ready-to-Deploy Templates */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/20">
+              <Star className="w-4 h-4 text-secondary" />
+              <span className="text-sm font-medium text-secondary">New: In-House Solutions</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold">
+              Ready-to-Deploy{" "}
+              <span className="gradient-text">n8n Templates & Solutions</span>
             </h2>
-            <p className="text-xl text-foreground/70">
-              Our AI solutions deliver quantifiable results for businesses across various industries
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Access our library of 100+ pre-built automation templates and 3,300+ community nodes. Deploy production-ready workflows in minutes.
             </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            {industryStats.map((industry, index) => (
-              <div key={index} className="glass-card p-8">
-                <h3 className="text-2xl font-bold mb-6 text-center">{industry.industry}</h3>
-                <div className="space-y-4">
-                  {industry.metrics.map((metric, idx) => (
-                    <div key={idx} className="flex justify-between items-center py-2 border-b border-border/20">
-                      <span className="text-foreground/80">{metric.label}</span>
-                      <span className="text-2xl font-bold text-primary">{metric.value}</span>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="btn-hero">
+              Browse Solutions Library
+              <ExternalLink className="ml-2 h-5 w-5" />
+            </Button>
+            <Button variant="outline" size="lg">
+              View on GitHub
+              <ExternalLink className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Real Problems, AI Solutions */}
+      <section className="py-24 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold">
+              Real Problems. AI Solutions.{" "}
+              <span className="gradient-text">Measurable Impact.</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              See how our clients transformed their operations and achieved unprecedented growth.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {problemSolutions.map((item, idx) => (
+              <Card key={idx} className="glass-card hover-lift">
+                <CardContent className="p-8">
+                  <div className="space-y-6">
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground mb-2">Problem</h4>
+                        <p className="font-semibold">{item.problem}</p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground mb-2">AI Solution</h4>
+                        <p className="font-semibold text-primary">{item.solution}</p>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                    
+                    <div className="text-center">
+                      <div className="text-4xl font-bold text-primary mb-2">{item.metric}</div>
+                      <p className="text-sm text-muted-foreground">{item.result}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Performance Metrics */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+              <Target className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-primary">Performance Metrics</span>
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold">
+              Measurable Impact Across{" "}
+              <span className="gradient-text">Every Industry</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Our AI solutions deliver quantifiable results that transform businesses and drive sustainable growth.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {impactStats.map((stat, idx) => (
+              <Card key={idx} className="glass-card hover-lift text-center">
+                <CardContent className="p-8">
+                  <div className="space-y-4">
+                    <div className="text-sm font-medium text-primary">{stat.change}</div>
+                    <div className="text-4xl font-bold">{stat.value}</div>
+                    <div className="space-y-1">
+                      <h4 className="font-semibold">{stat.label}</h4>
+                      <p className="text-sm text-muted-foreground">{stat.description}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* Industry Success Stories */}
-      <section className="py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              Industry-Specific <span className="gradient-text">Success Stories</span>
-            </h2>
-            <p className="text-xl text-foreground/70">
-              Get specific and industry-led solutions right out of the box - it's never been that easy to maximize.
+      <section className="py-24 bg-muted/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-16">
+            <h3 className="text-2xl md:text-3xl font-bold">Industry-Specific Success Stories</h3>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              See how different industries leverage our AI solutions to achieve breakthrough results.
             </p>
           </div>
-          
-          <div className="text-center">
-            <p className="text-foreground/60 mb-8">Optimized across numerous business solutions and ROI</p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <Building className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-2xl font-bold text-green-500">+340%</div>
-                <div className="text-sm text-foreground/70">Financial Services ROI</div>
-              </div>
-              <div>
-                <ShoppingCart className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-2xl font-bold text-green-500">+280%</div>
-                <div className="text-sm text-foreground/70">E-commerce Growth</div>
-              </div>
-              <div>
-                <Factory className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-2xl font-bold text-green-500">+220%</div>
-                <div className="text-sm text-foreground/70">Manufacturing Efficiency</div>
-              </div>
-              <div>
-                <Heart className="h-12 w-12 text-primary mx-auto mb-4" />
-                <div className="text-2xl font-bold text-green-500">+190%</div>
-                <div className="text-sm text-foreground/70">Healthcare Processing</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Final CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-secondary">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-            Ready to Transform Your Business?
-          </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join 10,000+ companies already using our AI automation solutions to scale their operations.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              variant="secondary"
-              className="text-lg px-8 py-6"
-              onClick={() => setConsultationModalOpen(true)}
-            >
-              Schedule Consultation
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button 
-              variant="outline"
-              className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-primary"
-            >
-              Explore Solutions
-            </Button>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {industryStats.map((industry, idx) => (
+              <Card key={idx} className="glass-card hover-lift">
+                <CardContent className="p-8">
+                  <div className="space-y-6">
+                    <h4 className="text-xl font-bold">{industry.industry}</h4>
+                    
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-primary">{industry.efficiency}</div>
+                        <div className="text-xs text-muted-foreground">Efficiency</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-500">{industry.costs}</div>
+                        <div className="text-xs text-muted-foreground">Costs</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-primary">{industry.revenue}</div>
+                        <div className="text-xs text-muted-foreground">Revenue</div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-sm text-muted-foreground">{industry.highlight}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       <Footer />
       
-      <ConsultationModal
+      <ConsultationModal 
         isOpen={consultationModalOpen}
         onClose={() => setConsultationModalOpen(false)}
       />

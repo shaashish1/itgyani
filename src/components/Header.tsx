@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import logo from "@/assets/logo.png";
 import AuthModal from "@/components/modals/AuthModal";
 import ConsultationModal from "@/components/modals/ConsultationModal";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -25,7 +24,7 @@ const Header = () => {
   const navigation = [
     { name: "Home", href: "/" },
     { name: "AI Studio", href: "/ai-studio" },
-    { name: "Services", href: "/#services" },
+    { name: "Services", href: "/services" },
     { name: "About", href: "/#about" },
     { name: "Contact", href: "/#contact" },
   ];
@@ -42,9 +41,8 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 hover-lift">
-            <img src={logo} alt="SynGini" className="h-10 w-10" />
             <span className="text-2xl font-bold gradient-text">
-              SynGini
+              ITGYANI
             </span>
           </Link>
 
