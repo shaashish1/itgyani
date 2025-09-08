@@ -27,11 +27,11 @@ const Footer = () => {
 
   const footerLinks = {
     company: [
-      { name: "About Us", href: "/#about" },
+      { name: "About Us", href: "/about" },
       { name: "Our Services", href: "/#services" },
       { name: "Case Studies", href: "/case-studies" },
       { name: "Careers", href: "/careers" },
-      { name: "Contact Us", href: "/#contact" }
+      { name: "Contact Us", href: "/contact" }
     ],
     services: [
       { name: "Business Automation", href: "/services/business-automation" },

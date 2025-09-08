@@ -22,11 +22,11 @@ const Header = () => {
   }, []);
 
   const navigation = [
-    { name: "Home", href: "/" },
-    { name: "AI Studio", href: "/ai-studio" },
-    { name: "Services", href: "/services" },
-    { name: "About", href: "/#about" },
-    { name: "Contact", href: "/#contact" },
+  { name: "Home", href: "/" },
+  { name: "AI Studio", href: "/ai-studio" },
+  { name: "Services", href: "/services" },
+  { name: "About Us", href: "/about" },
+  { name: "Contact Us", href: "/contact" },
   ];
 
   return (
