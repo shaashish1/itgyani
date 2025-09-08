@@ -202,7 +202,7 @@ const Index = () => {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 hover:text-gray-900 text-lg px-8 py-6 rounded-lg"
+                  className="border-gray-300 text-white hover:bg-gray-700 hover:text-white text-lg px-8 py-6 rounded-lg"
                 >
                   Watch Demo
                 </Button>
