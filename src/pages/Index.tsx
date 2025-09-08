@@ -198,13 +198,15 @@ const Index = () => {
               >
                 Start Your AI Transformation
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="border-gray-300 text-gray-700 hover:bg-gray-50 text-lg px-8 py-6 rounded-lg"
-              >
-                Watch Demo
-              </Button>
+              <a href="/demo" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="border-gray-300 text-gray-700 hover:bg-gray-50 text-lg px-8 py-6 rounded-lg"
+                >
+                  Watch Demo
+                </Button>
+              </a>
             </div>
           </div>
         </div>
@@ -275,12 +277,14 @@ const Index = () => {
                       </ul>
                     </div>
                     
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-blue-200 text-blue-600 hover:bg-blue-50"
-                    >
-                      Learn More
-                    </Button>
+                    <Link to={service.href}>
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-blue-200 text-blue-600 hover:bg-blue-50"
+                      >
+                        Learn More
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -307,19 +311,23 @@ const Index = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Button 
-              size="lg" 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4"
-            >
-              Browse Solutions Library
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4"
-            >
-              View All GitHub
-            </Button>
+            <Link to="/services">
+              <Button 
+                size="lg" 
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4"
+              >
+                Browse Solutions Library
+              </Button>
+            </Link>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-4"
+              >
+                View All GitHub
+              </Button>
+            </a>
           </div>
         </div>
       </section>
@@ -459,13 +467,15 @@ const Index = () => {
               >
                 Schedule Free Consultation
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="border-white text-white hover:bg-white/10 text-lg px-8 py-6"
-              >
-                Download Case Studies
-              </Button>
+              <a href="/case-studies" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="border-white text-white hover:bg-white/10 text-lg px-8 py-6"
+                >
+                  Download Case Studies
+                </Button>
+              </a>
             </div>
           </div>
         </div>
