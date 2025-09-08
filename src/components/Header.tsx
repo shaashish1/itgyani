@@ -31,7 +31,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-500 pt-32 ${
+      className={`fixed top-0 w-full z-50 transition-all duration-500 ${
         isScrolled
           ? "glass-card border-b backdrop-blur-xl"
           : "bg-[hsl(var(--header-bg))]"
