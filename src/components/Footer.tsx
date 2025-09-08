@@ -27,11 +27,11 @@ const Footer = () => {
 
   const footerLinks = {
     company: [
-      { name: "About Us", href: "#about" },
-      { name: "Our Services", href: "#services" },
+      { name: "About Us", href: "/#about" },
+      { name: "Our Services", href: "/#services" },
       { name: "Case Studies", href: "/case-studies" },
       { name: "Careers", href: "/careers" },
-      { name: "Contact", href: "#contact" }
+      { name: "Contact Us", href: "/#contact" }
     ],
     services: [
       { name: "Business Automation", href: "/services/business-automation" },
@@ -43,7 +43,7 @@ const Footer = () => {
     resources: [
       { name: "Documentation", href: "/ai-studio" },
       { name: "API Reference", href: "/ai-studio" },
-      { name: "Blog", href: "/blog" },
+      { name: "Blog", href: "https://itgyani.com/blog", external: true },
       { name: "Tutorials", href: "/#services" },
       { name: "Community", href: "/#contact" }
     ],
@@ -131,12 +131,23 @@ const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.company.map((link, index) => (
                 <li key={index}>
-                  <Link
-                    to={link.href}
-                    className="text-foreground/70 hover:text-primary transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
+                  {Boolean((link as any).external) ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                    >
+                      {link.name}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -163,12 +174,23 @@ const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.resources.map((link, index) => (
                 <li key={index}>
-                  <Link
-                    to={link.href}
-                    className="text-foreground/70 hover:text-primary transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
+                  {Boolean((link as any).external) ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                    >
+                      {link.name}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -179,12 +201,23 @@ const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.legal.map((link, index) => (
                 <li key={index}>
-                  <Link
-                    to={link.href}
-                    className="text-foreground/70 hover:text-primary transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
+                  {Boolean((link as any).external) ? (
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                    >
+                      {link.name}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      className="text-foreground/70 hover:text-primary transition-colors text-sm"
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -197,7 +230,7 @@ const Footer = () => {
         <div className="container mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-foreground/60">
-              © 2024 ITGYANI. All rights reserved.
+              © 2025 ITGYANI. All rights reserved.
             </p>
             <div className="flex items-center gap-6">
               <span className="text-xs text-foreground/50">Made with ❤️ for automation</span>

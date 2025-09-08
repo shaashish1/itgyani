@@ -17,7 +17,33 @@ import {
   Zap
 } from "lucide-react";
 
-const Contact = () => {
+function Contact() {
+  const contactInfo = [
+    {
+      icon: <Mail className="h-5 w-5" />,
+      title: "Email Us",
+      details: "hello@itgyani.ai",
+      action: "Send Email"
+    },
+    {
+      icon: <Phone className="h-5 w-5" />,
+      title: "Call Us",
+      details: "+91 9545550083",
+      action: "Call Now"
+    },
+    {
+      icon: <MapPin className="h-5 w-5" />,
+      title: "Address",
+      details: "Kumar Primrose, Kharadi, Pune, Maharashtra, India",
+      action: "Get Directions"
+    },
+    {
+      icon: <Clock className="h-5 w-5" />,
+      title: "Working Hours",
+      details: "Mon-Fri: 9am - 6pm IST",
+      action: "Book Appointment"
+    }
+  ];
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -55,33 +81,12 @@ const Contact = () => {
       [e.target.name]: e.target.value
     }));
   };
+// ...existing code...
+// ...existing code...
 
-  const contactInfo = [
-    {
-      icon: <Mail className="h-5 w-5" />,
-      title: "Email Us",
-      details: "hello@itgyani.ai",
-      action: "Send Email"
-    },
-    {
-      icon: <Phone className="h-5 w-5" />,
-      title: "Call Us",
-      details: "+1 (555) 123-4567",
-      action: "Schedule Call"
-    },
-    {
-      icon: <MapPin className="h-5 w-5" />,
-      title: "Visit Us",
-      details: "San Francisco, CA",
-      action: "Get Directions"
-    },
-    {
-      icon: <Clock className="h-5 w-5" />,
-      title: "Business Hours",
-      details: "Mon-Fri 9AM-6PM PST",
-      action: "Book Meeting"
-    }
-  ];
+// ...existing code...
+
+// ...existing code...
 
   const quickActions = [
     {
@@ -273,6 +278,6 @@ const Contact = () => {
       </div>
     </section>
   );
-};
+}
 
 export default Contact;
