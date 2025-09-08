@@ -30,12 +30,22 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    toast.success("Thank you! We'll get back to you within 24 hours.");
-    setFormData({ name: "", email: "", company: "", message: "" });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        toast.success("✅ Thank you! We'll get back to you within 24 hours.");
+        setFormData({ name: "", email: "", company: "", message: "" });
+      } else {
+        const data = await res.json();
+        toast.error(`❌ Error: ${data.error || 'Failed to send message.'}`);
+      }
+    } catch (err) {
+      toast.error("❌ Error: Could not send message. Please try again later.");
+    }
     setIsSubmitting(false);
   };
 
