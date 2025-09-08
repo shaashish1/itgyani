@@ -164,18 +164,14 @@ const Services = () => {
           <div className="text-center mt-12">
             <Button 
               className="btn-hero text-lg px-8 py-4"
-              onClick={() => setConsultationModalOpen(true)}
+              asChild
             >
-              Schedule Free Consultation
+              <Link to="/contact">Schedule Free Consultation</Link>
             </Button>
           </div>
         </div>
 
-        {/* Consultation Modal */}
-        <ConsultationModal
-          isOpen={consultationModalOpen}
-          onClose={() => setConsultationModalOpen(false)}
-        />
+  {/* No Consultation Modal here; handled on Contact page */}
       </div>
     </section>
   );
