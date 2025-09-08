@@ -5,7 +5,7 @@ import IntegrationShowcase from "@/components/IntegrationShowcase";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
-const Index = () => {
+const ServicesPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -20,4 +20,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default ServicesPage;
