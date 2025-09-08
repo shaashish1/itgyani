@@ -29,29 +29,29 @@ const Footer = () => {
     company: [
       { name: "About Us", href: "#about" },
       { name: "Our Services", href: "#services" },
-      { name: "Case Studies", href: "#" },
-      { name: "Careers", href: "#" },
+      { name: "Case Studies", href: "/case-studies" },
+      { name: "Careers", href: "/careers" },
       { name: "Contact", href: "#contact" }
     ],
     services: [
-      { name: "Business Automation", href: "#" },
-      { name: "AI Integration", href: "#" },
-      { name: "Custom Workflows", href: "#" },
-      { name: "Data Synchronization", href: "#" },
+      { name: "Business Automation", href: "/services/business-automation" },
+      { name: "AI Customer Support", href: "/services/ai-customer-support" },
+      { name: "Data Integration", href: "/services/data-integration" },
+      { name: "Marketing Automation", href: "/services/marketing-automation" },
       { name: "AI Studio", href: "/ai-studio" }
     ],
     resources: [
       { name: "Documentation", href: "/ai-studio" },
       { name: "API Reference", href: "/ai-studio" },
+      { name: "Blog", href: "/blog" },
       { name: "Tutorials", href: "/#services" },
-      { name: "Blog", href: "/#about" },
       { name: "Community", href: "/#contact" }
     ],
     legal: [
-      { name: "Privacy Policy", href: "/#contact" },
-      { name: "Terms of Service", href: "/#contact" },
-      { name: "Security", href: "/#about" },
-      { name: "Compliance", href: "/#about" }
+      { name: "Privacy Policy", href: "/privacy-policy" },
+      { name: "Terms of Service", href: "/terms-of-service" },
+      { name: "Security", href: "/case-studies" },
+      { name: "Compliance", href: "/case-studies" }
     ]
   };
 
