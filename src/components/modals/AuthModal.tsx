@@ -49,7 +49,7 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "signin" }: AuthModalProps) =
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    toast.success("Account created successfully! Welcome to SynGini.");
+    toast.success("Account created successfully! Welcome to IT GYANI.");
     setIsLoading(false);
     onClose();
   };
@@ -59,7 +59,7 @@ const AuthModal = ({ isOpen, onClose, defaultTab = "signin" }: AuthModalProps) =
       <DialogContent className="glass-card max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center gradient-text">
-            Welcome to SynGini
+            Welcome to IT GYANI
           </DialogTitle>
         </DialogHeader>
 

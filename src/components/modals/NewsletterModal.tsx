@@ -50,7 +50,7 @@ const NewsletterModal = ({ isOpen, onClose, initialEmail = "" }: NewsletterModal
     // Simulate newsletter signup
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    toast.success("Welcome to the SynGini community! Check your email for confirmation.");
+    toast.success("Welcome to the IT GYANI community! Check your email for confirmation.");
     setIsLoading(false);
     onClose();
   };

@@ -138,7 +138,7 @@ const AIStudio = () => {
           type: activeTab,
           prompt: prompt,
           timestamp: new Date().toISOString(),
-          source: "syngini-ai-studio",
+          source: "itgyani-ai-studio",
         }),
       });
 

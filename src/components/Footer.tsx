@@ -56,10 +56,10 @@ const Footer = () => {
   };
 
   const socialLinks = [
-    { icon: <Twitter className="h-5 w-5" />, href: "https://twitter.com/syngini", label: "Twitter" },
-    { icon: <Linkedin className="h-5 w-5" />, href: "https://linkedin.com/company/syngini", label: "LinkedIn" },
-    { icon: <Github className="h-5 w-5" />, href: "https://github.com/syngini", label: "GitHub" },
-    { icon: <Mail className="h-5 w-5" />, href: "mailto:contact@syngini.com", label: "Email" }
+    { icon: <Twitter className="h-5 w-5" />, href: "https://twitter.com/itgyani", label: "Twitter" },
+    { icon: <Linkedin className="h-5 w-5" />, href: "https://linkedin.com/company/itgyani", label: "LinkedIn" },
+    { icon: <Github className="h-5 w-5" />, href: "https://github.com/itgyani", label: "GitHub" },
+    { icon: <Mail className="h-5 w-5" />, href: "mailto:contact@itgyani.com", label: "Email" }
   ];
 
   return (

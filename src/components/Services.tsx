@@ -146,7 +146,7 @@ const Services = () => {
         {/* Benefits Section */}
         <div className="glass-card p-12 rounded-2xl">
           <h3 className="text-3xl font-bold text-center mb-12">
-            Why Choose <span className="gradient-text">SynGini</span>?
+            Why Choose <span className="gradient-text">IT GYANI</span>?
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

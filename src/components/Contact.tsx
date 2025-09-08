@@ -50,7 +50,7 @@ const Contact = () => {
     {
       icon: <Mail className="h-5 w-5" />,
       title: "Email Us",
-      details: "hello@syngini.ai",
+      details: "hello@itgyani.ai",
       action: "Send Email"
     },
     {
@@ -109,7 +109,7 @@ const Contact = () => {
             Ready to <span className="gradient-text">Automate Your Success</span>?
           </h2>
           <p className="text-xl text-foreground/80 max-w-3xl mx-auto">
-            Let's discuss how SynGini can transform your business operations. 
+            Let's discuss how IT GYANI can transform your business operations. 
             Our experts are ready to design a custom automation solution for you.
           </p>
         </div>
