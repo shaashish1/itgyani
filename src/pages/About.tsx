@@ -6,7 +6,7 @@ import GoogleAd from "@/components/GoogleAd";
 const AboutPage = () => (
   <div className="min-h-screen bg-background">
     <Header />
-    <GoogleAd adSlot="1234567893" />
+    <GoogleAd position="header" />
     <main>
       <About />
     </main>

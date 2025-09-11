@@ -11,12 +11,14 @@ const ServicesPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <GoogleAd adSlot="1234567891" />
+      <GoogleAd position="header" />
       <main>
         <Hero />
+        <GoogleAd position="contentTop" />
         <IntegrationShowcase />
-        <GoogleAd adSlot="1234567892" />
+        <GoogleAd position="contentMiddle" />
         <Services />
+        <GoogleAd position="contentBottom" />
       </main>
       <Footer />
     </div>
