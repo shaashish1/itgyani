@@ -53,14 +53,18 @@ const GoogleAd = ({
             <div 
               key={index}
               ref={el => adRefs.current[index] = el}
-              className="bg-card rounded-lg border p-2 min-h-[250px] flex items-center justify-center"
+              className="bg-card rounded-lg border p-2 flex items-center justify-center"
+              style={{ 
+                minHeight: '50px',
+                height: '90px' // Leaderboard height for desktop, mobile will be 50px
+              }}
             >
               <ins
                 className="adsbygoogle"
                 style={{ 
                   display: 'block',
                   width: '100%',
-                  height: '250px'
+                  height: '100%'
                 }}
                 data-ad-client="ca-pub-4997972039382567"
                 data-ad-slot={slot}
@@ -80,18 +84,20 @@ const GoogleAd = ({
         ref={el => adRefs.current[0] = el}
         style={{
           minWidth: '300px',
-          minHeight: '250px',
+          minHeight: '50px', // Mobile banner height
           width: '100%',
-          maxWidth: '728px',
+          maxWidth: '728px', // Leaderboard width
+          height: '90px', // Leaderboard height
           margin: '0 auto'
         }}
+        className="md:h-[90px] h-[50px]" // Responsive height: 50px mobile, 90px desktop
       >
         <ins
           className="adsbygoogle"
           style={{ 
             display: 'block',
             width: '100%',
-            height: '250px'
+            height: '100%'
           }}
           data-ad-client="ca-pub-4997972039382567"
           data-ad-slot={adSlot}
