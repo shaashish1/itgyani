@@ -84,7 +84,6 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <GoogleAd position="homeContent" />
       
       {/* Floating Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -182,6 +181,11 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Strategic Ad Placement: After Hero Engagement */}
+      <div className="py-6">
+        <GoogleAd position="after-hero" />
+      </div>
 
       {/* Workflow Showcase */}
       <section className="py-24 relative">
@@ -372,6 +376,11 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Strategic Ad Placement: Mid-Content Break */}
+      <div className="py-6">
+        <GoogleAd position="content-mid" />
+      </div>
+
       {/* Success Stories */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -451,6 +460,11 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Strategic Ad Placement: Pre-Footer (Exit Intent) */}
+      <div className="py-6">
+        <GoogleAd position="pre-footer" />
+      </div>
 
       <Footer />
       

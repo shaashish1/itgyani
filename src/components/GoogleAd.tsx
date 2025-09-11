@@ -7,11 +7,15 @@ interface GoogleAdProps {
   adLayout?: string;
   adLayoutKey?: string;
   className?: string;
-  position?: 'header' | 'contentTop' | 'contentMiddle' | 'contentBottom' | 'sidebar' | 'footer' | 'auto' |
-            'homeHero' | 'homeContent' | 'homeSidebar' |
-            'servicesHeader' | 'servicesContent' | 'servicesSidebar' |
-            'aboutHeader' | 'aboutContent' | 'aboutSidebar' |
-            'contactHeader' | 'contactContent' | 'contactSidebar';
+  position?: 
+    // Phase 1: Core positions
+    | 'after-hero' | 'content-mid' | 'pre-footer'
+    // Phase 2: Page-specific positions  
+    | 'services-sidebar' | 'services-between' | 'about-mid' | 'contact-post'
+    // Phase 3: Mobile positions
+    | 'mobile-banner' | 'mobile-square'
+    // Legacy positions (for backward compatibility)
+    | 'header' | 'contentTop' | 'contentMiddle' | 'contentBottom' | 'sidebar' | 'footer' | 'auto';
 }
 
 declare global {

@@ -16,37 +16,30 @@ export const ADSENSE_CONFIG = {
   // 3. Create new ad units or copy existing slot IDs
   
   adSlots: {
-    // === HOME PAGE ADS ===
-    homeHero: "9345363531", // Your current working slot - use for main hero area
-    homeContent: "CREATE_NEW_SLOT_1", // Create new slot for home page content
-    homeFooter: "CREATE_NEW_SLOT_2", // Create new slot for home page footer
+    // === PHASE 1: CORE STRATEGIC POSITIONS ===
+    // Start with these 3 high-impact, non-intrusive positions
+    "after-hero": "9345363531",        // Post-hero engagement (your working slot)
+    "content-mid": "CREATE_SLOT_2",    // Mid-content natural break
+    "pre-footer": "CREATE_SLOT_3",     // Exit intent capture
     
-    // === SERVICES PAGE ADS ===
-    servicesHeader: "CREATE_NEW_SLOT_3", // Create new slot for services header
-    servicesContent: "CREATE_NEW_SLOT_4", // Create new slot for services content
-    servicesSidebar: "CREATE_NEW_SLOT_5", // Create new slot for services sidebar
+    // === PHASE 2: PAGE-SPECIFIC POSITIONS (Future Implementation) ===
+    "services-sidebar": "CREATE_SLOT_4",   // Desktop service browsing
+    "services-between": "CREATE_SLOT_5",   // Between service cards
+    "about-mid": "CREATE_SLOT_6",          // Professional about page break
+    "contact-post": "CREATE_SLOT_7",       // After contact form completion
     
-    // === ABOUT PAGE ADS ===
-    aboutHeader: "CREATE_NEW_SLOT_6", // Create new slot for about header
-    aboutContent: "CREATE_NEW_SLOT_7", // Create new slot for about content
+    // === PHASE 3: MOBILE OPTIMIZATION (Future Implementation) ===
+    "mobile-banner": "CREATE_SLOT_8",      // Mobile-optimized banner
+    "mobile-square": "CREATE_SLOT_9",      // Mobile square format
     
-    // === BLOG/ARTICLES ADS ===
-    blogHeader: "CREATE_NEW_SLOT_8", // Create new slot for blog header
-    blogContent: "CREATE_NEW_SLOT_9", // Create new slot for blog content
-    blogSidebar: "CREATE_NEW_SLOT_10", // Create new slot for blog sidebar
-    
-    // === CONTACT PAGE ADS ===
-    contactHeader: "CREATE_NEW_SLOT_11", // Create new slot for contact header
-    
-    // === FALLBACK/GENERAL ===
-    header: "9345363531", // Your working slot as fallback
-    contentTop: "9345363531", // Your working slot as fallback
-    contentMiddle: "9345363531", // Your working slot as fallback
-    contentBottom: "9345363531", // Your working slot as fallback
-    sidebar: "9345363531", // Your working slot as fallback
-    footer: "9345363531", // Your working slot as fallback
-    
-    // Auto ads (let Google choose placement)
+    // === LEGACY FALLBACK POSITIONS ===
+    // Keep these for backward compatibility with existing components
+    header: "9345363531",
+    contentTop: "9345363531", 
+    contentMiddle: "9345363531",
+    contentBottom: "9345363531",
+    sidebar: "9345363531",
+    footer: "9345363531",
     auto: "auto"
   },
   

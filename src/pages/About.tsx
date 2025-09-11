@@ -6,11 +6,9 @@ import GoogleAd from "@/components/GoogleAd";
 const AboutPage = () => (
   <div className="min-h-screen bg-background">
     <Header />
-    <GoogleAd position="aboutHeader" />
     <main>
-      <GoogleAd position="aboutContent" />
       <About />
-      <GoogleAd position="aboutSidebar" />
+      <GoogleAd position="about-mid" />
     </main>
     <Footer />
   </div>
