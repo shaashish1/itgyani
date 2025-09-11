@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface GoogleAdProps {
   adSlot?: string;
@@ -9,40 +9,71 @@ interface GoogleAdProps {
   showMultiple?: boolean;
 }
 
-const GoogleAd = ({ 
-  adSlot = "1234567890", 
-  adFormat = "auto", 
-  adLayout, 
+declare global {
+  interface Window {
+    adsbygoogle?: any[];
+  }
+}
+
+const GoogleAd = ({
+  adSlot = "1234567890",
+  adFormat = "auto",
+  adLayout,
   adLayoutKey,
   className = "w-full py-4",
-  showMultiple = false
+  showMultiple = false,
 }: GoogleAdProps) => {
   const adRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Different ad slots for multiple ads
   const adSlots = [
     adSlot || "1234567890",
-    "1234567891", 
-    "1234567892", 
-    "1234567893"
+    "1234567891",
+    "1234567892",
+    "1234567893",
   ];
 
+  /** Load Google AdSense script dynamically */
   useEffect(() => {
-    const timer = setTimeout(() => {
-      try {
-        if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
-          // Initialize each ad separately
-          const numAds = showMultiple ? 4 : 1;
-          for (let i = 0; i < numAds; i++) {
-            ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-          }
-        }
-      } catch (error) {
-        console.error('Error loading Google Ads:', error);
-      }
-    }, 100);
+    if (
+      !document.querySelector(
+        "script[src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js']"
+      )
+    ) {
+      const script = document.createElement("script");
+      script.src =
+        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+      script.async = true;
+      script.setAttribute("data-ad-client", "ca-pub-4997972039382567");
+      document.body.appendChild(script);
+    }
+  }, []);
 
-    return () => clearTimeout(timer);
+  /** Initialize ads when visible */
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            try {
+              (window.adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (err) {
+              console.warn("Ad already loaded:", err);
+            }
+          }
+        });
+      },
+      { threshold: 0.2 } // Trigger when 20% visible
+    );
+
+    const numAds = showMultiple ? 4 : 1;
+    for (let i = 0; i < numAds; i++) {
+      if (adRefs.current[i]) {
+        observer.observe(adRefs.current[i]!);
+      }
+    }
+
+    return () => observer.disconnect();
   }, [showMultiple]);
 
   if (showMultiple) {
@@ -50,22 +81,17 @@ const GoogleAd = ({
       <div className={`${className} px-4`}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-7xl mx-auto">
           {adSlots.map((slot, index) => (
-            <div 
+            <div
               key={index}
-              ref={el => adRefs.current[index] = el}
-              className="bg-card rounded-lg border p-2 flex items-center justify-center"
-              style={{ 
-                width: '728px',
-                height: '90px',
-                maxWidth: '100%'
-              }}
+              ref={(el) => (adRefs.current[index] = el)}
+              className="bg-card rounded-lg border p-2 min-h-[250px] flex items-center justify-center"
             >
               <ins
                 className="adsbygoogle"
-                style={{ 
-                  display: 'block',
-                  width: '100%',
-                  height: '100%'
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: "250px",
                 }}
                 data-ad-client="ca-pub-4997972039382567"
                 data-ad-slot={slot}
@@ -81,21 +107,22 @@ const GoogleAd = ({
 
   return (
     <div className={className}>
-      <div 
-        ref={el => adRefs.current[0] = el}
+      <div
+        ref={(el) => (adRefs.current[0] = el)}
         style={{
-          width: '728px',
-          height: '90px',
-          maxWidth: '100%',
-          margin: '0 auto'
+          minWidth: "300px",
+          minHeight: "250px",
+          width: "100%",
+          maxWidth: "728px",
+          margin: "0 auto",
         }}
       >
         <ins
           className="adsbygoogle"
-          style={{ 
-            display: 'block',
-            width: '100%',
-            height: '100%'
+          style={{
+            display: "block",
+            width: "100%",
+            height: "250px",
           }}
           data-ad-client="ca-pub-4997972039382567"
           data-ad-slot={adSlot}
