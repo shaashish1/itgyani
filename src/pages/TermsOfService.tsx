@@ -262,8 +262,8 @@ const TermsOfService = () => {
                 <div className="bg-card/50 p-6 rounded-lg border border-border/50 mt-4">
                   <p><strong>ITGYANI Legal Department</strong></p>
                   <p>Email: <a href="mailto:legal@itgyani.com" className="text-primary hover:underline">legal@itgyani.com</a></p>
-                  <p>Phone: +1 (555) 123-4567</p>
-                  <p>Address: 123 AI Innovation Drive, Tech Valley, CA 94000</p>
+                  <p>Phone: +91 (954) 555-0083</p>
+                  <p>Address: Kharadi, Pune, India</p>
                 </div>
               </section>
 
