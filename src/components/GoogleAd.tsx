@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { ADSENSE_CONFIG } from "@/config/adsense";
 
 interface GoogleAdProps {
   adSlot?: string;
@@ -6,7 +7,7 @@ interface GoogleAdProps {
   adLayout?: string;
   adLayoutKey?: string;
   className?: string;
-  showMultiple?: boolean;
+  position?: 'header' | 'contentTop' | 'contentMiddle' | 'contentBottom' | 'sidebar' | 'footer' | 'auto';
 }
 
 declare global {
@@ -16,122 +17,73 @@ declare global {
 }
 
 const GoogleAd = ({
-  adSlot = "1234567890",
-  adFormat = "auto",
+  adSlot,
+  adFormat = "auto", 
   adLayout,
   adLayoutKey,
-  className = "w-full py-4",
-  showMultiple = false,
+  className = "w-full py-4 my-6",
+  position = "auto"
 }: GoogleAdProps) => {
-  const adRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const adRef = useRef<HTMLDivElement>(null);
+  
+  // Get the appropriate ad slot based on position or use provided adSlot
+  const actualAdSlot = adSlot || ADSENSE_CONFIG.adSlots[position];
 
-  // Different ad slots for multiple ads
-  const adSlots = [
-    adSlot || "1234567890",
-    "1234567891",
-    "1234567892",
-    "1234567893",
-  ];
-
-  /** Load Google AdSense script dynamically */
+  /** Initialize AdSense ads when component mounts */
   useEffect(() => {
-    if (
-      !document.querySelector(
-        "script[src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js']"
-      )
-    ) {
-      const script = document.createElement("script");
-      script.src =
-        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
-      script.async = true;
-      script.setAttribute("data-ad-client", "ca-pub-4997972039382567");
-      document.body.appendChild(script);
-    }
-  }, []);
-
-  /** Initialize ads when visible */
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            try {
-              (window.adsbygoogle = window.adsbygoogle || []).push({});
-            } catch (err) {
-              console.warn("Ad already loaded:", err);
-            }
-          }
-        });
-      },
-      { threshold: 0.2 } // Trigger when 20% visible
-    );
-
-    const numAds = showMultiple ? 4 : 1;
-    for (let i = 0; i < numAds; i++) {
-      if (adRefs.current[i]) {
-        observer.observe(adRefs.current[i]!);
+    const initializeAd = () => {
+      try {
+        // Wait for AdSense script to load
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          // Push empty object to trigger ad loading
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+          console.log('AdSense ad initialized for slot:', actualAdSlot, 'at position:', position);
+        } else {
+          // Retry after a short delay if script isn't loaded yet
+          setTimeout(initializeAd, 500);
+        }
+      } catch (err) {
+        console.error('AdSense initialization error:', err);
       }
-    }
+    };
 
-    return () => observer.disconnect();
-  }, [showMultiple]);
-
-  if (showMultiple) {
-    return (
-      <div className={`${className} px-4`}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-7xl mx-auto">
-          {adSlots.map((slot, index) => (
-            <div
-              key={index}
-              ref={(el) => (adRefs.current[index] = el)}
-              className="bg-card rounded-lg border p-2 h-[90px] flex items-center justify-center"
-            >
-              <ins
-                className="adsbygoogle"
-                style={{
-                  display: "block",
-                  width: "728px",
-                  height: "90px",
-                  maxWidth: "100%",
-                }}
-                data-ad-client="ca-pub-4997972039382567"
-                data-ad-slot={slot}
-                data-ad-format="auto"
-                data-full-width-responsive="true"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(initializeAd, 100);
+    return () => clearTimeout(timer);
+  }, [actualAdSlot, position]);
 
   return (
     <div className={className}>
-      <div
-        ref={(el) => (adRefs.current[0] = el)}
-        style={{
-          width: "728px",
-          height: "90px",
-          maxWidth: "100%",
-          margin: "0 auto",
-        }}
-      >
-        <ins
-          className="adsbygoogle"
-          style={{
-            display: "block",
-            width: "728px",
-            height: "90px",
-            maxWidth: "100%",
-          }}
-          data-ad-client="ca-pub-4997972039382567"
-          data-ad-slot={adSlot}
-          data-ad-format={adFormat}
-          data-ad-layout={adLayout}
-          data-ad-layout-key={adLayoutKey}
-          data-full-width-responsive="true"
-        />
+      <div className="max-w-5xl mx-auto px-4">
+        {/* Ad Container */}
+        <div 
+          ref={adRef}
+          className="flex justify-center items-center bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-lg p-2 shadow-sm"
+          style={{ minHeight: '80px', maxWidth: '488px', margin: '0 auto' }}
+        >
+          <ins
+            className="adsbygoogle"
+            style={{
+              display: 'inline-block',
+              width: '468px',
+              height: '60px',
+              maxWidth: '100%',
+            }}
+            data-ad-client={ADSENSE_CONFIG.publisherId}
+            data-ad-slot={actualAdSlot !== 'auto' ? actualAdSlot : undefined}
+            data-ad-format={adFormat}
+            data-ad-layout={adLayout}
+            data-ad-layout-key={adLayoutKey}
+            data-full-width-responsive="true"
+          />
+        </div>
+        
+        {/* Development/Debug Info - Remove in production */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="text-xs text-gray-500 text-center mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+            📢 AdSense Debug: Publisher ID {ADSENSE_CONFIG.publisherId} | Slot: {actualAdSlot} | Position: {position} | Format: {adFormat}
+          </div>
+        )}
       </div>
     </div>
   );
