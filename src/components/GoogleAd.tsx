@@ -84,14 +84,15 @@ const GoogleAd = ({
             <div
               key={index}
               ref={(el) => (adRefs.current[index] = el)}
-              className="bg-card rounded-lg border p-2 min-h-[250px] flex items-center justify-center"
+              className="bg-card rounded-lg border p-2 h-[90px] flex items-center justify-center"
             >
               <ins
                 className="adsbygoogle"
                 style={{
                   display: "block",
-                  width: "100%",
-                  height: "250px",
+                  width: "728px",
+                  height: "90px",
+                  maxWidth: "100%",
                 }}
                 data-ad-client="ca-pub-4997972039382567"
                 data-ad-slot={slot}
@@ -110,10 +111,9 @@ const GoogleAd = ({
       <div
         ref={(el) => (adRefs.current[0] = el)}
         style={{
-          minWidth: "300px",
-          minHeight: "250px",
-          width: "100%",
-          maxWidth: "728px",
+          width: "728px",
+          height: "90px",
+          maxWidth: "100%",
           margin: "0 auto",
         }}
       >
@@ -121,8 +121,9 @@ const GoogleAd = ({
           className="adsbygoogle"
           style={{
             display: "block",
-            width: "100%",
-            height: "250px",
+            width: "728px",
+            height: "90px",
+            maxWidth: "100%",
           }}
           data-ad-client="ca-pub-4997972039382567"
           data-ad-slot={adSlot}
