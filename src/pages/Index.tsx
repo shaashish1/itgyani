@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import ConsultationModal from "@/components/modals/ConsultationModal";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GoogleAd from "@/components/GoogleAd";
 
 const Index = () => {
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
@@ -83,6 +84,7 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Header />
+      <GoogleAd adSlot="1234567890" />
       
       {/* Floating Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">

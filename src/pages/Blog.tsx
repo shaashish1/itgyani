@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GoogleAd from "@/components/GoogleAd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -142,6 +143,7 @@ const Blog = () => {
       
       <div className="min-h-screen bg-background">
         <Header />
+        <GoogleAd adSlot="1234567896" />
         
         <main>
           {/* Hero Section */}
