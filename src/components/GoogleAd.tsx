@@ -13,38 +13,51 @@ const GoogleAd = ({
   adFormat = "auto", 
   adLayout, 
   adLayoutKey,
-  className = "flex justify-center py-4" 
+  className = "w-full max-w-4xl mx-auto py-4" 
 }: GoogleAdProps) => {
-  const adRef = useRef<HTMLModElement>(null);
+  const adRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    try {
-      // Check if adsbygoogle is available
-      if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
-        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+    const timer = setTimeout(() => {
+      try {
+        if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
+          ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        }
+      } catch (error) {
+        console.error('Error loading Google Ad:', error);
       }
-    } catch (error) {
-      console.error('Error loading Google Ad:', error);
-    }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className={className}>
-      <ins
+      <div 
         ref={adRef}
-        className="adsbygoogle glass-card"
-        style={{ 
-          display: 'block',
-          minHeight: '100px',
-          background: 'transparent'
+        style={{
+          minWidth: '300px',
+          minHeight: '250px',
+          width: '100%',
+          maxWidth: '728px',
+          margin: '0 auto'
         }}
-        data-ad-client="ca-pub-4997972039382567"
-        data-ad-slot={adSlot}
-        data-ad-format={adFormat}
-        data-ad-layout={adLayout}
-        data-ad-layout-key={adLayoutKey}
-        data-full-width-responsive="true"
-      />
+      >
+        <ins
+          className="adsbygoogle"
+          style={{ 
+            display: 'block',
+            width: '100%',
+            height: '250px'
+          }}
+          data-ad-client="ca-pub-4997972039382567"
+          data-ad-slot={adSlot}
+          data-ad-format={adFormat}
+          data-ad-layout={adLayout}
+          data-ad-layout-key={adLayoutKey}
+          data-full-width-responsive="true"
+        />
+      </div>
     </div>
   );
 };
