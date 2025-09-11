@@ -16,19 +16,35 @@ export const ADSENSE_CONFIG = {
   // 3. Create new ad units or copy existing slot IDs
   
   adSlots: {
-    // Header banner ad (468x60 or responsive) - "admission" ad unit
-    header: "9345363531", // Real AdSense slot ID
+    // === HOME PAGE ADS ===
+    homeHero: "9345363531", // Your current working slot - use for main hero area
+    homeContent: "CREATE_NEW_SLOT_1", // Create new slot for home page content
+    homeFooter: "CREATE_NEW_SLOT_2", // Create new slot for home page footer
     
-    // Content area ads (using same slot for now - create more in AdSense if needed)
-    contentTop: "9345363531", // Using same slot ID - create separate ones for better tracking
-    contentMiddle: "9345363531", // Using same slot ID - create separate ones for better tracking
-    contentBottom: "9345363531", // Using same slot ID - create separate ones for better tracking
+    // === SERVICES PAGE ADS ===
+    servicesHeader: "CREATE_NEW_SLOT_3", // Create new slot for services header
+    servicesContent: "CREATE_NEW_SLOT_4", // Create new slot for services content
+    servicesSidebar: "CREATE_NEW_SLOT_5", // Create new slot for services sidebar
     
-    // Sidebar ads (using same slot for now)
-    sidebar: "9345363531", // Using same slot ID - create separate ones for better tracking
+    // === ABOUT PAGE ADS ===
+    aboutHeader: "CREATE_NEW_SLOT_6", // Create new slot for about header
+    aboutContent: "CREATE_NEW_SLOT_7", // Create new slot for about content
     
-    // Footer ad (using same slot for now)
-    footer: "9345363531", // Using same slot ID - create separate ones for better tracking
+    // === BLOG/ARTICLES ADS ===
+    blogHeader: "CREATE_NEW_SLOT_8", // Create new slot for blog header
+    blogContent: "CREATE_NEW_SLOT_9", // Create new slot for blog content
+    blogSidebar: "CREATE_NEW_SLOT_10", // Create new slot for blog sidebar
+    
+    // === CONTACT PAGE ADS ===
+    contactHeader: "CREATE_NEW_SLOT_11", // Create new slot for contact header
+    
+    // === FALLBACK/GENERAL ===
+    header: "9345363531", // Your working slot as fallback
+    contentTop: "9345363531", // Your working slot as fallback
+    contentMiddle: "9345363531", // Your working slot as fallback
+    contentBottom: "9345363531", // Your working slot as fallback
+    sidebar: "9345363531", // Your working slot as fallback
+    footer: "9345363531", // Your working slot as fallback
     
     // Auto ads (let Google choose placement)
     auto: "auto"

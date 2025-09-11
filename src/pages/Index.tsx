@@ -84,7 +84,7 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <GoogleAd position="contentMiddle" />
+      <GoogleAd position="homeContent" />
       
       {/* Floating Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">

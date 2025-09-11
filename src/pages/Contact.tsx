@@ -6,9 +6,11 @@ import GoogleAd from "@/components/GoogleAd";
 const ContactPage = () => (
   <div className="min-h-screen bg-background">
     <Header />
-    <GoogleAd adSlot="1234567894" />
+    <GoogleAd position="contactHeader" />
     <main>
+      <GoogleAd position="contactContent" />
       <Contact />
+      <GoogleAd position="contactSidebar" />
     </main>
     <Footer />
   </div>

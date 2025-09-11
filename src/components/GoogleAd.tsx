@@ -7,7 +7,11 @@ interface GoogleAdProps {
   adLayout?: string;
   adLayoutKey?: string;
   className?: string;
-  position?: 'header' | 'contentTop' | 'contentMiddle' | 'contentBottom' | 'sidebar' | 'footer' | 'auto';
+  position?: 'header' | 'contentTop' | 'contentMiddle' | 'contentBottom' | 'sidebar' | 'footer' | 'auto' |
+            'homeHero' | 'homeContent' | 'homeSidebar' |
+            'servicesHeader' | 'servicesContent' | 'servicesSidebar' |
+            'aboutHeader' | 'aboutContent' | 'aboutSidebar' |
+            'contactHeader' | 'contactContent' | 'contactSidebar';
 }
 
 declare global {
