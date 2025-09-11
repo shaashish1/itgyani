@@ -55,8 +55,9 @@ const GoogleAd = ({
               ref={el => adRefs.current[index] = el}
               className="bg-card rounded-lg border p-2 flex items-center justify-center"
               style={{ 
-                minHeight: '50px',
-                height: '90px' // Leaderboard height for desktop, mobile will be 50px
+                width: '728px',
+                height: '90px',
+                maxWidth: '100%'
               }}
             >
               <ins
@@ -83,14 +84,11 @@ const GoogleAd = ({
       <div 
         ref={el => adRefs.current[0] = el}
         style={{
-          minWidth: '300px',
-          minHeight: '50px', // Mobile banner height
-          width: '100%',
-          maxWidth: '728px', // Leaderboard width
-          height: '90px', // Leaderboard height
+          width: '728px',
+          height: '90px',
+          maxWidth: '100%',
           margin: '0 auto'
         }}
-        className="md:h-[90px] h-[50px]" // Responsive height: 50px mobile, 90px desktop
       >
         <ins
           className="adsbygoogle"
