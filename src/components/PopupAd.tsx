@@ -7,7 +7,7 @@ interface PopupAdProps {
   delay?: number;
   frequency: 'once-session' | 'once-page' | 'persistent';
   adSlot: string;
-  size?: '300x250' | '400x300' | '500x400' | '320x240';
+  size?: '300x250' | '400x300' | '500x400' | '320x240' | '250x200' | '200x150';
   scrollTrigger?: number; // percentage of page scrolled
   onClose?: () => void;
   className?: string;
@@ -24,7 +24,7 @@ const PopupAd: React.FC<PopupAdProps> = ({
   delay = 10000,
   frequency,
   adSlot,
-  size = '300x250',
+  size = '200x150',
   scrollTrigger = 50,
   onClose,
   className = ''
@@ -38,9 +38,11 @@ const PopupAd: React.FC<PopupAdProps> = ({
       '300x250': { width: 300, height: 250 },
       '400x300': { width: 400, height: 300 },
       '500x400': { width: 500, height: 400 },
-      '320x240': { width: 320, height: 240 }
+      '320x240': { width: 320, height: 240 },
+      '250x200': { width: 250, height: 200 },
+      '200x150': { width: 200, height: 150 }
     };
-    return dimensions[size as keyof typeof dimensions] || dimensions['300x250'];
+    return dimensions[size as keyof typeof dimensions] || dimensions['200x150'];
   };
 
   const { width, height } = getSizeDimensions(size);

@@ -10,20 +10,20 @@ interface PopupConfig {
     enabled: boolean;
     delay: number;
     adSlot: string;
-    size: '300x250' | '400x300' | '500x400' | '320x240';
+    size: '300x250' | '400x300' | '500x400' | '320x240' | '250x200' | '200x150';
     frequency: 'once-session' | 'once-page' | 'persistent';
   };
   scroll?: {
     enabled: boolean;
     scrollTrigger: number;
     adSlot: string;
-    size: '300x250' | '400x300' | '500x400' | '320x240';
+    size: '300x250' | '400x300' | '500x400' | '320x240' | '250x200' | '200x150';
     frequency: 'once-session' | 'once-page' | 'persistent';
   };
   exit?: {
     enabled: boolean;
     adSlot: string;
-    size: '300x250' | '400x300' | '500x400' | '320x240';
+    size: '300x250' | '400x300' | '500x400' | '320x240' | '250x200' | '200x150';
     frequency: 'once-session' | 'once-page' | 'persistent';
   };
 }
@@ -37,59 +37,86 @@ const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
           enabled: true,
           delay: 10000, // 10 seconds
           adSlot: "9345363531", // Your working slot
-          size: '400x300' as const,
+          size: '200x150' as const, // Small, non-intrusive
           frequency: 'once-session' as const
         },
         scroll: {
           enabled: true,
           scrollTrigger: 50, // 50% of page
           adSlot: "9345363531", // Your working slot
-          size: '300x250' as const,
+          size: '200x150' as const, // Small, consistent
           frequency: 'once-page' as const
         },
         exit: {
           enabled: true,
           adSlot: "9345363531", // Your working slot
-          size: '500x400' as const,
+          size: '250x200' as const, // Slightly larger for exit intent
           frequency: 'once-session' as const
         }
       },
       services: {
         entry: {
           enabled: true,
-          delay: 15000, // 15 seconds (longer for business pages)
+          delay: 10000, // Reduced to match homepage
           adSlot: "9345363531",
-          size: '300x250' as const,
+          size: '200x150' as const, // Small, consistent
           frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 50, // Add scroll popup to services
+          adSlot: "9345363531",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
         },
         exit: {
           enabled: true,
           adSlot: "9345363531",
-          size: '400x300' as const,
+          size: '250x200' as const, // Slightly larger for exit intent
           frequency: 'once-session' as const
         }
       },
       about: {
         entry: {
           enabled: true,
-          delay: 20000, // 20 seconds (even longer for about)
+          delay: 10000, // Reduced to match other pages
           adSlot: "9345363531",
-          size: '300x250' as const,
+          size: '200x150' as const, // Small, consistent
           frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 60, // Trigger later on about page
+          adSlot: "9345363531",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
         },
         exit: {
           enabled: true,
           adSlot: "9345363531",
-          size: '300x250' as const,
+          size: '250x200' as const,
           frequency: 'once-session' as const
         }
       },
       contact: {
         entry: {
           enabled: true,
-          delay: 25000, // 25 seconds (minimal on contact page)
+          delay: 15000, // Slightly longer on contact page
           adSlot: "9345363531",
-          size: '300x250' as const,
+          size: '200x150' as const, // Small, consistent
+          frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 40, // Earlier trigger on contact page
+          adSlot: "9345363531",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
+        },
+        exit: {
+          enabled: true,
+          adSlot: "9345363531",
+          size: '250x200' as const,
           frequency: 'once-session' as const
         }
       }
