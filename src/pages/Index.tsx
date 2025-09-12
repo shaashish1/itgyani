@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import ConsultationModal from "@/components/modals/ConsultationModal";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import GoogleAd from "@/components/GoogleAd";
+import PopupManager from "@/components/PopupManager";
 
 const Index = () => {
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
@@ -181,11 +181,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* Strategic Ad Placement: After Hero Engagement */}
-      <div className="py-6">
-        <GoogleAd position="after-hero" />
-      </div>
 
       {/* Workflow Showcase */}
       <section className="py-24 relative">
@@ -376,11 +371,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Strategic Ad Placement: Mid-Content Break */}
-      <div className="py-6">
-        <GoogleAd position="content-mid" />
-      </div>
-
       {/* Success Stories */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -461,12 +451,10 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Strategic Ad Placement: Pre-Footer (Exit Intent) */}
-      <div className="py-6">
-        <GoogleAd position="pre-footer" />
-      </div>
-
       <Footer />
+      
+      {/* Popup Advertisement System */}
+      <PopupManager page="home" />
       
       {/* Modals */}
       <ConsultationModal

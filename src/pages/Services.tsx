@@ -4,7 +4,7 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import IntegrationShowcase from "@/components/IntegrationShowcase";
 import Footer from "@/components/Footer";
-import GoogleAd from "@/components/GoogleAd";
+import PopupManager from "@/components/PopupManager";
 
 
 const ServicesPage = () => {
@@ -13,11 +13,13 @@ const ServicesPage = () => {
       <Header />
       <main>
         <Hero />
-        <GoogleAd position="content-mid" />
         <IntegrationShowcase />
         <Services />
       </main>
       <Footer />
+      
+      {/* Popup Advertisement System */}
+      <PopupManager page="services" />
     </div>
   );
 };

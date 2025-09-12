@@ -1,16 +1,18 @@
 import Header from "@/components/Header";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import GoogleAd from "@/components/GoogleAd";
+import PopupManager from "@/components/PopupManager";
 
 const ContactPage = () => (
   <div className="min-h-screen bg-background">
     <Header />
     <main>
       <Contact />
-      <GoogleAd position="contact-post" />
     </main>
     <Footer />
+    
+    {/* Popup Advertisement System */}
+    <PopupManager page="contact" />
   </div>
 );
 
