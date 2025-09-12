@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import GoogleAd from "@/components/GoogleAd";
+import PopupManager from "@/components/PopupManager";
 import {
   Wand2,
   Image,
@@ -268,7 +268,6 @@ const AIStudio = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <GoogleAd adSlot="1234567895" />
       
       {/* Settings Button - Top Right */}
       <div className="fixed top-24 right-6 z-40">
@@ -663,6 +662,7 @@ const AIStudio = () => {
       </main>
 
       <Footer />
+      <PopupManager page="ai-studio" />
     </div>
   );
 };

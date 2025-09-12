@@ -2,7 +2,7 @@ import React from 'react';
 import PopupAd from './PopupAd';
 
 interface PopupManagerProps {
-  page: 'home' | 'services' | 'about' | 'contact';
+  page: 'home' | 'services' | 'about' | 'contact' | 'ai-studio' | 'careers' | 'case-studies' | 'blog' | 'terms' | 'privacy' | 'business-automation';
 }
 
 interface PopupConfig {
@@ -108,6 +108,160 @@ const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
         scroll: {
           enabled: true,
           scrollTrigger: 40,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
+        },
+        exit: {
+          enabled: true,
+          adSlot: "7044876068",
+          size: '250x200' as const,
+          frequency: 'once-session' as const
+        }
+      },
+      'ai-studio': {
+        entry: {
+          enabled: true,
+          delay: 15000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 50,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
+        },
+        exit: {
+          enabled: true,
+          adSlot: "7044876068",
+          size: '250x200' as const,
+          frequency: 'once-session' as const
+        }
+      },
+      careers: {
+        entry: {
+          enabled: true,
+          delay: 12000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 45,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
+        },
+        exit: {
+          enabled: true,
+          adSlot: "7044876068",
+          size: '250x200' as const,
+          frequency: 'once-session' as const
+        }
+      },
+      'case-studies': {
+        entry: {
+          enabled: true,
+          delay: 10000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 55,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
+        },
+        exit: {
+          enabled: true,
+          adSlot: "7044876068",
+          size: '250x200' as const,
+          frequency: 'once-session' as const
+        }
+      },
+      blog: {
+        entry: {
+          enabled: true,
+          delay: 8000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 40,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
+        },
+        exit: {
+          enabled: true,
+          adSlot: "7044876068",
+          size: '250x200' as const,
+          frequency: 'once-session' as const
+        }
+      },
+      terms: {
+        entry: {
+          enabled: true,
+          delay: 20000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 70,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
+        },
+        exit: {
+          enabled: true,
+          adSlot: "7044876068",
+          size: '250x200' as const,
+          frequency: 'once-session' as const
+        }
+      },
+      privacy: {
+        entry: {
+          enabled: true,
+          delay: 20000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 70,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-page' as const
+        },
+        exit: {
+          enabled: true,
+          adSlot: "7044876068",
+          size: '250x200' as const,
+          frequency: 'once-session' as const
+        }
+      },
+      'business-automation': {
+        entry: {
+          enabled: true,
+          delay: 12000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
+          frequency: 'once-session' as const
+        },
+        scroll: {
+          enabled: true,
+          scrollTrigger: 50,
           adSlot: "7044876068",
           size: '200x150' as const,
           frequency: 'once-page' as const

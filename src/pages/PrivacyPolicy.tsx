@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import GoogleAd from "@/components/GoogleAd";
+import PopupManager from "@/components/PopupManager";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -14,7 +14,6 @@ const PrivacyPolicy = () => {
       
       <div className="min-h-screen bg-background">
         <Header />
-        <GoogleAd adSlot="1234567899" />
         
         <main className="container mx-auto px-6 py-16">
           <div className="flex items-center gap-4 mb-8">
@@ -240,6 +239,7 @@ const PrivacyPolicy = () => {
         </main>
 
         <Footer />
+        <PopupManager page="privacy" />
       </div>
     </>
   );

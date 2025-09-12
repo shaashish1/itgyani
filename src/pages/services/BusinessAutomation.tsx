@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import GoogleAd from "@/components/GoogleAd";
+import PopupManager from "@/components/PopupManager";
 import { useState } from "react";
 import ConsultationModal from "@/components/modals/ConsultationModal";
 import { ArrowLeft, CheckCircle, Zap, Clock, DollarSign, Users, Workflow, BarChart, Shield } from "lucide-react";
@@ -67,7 +67,6 @@ const BusinessAutomation = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <GoogleAd adSlot="1234567901" />
       
       <main className="pt-24">
         {/* Hero Section */}
@@ -263,6 +262,7 @@ const BusinessAutomation = () => {
       />
 
       <Footer />
+      <PopupManager page="business-automation" />
     </div>
   );
 };
