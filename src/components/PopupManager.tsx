@@ -29,71 +29,70 @@ interface PopupConfig {
 }
 
 const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
-  // Configuration for different pages
   const getPopupConfig = (page: string): PopupConfig => {
     const configs = {
       home: {
         entry: {
           enabled: true,
-          delay: 10000, // 10 seconds
-          adSlot: "9345363531", // Your working slot
-          size: '200x150' as const, // Small, non-intrusive
+          delay: 10000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
           frequency: 'once-session' as const
         },
         scroll: {
           enabled: true,
-          scrollTrigger: 50, // 50% of page
-          adSlot: "9345363531", // Your working slot
-          size: '200x150' as const, // Small, consistent
+          scrollTrigger: 50,
+          adSlot: "7044876068",
+          size: '200x150' as const,
           frequency: 'once-page' as const
         },
         exit: {
           enabled: true,
-          adSlot: "9345363531", // Your working slot
-          size: '250x200' as const, // Slightly larger for exit intent
+          adSlot: "7044876068",
+          size: '250x200' as const,
           frequency: 'once-session' as const
         }
       },
       services: {
         entry: {
           enabled: true,
-          delay: 10000, // Reduced to match homepage
-          adSlot: "9345363531",
-          size: '200x150' as const, // Small, consistent
+          delay: 10000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
           frequency: 'once-session' as const
         },
         scroll: {
           enabled: true,
-          scrollTrigger: 50, // Add scroll popup to services
-          adSlot: "9345363531",
+          scrollTrigger: 50,
+          adSlot: "7044876068",
           size: '200x150' as const,
           frequency: 'once-page' as const
         },
         exit: {
           enabled: true,
-          adSlot: "9345363531",
-          size: '250x200' as const, // Slightly larger for exit intent
+          adSlot: "7044876068",
+          size: '250x200' as const,
           frequency: 'once-session' as const
         }
       },
       about: {
         entry: {
           enabled: true,
-          delay: 10000, // Reduced to match other pages
-          adSlot: "9345363531",
-          size: '200x150' as const, // Small, consistent
+          delay: 10000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
           frequency: 'once-session' as const
         },
         scroll: {
           enabled: true,
-          scrollTrigger: 60, // Trigger later on about page
-          adSlot: "9345363531",
+          scrollTrigger: 60,
+          adSlot: "7044876068",
           size: '200x150' as const,
           frequency: 'once-page' as const
         },
         exit: {
           enabled: true,
-          adSlot: "9345363531",
+          adSlot: "7044876068",
           size: '250x200' as const,
           frequency: 'once-session' as const
         }
@@ -101,21 +100,21 @@ const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
       contact: {
         entry: {
           enabled: true,
-          delay: 15000, // Slightly longer on contact page
-          adSlot: "9345363531",
-          size: '200x150' as const, // Small, consistent
+          delay: 15000,
+          adSlot: "7044876068",
+          size: '200x150' as const,
           frequency: 'once-session' as const
         },
         scroll: {
           enabled: true,
-          scrollTrigger: 40, // Earlier trigger on contact page
-          adSlot: "9345363531",
+          scrollTrigger: 40,
+          adSlot: "7044876068",
           size: '200x150' as const,
           frequency: 'once-page' as const
         },
         exit: {
           enabled: true,
-          adSlot: "9345363531",
+          adSlot: "7044876068",
           size: '250x200' as const,
           frequency: 'once-session' as const
         }
@@ -129,7 +128,6 @@ const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
 
   return (
     <>
-      {/* Entry Popup */}
       {config.entry?.enabled && (
         <PopupAd
           type="entry"
@@ -140,7 +138,6 @@ const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
         />
       )}
 
-      {/* Scroll Popup */}
       {config.scroll?.enabled && (
         <PopupAd
           type="scroll"
@@ -151,7 +148,6 @@ const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
         />
       )}
 
-      {/* Exit Intent Popup */}
       {config.exit?.enabled && (
         <PopupAd
           type="exit"

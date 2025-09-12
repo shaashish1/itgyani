@@ -16,17 +16,21 @@ export const ADSENSE_CONFIG = {
   // 3. Create new ad units or copy existing slot IDs
   
   adSlots: {
-    // === PHASE 1: CORE STRATEGIC POSITIONS ===
-    // Start with these 3 high-impact, non-intrusive positions
-    "after-hero": "9345363531",        // Post-hero engagement (your working slot)
-    "content-mid": "CREATE_SLOT_2",    // Mid-content natural break
-    "pre-footer": "CREATE_SLOT_3",     // Exit intent capture
+    // === ACTIVE REAL SLOT IDS ===
+    "after-hero": "7044876068",        // Your real working slot (itgyani)
+    "content-mid": "7044876068",       // Using same slot for consistency
+    "pre-footer": "7044876068",        // Using same slot for consistency
     
-    // === PHASE 2: PAGE-SPECIFIC POSITIONS (Future Implementation) ===
-    "services-sidebar": "CREATE_SLOT_4",   // Desktop service browsing
-    "services-between": "CREATE_SLOT_5",   // Between service cards
-    "about-mid": "CREATE_SLOT_6",          // Professional about page break
-    "contact-post": "CREATE_SLOT_7",       // After contact form completion
+    // === POPUP SYSTEM SLOTS ===
+    "entry-popup": "7044876068",       // Entry popup ads
+    "scroll-popup": "7044876068",      // Scroll-triggered ads
+    "exit-popup": "7044876068",        // Exit intent ads
+    
+    // === PAGE-SPECIFIC POSITIONS (Future Implementation) ===
+    "services-sidebar": "7044876068",   // Desktop service browsing
+    "services-between": "7044876068",   // Between service cards
+    "about-mid": "7044876068",          // Professional about page break
+    "contact-post": "7044876068",       // After contact form completion
     
     // === PHASE 3: MOBILE OPTIMIZATION (Future Implementation) ===
     "mobile-banner": "CREATE_SLOT_8",      // Mobile-optimized banner
