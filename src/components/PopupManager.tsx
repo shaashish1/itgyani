@@ -30,25 +30,26 @@ interface PopupConfig {
 
 const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
   const getPopupConfig = (page: string): PopupConfig => {
+    const { adSlots } = require('@/config/adsense').ADSENSE_CONFIG;
     const configs = {
       home: {
         entry: {
           enabled: true,
           delay: 10000,
-          adSlot: "7044876068",
+          adSlot: adSlots["entry-popup"],
           size: '200x150' as const,
           frequency: 'once-session' as const
         },
         scroll: {
           enabled: true,
           scrollTrigger: 50,
-          adSlot: "7044876068",
+          adSlot: adSlots["scroll-popup"],
           size: '200x150' as const,
           frequency: 'once-page' as const
         },
         exit: {
           enabled: true,
-          adSlot: "7044876068",
+          adSlot: adSlots["exit-popup"],
           size: '250x200' as const,
           frequency: 'once-session' as const
         }

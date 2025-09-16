@@ -16,15 +16,15 @@ export const ADSENSE_CONFIG = {
   // 3. Create new ad units or copy existing slot IDs
   
   adSlots: {
-    // === ACTIVE REAL SLOT IDS ===
-    "after-hero": "7044876068",        // Your real working slot (itgyani)
-    "content-mid": "7044876068",       // Using same slot for consistency
-    "pre-footer": "7044876068",        // Using same slot for consistency
+     // === ACTIVE REAL SLOT IDS ===
+     "after-hero": "7044876068",        // Your real working slot (itgyani)
+     "content-mid": "7044876068",       // Using same slot for consistency
+     "pre-footer": "7044876068",        // Using same slot for consistency
     
-    // === POPUP SYSTEM SLOTS ===
-    "entry-popup": "7044876068",       // Entry popup ads
-    "scroll-popup": "7044876068",      // Scroll-triggered ads
-    "exit-popup": "7044876068",        // Exit intent ads
+     // === POPUP SYSTEM SLOTS ===
+  "entry-popup": "2469074914",       // Entry popup ads (NEW)
+  "scroll-popup": "7256204022",      // Scroll-triggered ads (NEW)
+  "exit-popup": "3882228932",        // Exit intent ads (NEW)
     
     // === PAGE-SPECIFIC POSITIONS (Future Implementation) ===
     "services-sidebar": "7044876068",   // Desktop service browsing
