@@ -15,12 +15,17 @@ import MarketingAutomation from "./pages/services/MarketingAutomation";
 import SchedulingManagement from "./pages/services/SchedulingManagement";
 import AutomationDetail from "./pages/automations/AutomationDetail";
 import CaseStudies from "./pages/CaseStudies";
+import CaseStudyDetail from "./pages/CaseStudyDetail";
+import Resources from "./pages/Resources";
+import Academy from "./pages/Academy";
+import Industries from "./pages/Industries";
 import Careers from "./pages/Careers";
 import Blog from "./pages/Blog";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
+import AdminBlogPage from "./pages/AdminBlogPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,12 +49,17 @@ const App = () => (
             <Route path="/services/scheduling-management" element={<SchedulingManagement />} />
             <Route path="/automation/:toolName" element={<AutomationDetail />} />
             <Route path="/case-studies" element={<CaseStudies />} />
+            <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/academy" element={<Academy />} />
+            <Route path="/industries" element={<Industries />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/admin/blog" element={<AdminBlogPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

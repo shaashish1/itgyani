@@ -1,8 +1,9 @@
 import React from 'react';
 import PopupAd from './PopupAd';
+import { ADSENSE_CONFIG, getAdSenseConfig } from '@/config/adsense';
 
 interface PopupManagerProps {
-  page: 'home' | 'services' | 'about' | 'contact' | 'ai-studio' | 'careers' | 'case-studies' | 'blog' | 'terms' | 'privacy' | 'business-automation';
+  page: 'home' | 'services' | 'about' | 'contact' | 'ai-studio' | 'careers' | 'case-studies' | 'blog' | 'terms' | 'privacy' | 'business-automation' | 'resources' | 'academy' | 'industries';
 }
 
 interface PopupConfig {
@@ -30,253 +31,40 @@ interface PopupConfig {
 
 const PopupManager: React.FC<PopupManagerProps> = ({ page }) => {
   const getPopupConfig = (page: string): PopupConfig => {
-    const { adSlots } = require('@/config/adsense').ADSENSE_CONFIG;
-    const configs = {
-      home: {
-        entry: {
-          enabled: true,
-          delay: 10000,
-          adSlot: adSlots["entry-popup"],
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 50,
-          adSlot: adSlots["scroll-popup"],
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: adSlots["exit-popup"],
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
+    const config = getAdSenseConfig();
+    const { adSlots, popups } = config;
+    
+    // Early return if popups are globally disabled
+    if (!config.enabled || !popups.enabled) {
+      return {}; // No popup configuration if disabled
+    }
+
+    // Default popup configuration (when enabled)
+    const defaultConfig: PopupConfig = {
+      entry: {
+        enabled: false, // DISABLED for Google AdSense policy compliance
+        delay: popups.entryDelay, // 30 seconds minimum per policy
+        adSlot: adSlots["entry-popup"],
+        size: '300x250' as const, // Standard IAB size
+        frequency: 'once-session' as const
       },
-      services: {
-        entry: {
-          enabled: true,
-          delay: 10000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 50,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
+      scroll: {
+        enabled: false, // DISABLED for Google AdSense policy compliance
+        scrollTrigger: popups.scrollThreshold, // 75% scroll threshold
+        adSlot: adSlots["scroll-popup"],
+        size: '300x250' as const,
+        frequency: 'once-session' as const
       },
-      about: {
-        entry: {
-          enabled: true,
-          delay: 10000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 60,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
-      },
-      contact: {
-        entry: {
-          enabled: true,
-          delay: 15000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 40,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
-      },
-      'ai-studio': {
-        entry: {
-          enabled: true,
-          delay: 15000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 50,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
-      },
-      careers: {
-        entry: {
-          enabled: true,
-          delay: 12000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 45,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
-      },
-      'case-studies': {
-        entry: {
-          enabled: true,
-          delay: 10000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 55,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
-      },
-      blog: {
-        entry: {
-          enabled: true,
-          delay: 8000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 40,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
-      },
-      terms: {
-        entry: {
-          enabled: true,
-          delay: 20000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 70,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
-      },
-      privacy: {
-        entry: {
-          enabled: true,
-          delay: 20000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 70,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
-      },
-      'business-automation': {
-        entry: {
-          enabled: true,
-          delay: 12000,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-session' as const
-        },
-        scroll: {
-          enabled: true,
-          scrollTrigger: 50,
-          adSlot: "7044876068",
-          size: '200x150' as const,
-          frequency: 'once-page' as const
-        },
-        exit: {
-          enabled: true,
-          adSlot: "7044876068",
-          size: '250x200' as const,
-          frequency: 'once-session' as const
-        }
+      exit: {
+        enabled: false, // DISABLED for Google AdSense policy compliance
+        adSlot: adSlots["exit-popup"],
+        size: '300x250' as const,
+        frequency: 'once-session' as const
       }
     };
 
-    return configs[page as keyof typeof configs] || configs.home;
+    // All pages use the same disabled configuration for policy compliance
+    return defaultConfig;
   };
 
   const config = getPopupConfig(page);

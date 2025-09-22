@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
@@ -8,129 +8,148 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Search, Calendar, Clock, User, TrendingUp, Brain, Zap, Target, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { blogStorageService, BlogPost } from "@/services/blogStorageBrowser";
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const blogPosts = [
+  // Load real blog posts from storage
+  useEffect(() => {
+    loadBlogPosts();
+  }, []);
+
+  const loadBlogPosts = async () => {
+    try {
+      setLoading(true);
+      const result = await blogStorageService.listBlogPosts({
+        status: 'published',
+        sortBy: 'publishedAt',
+        sortOrder: 'desc'
+      });
+
+      if (result.success && result.data) {
+        setBlogPosts(result.data);
+        // Set first 3 as featured
+        setFeaturedPosts(result.data.slice(0, 3));
+      } else {
+        // Fallback to demo posts if no real posts exist
+        setBlogPosts(getDemoBlogPosts());
+        setFeaturedPosts(getDemoBlogPosts().slice(0, 3));
+      }
+    } catch (error) {
+      console.error('Failed to load blog posts:', error);
+      // Fallback to demo posts
+      setBlogPosts(getDemoBlogPosts());
+      setFeaturedPosts(getDemoBlogPosts().slice(0, 3));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Demo content for when no AI-generated posts exist yet
+  const getDemoBlogPosts = (): BlogPost[] => [
     {
-      id: 1,
+      id: "demo-1",
       title: "The Ultimate Guide to AI Automation in 2024: Transform Your Business",
+      slug: "ai-automation-guide-2024",
+      content: "Discover how AI automation is revolutionizing industries and learn practical strategies to implement intelligent workflows that deliver 300%+ ROI...",
       excerpt: "Discover how AI automation is revolutionizing industries and learn practical strategies to implement intelligent workflows that deliver 300%+ ROI.",
-      content: "Complete guide covering AI automation fundamentals, implementation strategies, ROI calculation, and real-world case studies from Fortune 500 companies.",
-      category: "AI Automation",
-      author: "Sarah Chen",
-      date: "2024-01-15",
-      readTime: "12 min read",
-      image: "/api/placeholder/800/400",
+      author: "ITGYANI AI",
+      category: "technology",
       tags: ["AI Automation", "Business Transformation", "ROI", "Strategy"],
-      featured: true
+      publishedAt: new Date("2024-01-15"),
+      updatedAt: new Date("2024-01-15"),
+      status: "published",
+      metaDescription: "Complete guide to AI automation in 2024 with practical implementation strategies and ROI calculation methods.",
+      seo: {
+        keywords: ["AI Automation", "Business Transformation", "ROI"],
+        openGraph: {
+          title: "The Ultimate Guide to AI Automation in 2024",
+          description: "Transform your business with AI automation strategies",
+          image: "/hero-bg.jpg"
+        }
+      },
+      wordCount: 2500,
+      readingTime: 12,
+      generatedBy: "Demo Content"
     },
     {
-      id: 2,
-      title: "AI Training Best Practices: Building Intelligent Systems That Scale",
-      excerpt: "Master the art of AI training with proven methodologies that reduce development time by 60% while improving model accuracy and performance.",
-      content: "Deep dive into AI training techniques, data preparation, model optimization, and deployment strategies for enterprise-scale applications.",
-      category: "AI Training",
-      author: "Dr. Michael Rodriguez",
-      date: "2024-01-12",
-      readTime: "15 min read",
-      image: "/api/placeholder/800/400",
-      tags: ["AI Training", "Machine Learning", "Model Optimization", "Best Practices"],
-      featured: true
+      id: "demo-2",
+      title: "Building Intelligent Business Workflows with n8n and AI",
+      slug: "intelligent-workflows-n8n-ai",
+      content: "Learn how to create powerful business workflows that combine n8n automation with AI capabilities for maximum efficiency...",
+      excerpt: "Learn how to create powerful business workflows that combine n8n automation with AI capabilities for maximum efficiency.",
+      author: "ITGYANI AI",
+      category: "automation",
+      tags: ["n8n", "Workflows", "AI Integration", "Business Automation"],
+      publishedAt: new Date("2024-01-12"),
+      updatedAt: new Date("2024-01-12"),
+      status: "published",
+      metaDescription: "Master n8n workflow automation with AI integration for intelligent business processes.",
+      seo: {
+        keywords: ["n8n", "Workflow Automation", "AI Integration"],
+        openGraph: {
+          title: "Building Intelligent Business Workflows",
+          description: "Combine n8n and AI for powerful automation",
+          image: "/hero-bg.jpg"
+        }
+      },
+      wordCount: 1800,
+      readingTime: 9,
+      generatedBy: "Demo Content"
     },
     {
-      id: 3,
-      title: "n8n Workflow Automation: 50 Power User Tips That Save Hours Daily",
-      excerpt: "Unlock the full potential of n8n with advanced techniques, custom integrations, and workflow optimizations that automate complex business processes.",
-      content: "Comprehensive collection of n8n tips, tricks, and advanced workflows for business automation, API integrations, and process optimization.",
-      category: "Workflow Automation",
-      author: "Alex Thompson",
-      date: "2024-01-10",
-      readTime: "10 min read",
-      image: "/api/placeholder/800/400",
-      tags: ["n8n", "Workflow Automation", "Integration", "Productivity"],
-      featured: false
-    },
-    {
-      id: 4,
-      title: "ROI Calculator: Measuring the Impact of AI Automation Investments",
-      excerpt: "Learn how to calculate, track, and maximize ROI from AI automation projects with our comprehensive framework and real client examples.",
-      content: "Financial analysis framework for AI automation projects, including cost-benefit analysis, payback period calculation, and performance metrics.",
-      category: "Business Intelligence",
-      author: "Jennifer Park",
-      date: "2024-01-08",
-      readTime: "8 min read",
-      image: "/api/placeholder/800/400",
-      tags: ["ROI", "Financial Analysis", "Business Intelligence", "Metrics"],
-      featured: false
-    },
-    {
-      id: 5,
-      title: "Enterprise AI Integration: Overcoming Common Implementation Challenges",
-      excerpt: "Navigate the complexities of enterprise AI integration with proven strategies for data migration, security compliance, and change management.",
-      content: "Practical guide to enterprise AI implementation, covering technical challenges, organizational change, security considerations, and success metrics.",
-      category: "Enterprise Solutions",
-      author: "David Kim",
-      date: "2024-01-05",
-      readTime: "14 min read",
-      image: "/api/placeholder/800/400",
-      tags: ["Enterprise AI", "Integration", "Change Management", "Security"],
-      featured: false
-    },
-    {
-      id: 6,
-      title: "Future of Work: How AI Automation Creates New Job Opportunities",
-      excerpt: "Explore how AI automation augments human capabilities, creates new roles, and transforms the workplace landscape for the better.",
-      content: "Analysis of AI's impact on employment, emerging job categories, skill development needs, and strategies for workforce transformation.",
-      category: "Future of Work",
-      author: "Emma Wilson",
-      date: "2024-01-03",
-      readTime: "11 min read",
-      image: "/api/placeholder/800/400",
-      tags: ["Future of Work", "Employment", "Skills Development", "Workforce"],
-      featured: false
-    },
-    {
-      id: 7,
-      title: "Customer Support Automation: 10x Your Team's Efficiency",
-      excerpt: "Transform customer support with AI-powered automation that delivers 24/7 service while maintaining personal touch and high satisfaction rates.",
-      content: "Complete guide to customer support automation, including chatbot implementation, ticket routing, escalation procedures, and performance optimization.",
-      category: "Customer Success",
-      author: "Ryan Jackson",
-      date: "2024-01-01",
-      readTime: "9 min read",
-      image: "/api/placeholder/800/400",
-      tags: ["Customer Support", "Chatbots", "Automation", "Efficiency"],
-      featured: false
-    },
-    {
-      id: 8,
-      title: "Data Integration Masterclass: Connecting Your Business Ecosystem",
-      excerpt: "Master the art of data integration with advanced techniques for connecting disparate systems, ensuring data quality, and enabling real-time insights.",
-      content: "Technical deep-dive into data integration patterns, API design, real-time synchronization, and building robust data pipelines for enterprise applications.",
-      category: "Data Integration",
-      author: "Lisa Zhang",
-      date: "2023-12-28",
-      readTime: "16 min read",
-      image: "/api/placeholder/800/400",
-      tags: ["Data Integration", "APIs", "Real-time Data", "Architecture"],
-      featured: false
+      id: "demo-3",
+      title: "Digital Transformation Success Stories: Real ROI from AI Implementation",
+      slug: "digital-transformation-ai-roi",
+      content: "Explore real-world case studies showing how businesses achieved significant ROI through strategic AI implementation...",
+      excerpt: "Explore real-world case studies showing how businesses achieved significant ROI through strategic AI implementation.",
+      author: "ITGYANI AI",
+      category: "business",
+      tags: ["Digital Transformation", "Case Studies", "ROI", "AI Implementation"],
+      publishedAt: new Date("2024-01-10"),
+      updatedAt: new Date("2024-01-10"),
+      status: "published",
+      metaDescription: "Real case studies of digital transformation success with AI implementation and measurable ROI.",
+      seo: {
+        keywords: ["Digital Transformation", "AI ROI", "Case Studies"],
+        openGraph: {
+          title: "Digital Transformation Success Stories",
+          description: "Real ROI from AI implementation case studies",
+          image: "/hero-bg.jpg"
+        }
+      },
+      wordCount: 2200,
+      readingTime: 11,
+      generatedBy: "Demo Content"
     }
   ];
 
-  const categories = ["All", "AI Automation", "AI Training", "Workflow Automation", "Business Intelligence", "Enterprise Solutions", "Future of Work", "Customer Success", "Data Integration"];
+  const categories = ["All", "Technology", "Business", "Automation", "Industry", "AI Studio"];
 
+  // Filter posts based on search and category
   const filteredPosts = blogPosts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = selectedCategory === "All" || post.category === selectedCategory;
+    
+    const matchesCategory = selectedCategory === "All" || 
+                           post.category.toLowerCase() === selectedCategory.toLowerCase();
+    
     return matchesSearch && matchesCategory;
   });
 
-  const featuredPosts = blogPosts.filter(post => post.featured);
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
 
   return (
     <>
@@ -234,11 +253,11 @@ const Blog = () => {
                             </span>
                             <span className="flex items-center gap-1">
                               <Calendar className="h-4 w-4" />
-                              {post.date}
+                              {formatDate(post.publishedAt)}
                             </span>
                             <span className="flex items-center gap-1">
                               <Clock className="h-4 w-4" />
-                              {post.readTime}
+                              {post.readingTime} min read
                             </span>
                           </div>
                         </div>
@@ -301,7 +320,7 @@ const Blog = () => {
                           </span>
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
-                            {post.readTime}
+                            {post.readingTime} min read
                           </span>
                         </div>
                         <div className="flex items-center justify-between">

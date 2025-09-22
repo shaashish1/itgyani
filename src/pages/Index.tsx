@@ -409,6 +409,112 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Resources & Learning Hub */}
+      <section className="py-24 bg-gradient-to-b from-background to-muted/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Accelerate your <span className="gradient-text">AI journey</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Comprehensive resources, expert guidance, and proven strategies to help you master AI automation
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Link to="/resources" className="group">
+              <Card className="glass-card hover-lift h-full p-8 bg-gradient-to-br from-blue-500/5 to-blue-500/10 border-blue-500/20 transition-all group-hover:scale-105">
+                <CardContent className="p-0 space-y-6">
+                  <div className="p-4 rounded-2xl bg-blue-500/20 w-fit">
+                    <Building className="w-8 h-8 text-blue-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Resource Library</h3>
+                    <p className="text-muted-foreground mb-4">8+ comprehensive guides covering AI automation strategies, implementation frameworks, and best practices.</p>
+                    <div className="flex items-center text-blue-500 font-semibold">
+                      Explore Resources
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/academy" className="group">
+              <Card className="glass-card hover-lift h-full p-8 bg-gradient-to-br from-green-500/5 to-green-500/10 border-green-500/20 transition-all group-hover:scale-105">
+                <CardContent className="p-0 space-y-6">
+                  <div className="p-4 rounded-2xl bg-green-500/20 w-fit">
+                    <Users className="w-8 h-8 text-green-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Learning Academy</h3>
+                    <p className="text-muted-foreground mb-4">Structured courses and hands-on tutorials with 150+ lessons to master AI automation from beginner to expert.</p>
+                    <div className="flex items-center text-green-500 font-semibold">
+                      Start Learning
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/case-studies" className="group">
+              <Card className="glass-card hover-lift h-full p-8 bg-gradient-to-br from-purple-500/5 to-purple-500/10 border-purple-500/20 transition-all group-hover:scale-105">
+                <CardContent className="p-0 space-y-6">
+                  <div className="p-4 rounded-2xl bg-purple-500/20 w-fit">
+                    <BarChart3 className="w-8 h-8 text-purple-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Success Stories</h3>
+                    <p className="text-muted-foreground mb-4">Detailed case studies showcasing real business transformations with measurable ROI and implementation insights.</p>
+                    <div className="flex items-center text-purple-500 font-semibold">
+                      View Case Studies
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/industries" className="group">
+              <Card className="glass-card hover-lift h-full p-8 bg-gradient-to-br from-orange-500/5 to-orange-500/10 border-orange-500/20 transition-all group-hover:scale-105">
+                <CardContent className="p-0 space-y-6">
+                  <div className="p-4 rounded-2xl bg-orange-500/20 w-fit">
+                    <Globe className="w-8 h-8 text-orange-500" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold mb-2">Industry Solutions</h3>
+                    <p className="text-muted-foreground mb-4">Specialized automation strategies for 12+ industries with proven frameworks and implementation roadmaps.</p>
+                    <div className="flex items-center text-orange-500 font-semibold">
+                      Explore Industries
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-muted-foreground mb-6">
+              Join thousands of professionals mastering AI automation
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/academy">
+                <Button className="btn-hero px-8">
+                  Start Free Course
+                </Button>
+              </Link>
+              <Link to="/resources">
+                <Button variant="outline" className="px-8">
+                  Download Resources
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="py-32 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-secondary/10"></div>

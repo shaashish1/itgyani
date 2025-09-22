@@ -30,6 +30,7 @@ const Footer = () => {
       { name: "About Us", href: "/about" },
       { name: "Our Services", href: "/#services" },
       { name: "Case Studies", href: "/case-studies" },
+      { name: "Industries", href: "/industries" },
       { name: "Careers", href: "/careers" },
       { name: "Contact Us", href: "/contact" }
     ],
@@ -41,11 +42,11 @@ const Footer = () => {
       { name: "AI Studio", href: "/ai-studio" }
     ],
     resources: [
-      { name: "Documentation", href: "/ai-studio" },
-      { name: "API Reference", href: "/ai-studio" },
-      { name: "Blog", href: "https://itgyani.com/blog", external: true },
-      { name: "Tutorials", href: "/#services" },
-      { name: "Community", href: "/#contact" }
+      { name: "Learning Academy", href: "/academy" },
+      { name: "Resource Library", href: "/resources" },
+      { name: "Blog", href: "/blog" },
+      { name: "Case Studies", href: "/case-studies" },
+      { name: "AI Studio", href: "/ai-studio" }
     ],
     legal: [
       { name: "Privacy Policy", href: "/privacy-policy" },

@@ -1,0 +1,870 @@
+import { useState } from "react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import PopupManager from "@/components/PopupManager";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Search, 
+  Download, 
+  BookOpen, 
+  Video, 
+  FileText, 
+  Lightbulb,
+  Workflow,
+  Bot,
+  BarChart3,
+  Settings,
+  Users,
+  Shield,
+  Clock,
+  Target,
+  TrendingUp,
+  Zap,
+  CheckCircle
+} from "lucide-react";
+import { Link } from "react-router-dom";
+
+const Resources = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const categories = [
+    "All",
+    "Automation Guides",
+    "AI Implementation", 
+    "n8n Workflows",
+    "Business Intelligence",
+    "Case Studies",
+    "Templates",
+    "Video Tutorials",
+    "White Papers"
+  ];
+
+  const resources = [
+    {
+      id: 1,
+      title: "Complete Guide to AI Workflow Automation for Business Growth",
+      description: "A comprehensive 50-page guide covering AI automation fundamentals, implementation strategies, ROI calculation methods, and real-world case studies from Fortune 500 companies.",
+      category: "Automation Guides",
+      type: "PDF Guide",
+      downloadCount: "12.5K+",
+      readTime: "45 min read",
+      tags: ["AI Automation", "Business Strategy", "ROI Analysis", "Implementation"],
+      featured: true,
+      content: `
+        This comprehensive guide provides everything you need to know about implementing AI workflow automation in your business:
+
+        **Chapter 1: Understanding AI Automation**
+        - Definition and core concepts of AI-powered workflow automation
+        - Difference between traditional automation and AI automation
+        - Key benefits: cost reduction, efficiency gains, accuracy improvements
+        - Common misconceptions and how to avoid them
+
+        **Chapter 2: Business Case Development** 
+        - ROI calculation frameworks and methodologies
+        - Cost-benefit analysis templates
+        - Risk assessment and mitigation strategies
+        - Timeline planning and milestone setting
+
+        **Chapter 3: Technology Stack Selection**
+        - Evaluation criteria for automation platforms
+        - n8n vs other workflow automation tools
+        - Integration capabilities and API requirements
+        - Scalability and security considerations
+
+        **Chapter 4: Implementation Roadmap**
+        - Phase-by-phase implementation approach
+        - Team structure and skill requirements
+        - Change management best practices
+        - Success metrics and KPIs
+
+        **Chapter 5: Real-World Case Studies**
+        - E-commerce: 280% efficiency increase at mid-size retailer
+        - Finance: Algorithmic trading system generating 34% annual returns
+        - Manufacturing: Predictive maintenance reducing downtime by 70%
+        - Healthcare: Patient workflow automation improving satisfaction by 45%
+
+        **Chapter 6: Advanced Optimization Techniques**
+        - AI model training and fine-tuning
+        - Performance monitoring and optimization
+        - Troubleshooting common issues
+        - Scaling strategies for enterprise deployment
+      `
+    },
+    {
+      id: 2,
+      title: "n8n Workflow Templates Library: 100+ Production-Ready Automations",
+      description: "Extensive collection of battle-tested n8n workflow templates covering customer service, sales automation, marketing campaigns, data processing, and financial operations.",
+      category: "Templates",
+      type: "Template Pack",
+      downloadCount: "8.3K+",
+      readTime: "Variable",
+      tags: ["n8n", "Workflow Templates", "Automation", "Production Ready"],
+      featured: true,
+      content: `
+        **Customer Service Automation Templates:**
+        - Ticket routing and escalation workflows
+        - Automated response systems with sentiment analysis
+        - Customer satisfaction survey automation
+        - Support team performance tracking
+
+        **Sales Process Automation:**
+        - Lead qualification and scoring workflows  
+        - Automated follow-up sequences
+        - CRM synchronization and data cleaning
+        - Sales pipeline management and reporting
+
+        **Marketing Campaign Automation:**
+        - Multi-channel campaign orchestration
+        - A/B testing automation workflows
+        - Social media posting and engagement tracking
+        - Email marketing with behavioral triggers
+
+        **Data Processing and Analytics:**
+        - Real-time data ingestion and transformation
+        - Automated report generation and distribution
+        - Data quality monitoring and alerts
+        - Cross-platform data synchronization
+
+        **Financial Operations:**
+        - Invoice processing and payment tracking
+        - Expense approval workflows
+        - Financial reporting automation
+        - Budget monitoring and variance analysis
+
+        **HR and People Operations:**
+        - Employee onboarding automation
+        - Performance review workflows
+        - Time tracking and payroll integration
+        - Training program management
+
+        Each template includes:
+        - Complete workflow configuration files
+        - Step-by-step setup instructions
+        - Customization guidelines
+        - Troubleshooting tips
+        - Performance optimization recommendations
+      `
+    },
+    {
+      id: 3,
+      title: "AI Implementation Maturity Assessment Framework",
+      description: "Scientific framework for evaluating your organization's AI readiness, identifying gaps, and creating a roadmap for successful AI adoption across all business functions.",
+      category: "AI Implementation",
+      type: "Assessment Tool",
+      downloadCount: "6.7K+",
+      readTime: "30 min assessment",
+      tags: ["AI Readiness", "Maturity Assessment", "Digital Transformation", "Strategy"],
+      featured: false,
+      content: `
+        **Assessment Dimensions:**
+
+        **1. Technical Infrastructure (25 points)**
+        - Data quality and accessibility
+        - Cloud infrastructure capabilities
+        - Integration architecture
+        - Security and compliance framework
+        - Development and deployment pipeline
+
+        **2. Data and Analytics Capabilities (25 points)**
+        - Data governance and management
+        - Analytics tools and platforms
+        - Data science team capabilities
+        - Machine learning infrastructure
+        - Real-time processing capabilities
+
+        **3. Organizational Readiness (25 points)**
+        - Leadership commitment and vision
+        - Change management capabilities
+        - Skills and training programs
+        - Cultural adaptability
+        - Cross-functional collaboration
+
+        **4. Process and Workflow Maturity (25 points)**
+        - Process documentation and standardization
+        - Automation existing capabilities
+        - Performance measurement systems
+        - Continuous improvement culture
+        - Scalability of current processes
+
+        **Scoring and Recommendations:**
+        - 90-100 points: AI-Ready Leader
+        - 75-89 points: Advanced Implementer
+        - 60-74 points: Developing Foundation
+        - 45-59 points: Building Basics
+        - Below 45: Foundational Development Needed
+
+        **Detailed Action Plans for Each Level:**
+        Each scoring tier comes with specific recommendations, timelines, and resource requirements for advancing to the next level.
+      `
+    },
+    {
+      id: 4,
+      title: "Business Intelligence Automation: From Data to Decisions in Minutes",
+      description: "Master the art of automated business intelligence with advanced analytics workflows, real-time dashboards, and AI-powered insights that drive strategic decision-making.",
+      category: "Business Intelligence",
+      type: "Video Course",
+      downloadCount: "4.2K+",
+      readTime: "3 hours",
+      tags: ["Business Intelligence", "Data Analytics", "Decision Making", "Automation"],
+      featured: false,
+      content: `
+        **Module 1: BI Automation Fundamentals (30 minutes)**
+        - Traditional BI vs Automated BI
+        - Key components of automated business intelligence
+        - ROI calculation for BI automation projects
+        - Common pitfalls and how to avoid them
+
+        **Module 2: Data Pipeline Automation (45 minutes)**
+        - ETL/ELT process automation
+        - Data quality monitoring and validation
+        - Real-time data streaming and processing
+        - Error handling and recovery mechanisms
+
+        **Module 3: Analytics Workflow Design (40 minutes)**
+        - Automated report generation
+        - KPI monitoring and alerting systems
+        - Predictive analytics integration
+        - Custom dashboard automation
+
+        **Module 4: AI-Powered Insights (35 minutes)**
+        - Natural language query processing
+        - Anomaly detection and alerting
+        - Automated trend analysis
+        - Recommendation engine integration
+
+        **Module 5: Implementation Best Practices (30 minutes)**
+        - Stakeholder engagement strategies
+        - Performance optimization techniques
+        - Security and compliance considerations
+        - Scaling and maintenance planning
+
+        **Bonus Materials:**
+        - 20+ ready-to-use BI automation templates
+        - Performance benchmarking tools
+        - Vendor evaluation checklist
+        - Implementation project timeline template
+      `
+    },
+    {
+      id: 5,
+      title: "Customer Service AI Revolution: Complete Implementation Guide",
+      description: "Transform your customer service operations with AI-powered automation. Includes chatbot development, sentiment analysis, ticket routing, and performance optimization strategies.",
+      category: "Case Studies",
+      type: "Implementation Guide",
+      downloadCount: "5.8K+",
+      readTime: "35 min read",
+      tags: ["Customer Service", "AI Chatbots", "Automation", "CX Optimization"],
+      featured: false,
+      content: `
+        **Executive Summary:**
+        This guide presents a comprehensive approach to revolutionizing customer service through AI automation, based on successful implementations across 150+ companies.
+
+        **Current State Analysis:**
+        - Average response time reduction: 85%
+        - Customer satisfaction improvement: 42%
+        - Operational cost reduction: 55%
+        - Agent productivity increase: 180%
+
+        **Implementation Framework:**
+
+        **Phase 1: Foundation (Weeks 1-4)**
+        - Customer journey mapping and pain point identification
+        - Current system audit and integration planning
+        - Team training and change management preparation
+        - Technology stack selection and procurement
+
+        **Phase 2: Core AI Implementation (Weeks 5-12)**
+        - Chatbot development and training
+        - Natural language processing setup
+        - Sentiment analysis integration
+        - Automated ticket routing configuration
+
+        **Phase 3: Advanced Features (Weeks 13-20)**
+        - Predictive customer insights
+        - Proactive issue resolution
+        - Omnichannel integration
+        - Advanced analytics and reporting
+
+        **Phase 4: Optimization (Weeks 21-24)**
+        - Performance monitoring and tuning
+        - AI model refinement
+        - Process optimization
+        - ROI measurement and reporting
+
+        **Technology Components:**
+        - AI chatbot platforms and configuration
+        - Natural language processing engines
+        - Sentiment analysis tools
+        - Integration APIs and webhooks
+        - Analytics and reporting dashboards
+
+        **Success Metrics and KPIs:**
+        - First contact resolution rate
+        - Average handling time
+        - Customer satisfaction scores
+        - Agent utilization rates
+        - Cost per interaction
+      `
+    },
+    {
+      id: 6,
+      title: "E-commerce Automation Mastery: Complete Sales Funnel Optimization",
+      description: "End-to-end guide for automating e-commerce operations including inventory management, customer acquisition, retention workflows, and revenue optimization strategies.",
+      category: "Automation Guides",
+      type: "Masterclass",
+      downloadCount: "7.1K+",
+      readTime: "4 hours",
+      tags: ["E-commerce", "Sales Automation", "Revenue Optimization", "Customer Retention"],
+      featured: true,
+      content: `
+        **Section 1: E-commerce Automation Strategy**
+        - Market analysis and competitive positioning
+        - Customer lifecycle automation mapping
+        - Technology stack evaluation and selection
+        - ROI forecasting and budgeting
+
+        **Section 2: Customer Acquisition Automation**
+        - Multi-channel marketing automation
+        - SEO and content marketing workflows
+        - Social media automation strategies
+        - Paid advertising optimization
+
+        **Section 3: Sales Process Automation**
+        - Shopping cart abandonment recovery
+        - Personalized product recommendations
+        - Dynamic pricing strategies
+        - Inventory management automation
+
+        **Section 4: Customer Retention and Loyalty**
+        - Automated email marketing sequences
+        - Customer segmentation and targeting
+        - Loyalty program automation
+        - Review and feedback collection
+
+        **Section 5: Operations and Fulfillment**
+        - Order processing automation
+        - Shipping and logistics optimization
+        - Returns and refunds handling
+        - Supplier and vendor management
+
+        **Section 6: Analytics and Optimization**
+        - Real-time performance monitoring
+        - A/B testing automation
+        - Conversion rate optimization
+        - Revenue forecasting and planning
+
+        **Practical Implementation:**
+        - 50+ automation workflow templates
+        - Platform-specific setup guides (Shopify, WooCommerce, Magento)
+        - Integration tutorials for popular tools
+        - Troubleshooting and optimization tips
+
+        **Case Studies:**
+        - Mid-size retailer: 127% revenue increase
+        - Fashion brand: 85% reduction in cart abandonment
+        - Electronics store: 45% improvement in customer lifetime value
+      `
+    },
+    {
+      id: 7,
+      title: "Financial Services AI Transformation: Risk, Compliance, and Growth",
+      description: "Comprehensive guide for implementing AI automation in financial services, covering algorithmic trading, risk management, compliance automation, and customer onboarding.",
+      category: "AI Implementation",
+      type: "Industry Guide",
+      downloadCount: "3.9K+",
+      readTime: "50 min read",
+      tags: ["Financial Services", "Risk Management", "Compliance", "Algorithmic Trading"],
+      featured: false,
+      content: `
+        **Introduction to Financial AI Automation:**
+        The financial services industry is undergoing rapid transformation through AI automation. This guide provides a roadmap for implementation while maintaining regulatory compliance and risk management standards.
+
+        **Chapter 1: Regulatory Landscape and Compliance**
+        - Overview of financial regulations (SOX, GDPR, Basel III, MiFID II)
+        - AI governance frameworks for financial institutions
+        - Compliance automation strategies
+        - Audit trail and documentation requirements
+
+        **Chapter 2: Risk Management Automation**
+        - Automated risk assessment and scoring
+        - Real-time fraud detection systems
+        - Credit risk modeling and automation
+        - Market risk monitoring and alerts
+
+        **Chapter 3: Algorithmic Trading Systems**
+        - Trading strategy development and backtesting
+        - Risk-adjusted portfolio optimization
+        - Execution algorithms and market making
+        - Performance monitoring and reporting
+
+        **Chapter 4: Customer Onboarding and KYC**
+        - Automated identity verification
+        - Document processing and validation
+        - AML (Anti-Money Laundering) automation
+        - Customer due diligence workflows
+
+        **Chapter 5: Investment Advisory Automation**
+        - Robo-advisor platform development
+        - Portfolio rebalancing automation
+        - Tax-loss harvesting strategies
+        - Client reporting and communication
+
+        **Chapter 6: Operational Excellence**
+        - Trade settlement automation
+        - Regulatory reporting workflows
+        - Internal audit automation
+        - Cost optimization strategies
+
+        **Implementation Roadmap:**
+        - 24-month phased implementation plan
+        - Team structure and skill requirements
+        - Technology vendor evaluation
+        - Success metrics and KPIs
+
+        **Risk Mitigation Strategies:**
+        - Model validation and testing protocols
+        - Disaster recovery and business continuity
+        - Cybersecurity considerations
+        - Third-party risk management
+      `
+    },
+    {
+      id: 8,
+      title: "Healthcare Workflow Automation: Patient Care and Operational Efficiency",
+      description: "Specialized guide for healthcare organizations implementing AI automation for patient scheduling, clinical workflows, billing processes, and care coordination.",
+      category: "Case Studies",
+      type: "Healthcare Guide",
+      downloadCount: "2.8K+",
+      readTime: "40 min read",
+      tags: ["Healthcare", "Patient Care", "Clinical Workflows", "HIPAA Compliance"],
+      featured: false,
+      content: `
+        **Healthcare AI Automation Overview:**
+        Healthcare automation requires special consideration for patient privacy, regulatory compliance, and clinical safety. This guide provides proven frameworks for successful implementation.
+
+        **Section 1: Regulatory Compliance and Privacy**
+        - HIPAA compliance requirements for AI systems
+        - Patient data protection strategies
+        - Audit logging and access controls
+        - Consent management automation
+
+        **Section 2: Patient Scheduling and Access**
+        - Intelligent appointment scheduling
+        - Wait list management and optimization
+        - Patient communication automation
+        - Insurance verification workflows
+
+        **Section 3: Clinical Workflow Automation**
+        - Electronic health record (EHR) integration
+        - Clinical decision support systems
+        - Medication management and alerts
+        - Care plan automation and tracking
+
+        **Section 4: Revenue Cycle Management**
+        - Automated medical coding and billing
+        - Claims processing and denial management
+        - Payment posting and reconciliation
+        - Financial assistance program automation
+
+        **Section 5: Quality and Safety Monitoring**
+        - Patient safety event tracking
+        - Quality measure automation
+        - Infection control monitoring
+        - Risk stratification and intervention
+
+        **Section 6: Population Health Management**
+        - Chronic disease management programs
+        - Preventive care automation
+        - Health outcome tracking and reporting
+        - Community health initiatives
+
+        **Implementation Considerations:**
+        - Clinical workflow integration strategies
+        - Staff training and change management
+        - Vendor selection and procurement
+        - Performance measurement and optimization
+
+        **Case Studies:**
+        - Large health system: 30% reduction in administrative costs
+        - Specialty clinic: 45% improvement in patient satisfaction
+        - Rural hospital: 25% increase in operational efficiency
+        - Telemedicine platform: 60% reduction in appointment scheduling time
+      `
+    }
+  ];
+
+  const whitepapers = [
+    {
+      id: 1,
+      title: "The Future of Work: AI Automation Impact on Employment and Skills",
+      description: "Research-based analysis of how AI automation is reshaping the job market, creating new opportunities, and transforming skill requirements across industries.",
+      downloadCount: "15.2K+",
+      pages: 42,
+      tags: ["Future of Work", "Employment", "Skills Development", "Industry Analysis"]
+    },
+    {
+      id: 2,
+      title: "ROI Analysis: Quantifying the Business Value of AI Automation",
+      description: "Comprehensive methodology for calculating and measuring the return on investment from AI automation initiatives, with real-world data and benchmarks.",
+      downloadCount: "11.8K+",
+      pages: 38,
+      tags: ["ROI Analysis", "Business Value", "Financial Metrics", "Performance Measurement"]
+    },
+    {
+      id: 3,
+      title: "Security and Compliance in AI Automation: Best Practices Guide",
+      description: "Essential security frameworks, compliance requirements, and risk management strategies for implementing AI automation in regulated industries.",
+      downloadCount: "9.4K+",
+      pages: 35,
+      tags: ["Security", "Compliance", "Risk Management", "Governance"]
+    }
+  ];
+
+  const videoTutorials = [
+    {
+      id: 1,
+      title: "Building Your First AI Automation Workflow",
+      duration: "45 minutes",
+      difficulty: "Beginner",
+      views: "28.5K",
+      description: "Step-by-step tutorial for creating your first automated workflow using n8n and AI components."
+    },
+    {
+      id: 2,
+      title: "Advanced Data Processing with AI Automation",
+      duration: "1 hour 15 minutes", 
+      difficulty: "Advanced",
+      views: "12.3K",
+      description: "Deep dive into complex data processing workflows, machine learning integration, and performance optimization."
+    },
+    {
+      id: 3,
+      title: "Customer Service Chatbot Development",
+      duration: "55 minutes",
+      difficulty: "Intermediate",
+      views: "19.7K",
+      description: "Complete guide to building intelligent chatbots for customer service with natural language processing."
+    }
+  ];
+
+  const filteredResources = resources.filter(resource => {
+    const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         resource.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = selectedCategory === "All" || resource.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      {/* Hero Section */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/5"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <Badge className="mb-6 px-4 py-2 bg-primary/20 text-primary border-primary/30">
+              <BookOpen className="w-4 h-4 mr-2" />
+              Resource Library
+            </Badge>
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              Master <span className="gradient-text">AI Automation</span>
+            </h1>
+            
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12">
+              Access our comprehensive library of guides, templates, and tools to accelerate your AI automation journey. 
+              Over 150+ resources downloaded by 25,000+ professionals worldwide.
+            </p>
+
+            {/* Search and Filter */}
+            <div className="max-w-2xl mx-auto mb-8">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                <Input
+                  placeholder="Search resources, guides, templates..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 py-3 text-lg"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-2 mb-8">
+              {categories.map((category) => (
+                <Button
+                  key={category}
+                  variant={selectedCategory === category ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setSelectedCategory(category)}
+                  className="rounded-full"
+                >
+                  {category}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Resource Tabs */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Tabs defaultValue="guides" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 mb-12">
+              <TabsTrigger value="guides" className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Guides & Templates
+              </TabsTrigger>
+              <TabsTrigger value="whitepapers" className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4" />
+                White Papers
+              </TabsTrigger>
+              <TabsTrigger value="videos" className="flex items-center gap-2">
+                <Video className="w-4 h-4" />
+                Video Tutorials
+              </TabsTrigger>
+              <TabsTrigger value="tools" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Tools & Assessments
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="guides">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredResources.map((resource) => (
+                  <Card key={resource.id} className={`glass-card hover-lift ${resource.featured ? 'border-primary/50' : ''}`}>
+                    <CardHeader>
+                      <div className="flex items-start justify-between mb-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {resource.type}
+                        </Badge>
+                        {resource.featured && (
+                          <Badge className="bg-primary/20 text-primary border-primary/30">
+                            Featured
+                          </Badge>
+                        )}
+                      </div>
+                      <CardTitle className="text-xl leading-tight">{resource.title}</CardTitle>
+                      <CardDescription className="text-sm">{resource.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex flex-wrap gap-2">
+                          {resource.tags.map((tag, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                        
+                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {resource.readTime}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Download className="w-3 h-3" />
+                            {resource.downloadCount}
+                          </span>
+                        </div>
+
+                        <Button className="w-full">
+                          <Download className="w-4 h-4 mr-2" />
+                          Download Resource
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="whitepapers">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {whitepapers.map((paper) => (
+                  <Card key={paper.id} className="glass-card hover-lift">
+                    <CardHeader>
+                      <Badge variant="secondary" className="w-fit text-xs mb-2">
+                        Research Paper
+                      </Badge>
+                      <CardTitle className="text-xl leading-tight">{paper.title}</CardTitle>
+                      <CardDescription className="text-sm">{paper.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex flex-wrap gap-2">
+                          {paper.tags.map((tag, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                        
+                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <span>{paper.pages} pages</span>
+                          <span className="flex items-center gap-1">
+                            <Download className="w-3 h-3" />
+                            {paper.downloadCount}
+                          </span>
+                        </div>
+
+                        <Button className="w-full">
+                          <Download className="w-4 h-4 mr-2" />
+                          Download PDF
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="videos">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {videoTutorials.map((video) => (
+                  <Card key={video.id} className="glass-card hover-lift">
+                    <CardHeader>
+                      <Badge variant="secondary" className="w-fit text-xs mb-2">
+                        Video Tutorial
+                      </Badge>
+                      <CardTitle className="text-xl leading-tight">{video.title}</CardTitle>
+                      <CardDescription className="text-sm">{video.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between text-sm">
+                          <Badge 
+                            variant={video.difficulty === 'Beginner' ? 'default' : 
+                                   video.difficulty === 'Intermediate' ? 'secondary' : 'destructive'}
+                          >
+                            {video.difficulty}
+                          </Badge>
+                          <span className="text-muted-foreground">{video.views} views</span>
+                        </div>
+                        
+                        <div className="text-sm text-muted-foreground">
+                          Duration: {video.duration}
+                        </div>
+
+                        <Button className="w-full">
+                          <Video className="w-4 h-4 mr-2" />
+                          Watch Tutorial
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="tools">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card className="glass-card hover-lift">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Target className="w-5 h-5 text-primary" />
+                      AI Readiness Assessment
+                    </CardTitle>
+                    <CardDescription>
+                      Evaluate your organization's readiness for AI automation implementation with our comprehensive assessment tool.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          100 evaluation criteria
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Personalized roadmap
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Industry benchmarks
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Actionable insights
+                        </div>
+                      </div>
+                      <Button className="w-full">
+                        Start Assessment
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass-card hover-lift">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5 text-primary" />
+                      ROI Calculator
+                    </CardTitle>
+                    <CardDescription>
+                      Calculate the potential return on investment for your AI automation projects with our advanced ROI calculator.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Cost-benefit analysis
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Payback period
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Risk assessment
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-500" />
+                          Scenario modeling
+                        </div>
+                      </div>
+                      <Button className="w-full">
+                        Calculate ROI
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
+
+      {/* Newsletter Signup */}
+      <section className="py-24 bg-gradient-to-r from-primary/5 to-secondary/5">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Stay Updated with Latest Resources
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Get notified when we release new guides, templates, and tools to accelerate your AI automation journey.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <Input placeholder="Enter your email" className="flex-1" />
+            <Button>Subscribe</Button>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+      <PopupManager page="resources" />
+    </div>
+  );
+};
+
+export default Resources;

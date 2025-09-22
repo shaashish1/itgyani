@@ -22,11 +22,14 @@ const Header = () => {
   }, []);
 
   const navigation = [
-  { name: "Home", href: "/" },
-  { name: "AI Studio", href: "/ai-studio" },
-  { name: "Services", href: "/services" },
-  { name: "About Us", href: "/about" },
-  { name: "Contact Us", href: "/contact" },
+    { name: "Home", href: "/" },
+    { name: "Solutions", href: "/industries" },
+    { name: "Resources", href: "/resources" },
+    { name: "Academy", href: "/academy" },
+    { name: "Case Studies", href: "/case-studies" },
+    { name: "Blog", href: "/blog" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
   ];
 
   return (
@@ -66,6 +69,16 @@ const Header = () => {
           {/* CTA Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
             <ThemeToggle />
+            
+            {/* Admin Access - Hidden Link */}
+            <Link 
+              to="/admin/blog"
+              className="text-xs opacity-30 hover:opacity-60 transition-opacity"
+              title="Admin Access"
+            >
+              •
+            </Link>
+            
             <Button 
               variant="ghost" 
               size="sm" 
