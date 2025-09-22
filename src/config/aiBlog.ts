@@ -37,7 +37,7 @@ export const AI_BLOG_CONFIG = {
 
   // === HUGGING FACE CONFIGURATION ===
   huggingFace: {
-    apiKey: "hf_placeholder", // Free tier - no API key needed for inference API
+    apiKey: "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", // Bearer token for API access
     
     // Image generation models
     imageModels: {
