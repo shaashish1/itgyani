@@ -471,6 +471,148 @@ const CaseStudyDetail = () => {
         description: "Protect your institution with AI-powered security and compliance automation.",
         cta: "Schedule Your Security Assessment"
       }
+    },
+
+    "cloudscale-saas": {
+      id: "cloudscale-saas",
+      title: "CloudScale SaaS: 500% User Growth Through AI-Powered Platform Automation",
+      company: "CloudScale Solutions",
+      industry: "SaaS",
+      size: "Mid-Market SaaS Platform",
+      timeline: "9 months implementation",
+      featured: true,
+      heroImage: "/hero-bg.jpg",
+      
+      metrics: {
+        userGrowth: { before: "50K users", after: "300K users", increase: "500%" },
+        churnReduction: { before: "18%", after: "3.2%", improvement: "82%" },
+        supportTickets: { before: "2,500/month", after: "400/month", reduction: "84%" },
+        timeToValue: { before: "14 days", after: "2 hours", improvement: "99%" },
+        roi: "650%"
+      },
+
+      challenge: {
+        title: "SaaS Platform Scaling Bottlenecks",
+        description: "CloudScale faced critical challenges preventing scalable growth and threatening their position in the competitive SaaS market.",
+        points: [
+          "Manual user onboarding taking 14+ days causing 35% abandonment rate",
+          "Customer support overwhelmed with 2,500+ monthly tickets for basic setup",
+          "High churn rate of 18% due to poor user experience and slow time-to-value",
+          "Feature discovery issues with only 15% of users utilizing advanced features",
+          "Scaling bottlenecks preventing growth beyond 50K users",
+          "Manual billing and subscription management consuming 60+ hours weekly"
+        ],
+        impact: "Growth stagnation was costing CloudScale $4.2M annually in lost revenue and preventing market expansion."
+      },
+
+      solution: {
+        title: "Intelligent SaaS Automation Ecosystem",
+        description: "End-to-end AI automation platform transforming user experience from onboarding to retention through intelligent workflows.",
+        phases: [
+          {
+            title: "Phase 1: Smart User Onboarding",
+            duration: "Months 1-3",
+            description: "AI-powered onboarding automation with personalized user journeys",
+            features: [
+              "Intelligent user profiling and role-based onboarding paths",
+              "Automated account setup and configuration",
+              "AI-driven feature recommendations based on user goals",
+              "Real-time onboarding assistance with contextual help"
+            ]
+          },
+          {
+            title: "Phase 2: Proactive User Success",
+            duration: "Months 3-5",
+            description: "Predictive analytics and automated user engagement",
+            features: [
+              "Behavioral analytics for churn prediction and prevention",
+              "Automated feature discovery and guided tutorials",
+              "Proactive outreach for at-risk users",
+              "Personalized success metrics and milestone tracking"
+            ]
+          },
+          {
+            title: "Phase 3: Intelligent Support & Self-Service",
+            duration: "Months 5-7",
+            description: "AI-powered support automation and knowledge management",
+            features: [
+              "Advanced chatbot with context-aware responses",
+              "Automated ticket classification and routing",
+              "Self-service portal with AI-powered troubleshooting",
+              "Predictive issue resolution and prevention"
+            ]
+          },
+          {
+            title: "Phase 4: Growth Optimization & Analytics",
+            duration: "Months 7-9",
+            description: "Advanced analytics and automated growth strategies",
+            features: [
+              "User lifecycle automation and nurturing campaigns",
+              "AI-powered upselling and feature recommendations",
+              "Advanced analytics dashboard for product insights",
+              "Automated A/B testing for feature optimization"
+            ]
+          }
+        ]
+      },
+
+      technology: {
+        title: "Scalable SaaS Technology Stack",
+        description: "Cloud-native technology stack designed for infinite scalability and optimal user experience.",
+        stack: [
+          { name: "Segment CDP", role: "Customer Data Platform", description: "Unified user data and behavioral tracking" },
+          { name: "Intercom", role: "Customer Messaging", description: "AI-powered chat and user engagement" },
+          { name: "Mixpanel", role: "Product Analytics", description: "Advanced user behavior analytics" },
+          { name: "Zapier", role: "Workflow Automation", description: "No-code automation and integrations" },
+          { name: "Stripe", role: "Billing Automation", description: "Automated subscription management" },
+          { name: "AWS Lambda", role: "Serverless Computing", description: "Scalable automation functions" }
+        ]
+      },
+
+      results: {
+        title: "Extraordinary SaaS Growth Results",
+        description: "Dramatic improvements in user acquisition, retention, and platform scalability.",
+        achievements: [
+          {
+            metric: "User Growth",
+            value: "500%",
+            description: "User base grew from 50K to 300K users",
+            icon: TrendingUp
+          },
+          {
+            metric: "Churn Reduction",
+            value: "82%",
+            description: "Monthly churn reduced from 18% to 3.2%",
+            icon: Target
+          },
+          {
+            metric: "Support Efficiency",
+            value: "84%",
+            description: "Support tickets reduced from 2,500 to 400/month",
+            icon: Users
+          },
+          {
+            metric: "Time to Value",
+            value: "99%",
+            description: "User onboarding time reduced from 14 days to 2 hours",
+            icon: Zap
+          }
+        ],
+        timeline: "Results achieved progressively over 9-month implementation"
+      },
+
+      testimonial: {
+        quote: "The AI automation platform didn't just solve our scaling problems - it completely transformed our user experience. We went from struggling to onboard users to having them achieve value in hours instead of weeks. Our growth trajectory completely changed.",
+        author: "Sarah Rodriguez",
+        title: "CEO & Founder, CloudScale Solutions",
+        image: "/hero-bg.jpg"
+      },
+
+      nextSteps: {
+        title: "Scale Your SaaS Platform",
+        description: "Transform your SaaS growth with AI-powered user experience automation.",
+        cta: "Get Your SaaS Growth Strategy"
+      }
     }
   };
 

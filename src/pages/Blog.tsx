@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Search, Calendar, Clock, User, TrendingUp, Brain, Zap, Target, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { blogStorageService, BlogPost } from "@/services/blogStorageBrowser";
+import { ReadMeButton, BlogThumbnail, PageHeader } from "@/components/ImageComponents";
 
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -165,9 +166,10 @@ const Blog = () => {
         
         <main>
           {/* Hero Section */}
-          <section className="relative py-24 overflow-hidden">
+          <section className="relative overflow-hidden">
+            <PageHeader type="blog" className="w-full" />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5" />
-            <div className="container mx-auto px-6 relative">
+            <div className="container mx-auto px-6 relative py-12">
               <div className="flex items-center gap-4 mb-8">
                 <Link to="/" className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors">
                   <ArrowLeft className="h-4 w-4" />
@@ -269,9 +271,11 @@ const Blog = () => {
                               </Badge>
                             ))}
                           </div>
-                          <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
-                            Read More <ArrowRight className="ml-1 h-3 w-3" />
-                          </Button>
+                          <ReadMeButton 
+                            variant="primary" 
+                            text="readMore" 
+                            className="ml-auto"
+                          />
                         </div>
                       </CardContent>
                     </Card>
@@ -331,9 +335,11 @@ const Blog = () => {
                               </Badge>
                             ))}
                           </div>
-                          <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 p-0">
-                            Read More <ArrowRight className="ml-1 h-3 w-3" />
-                          </Button>
+                          <Link to={`/blog/${post.slug}`}>
+                            <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 p-0">
+                              Read More <ArrowRight className="ml-1 h-3 w-3" />
+                            </Button>
+                          </Link>
                         </div>
                       </CardContent>
                     </Card>

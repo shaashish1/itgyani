@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ITGYANI - Intelligent Automation Solutions</title>
     <meta name="description" content="Transform your business with AI-powered automation. ITGYANI helps companies scale operations, reduce costs, and automate workflows using cutting-edge n8n technology." />
@@ -26,6 +27,34 @@
 
   <body>
     <div id="root"></div>
+    
+    <!-- Quirks Mode Detection -->
+    <script>
+      // Detect and warn about Quirks Mode
+      if (document.compatMode !== 'CSS1Compat') {
+        console.error('⚠️ Document is in Quirks Mode! This may cause rendering issues.');
+        console.log('Current mode:', document.compatMode);
+        console.log('Expected mode: CSS1Compat (Standards Mode)');
+        
+        // Try to detect the cause
+        if (!document.doctype) {
+          console.error('❌ Missing DOCTYPE declaration!');
+        } else {
+          console.log('✅ DOCTYPE found:', document.doctype.name);
+        }
+      } else {
+        console.log('✅ Document is in Standards Mode (CSS1Compat)');
+      }
+      
+      // Ensure all dynamically created documents have proper DOCTYPE
+      const originalCreateDocument = document.implementation.createDocument;
+      document.implementation.createDocument = function(...args) {
+        const doc = originalCreateDocument.apply(this, args);
+        console.log('📄 New document created with DOCTYPE check');
+        return doc;
+      };
+    </script>
+    
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

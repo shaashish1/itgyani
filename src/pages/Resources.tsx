@@ -7,6 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import AIReadinessAssessment from "@/components/AIReadinessAssessment";
+import ROICalculator from "@/components/ROICalculator";
 import { 
   Search, 
   Download, 
@@ -24,7 +27,9 @@ import {
   Target,
   TrendingUp,
   Zap,
-  CheckCircle
+  CheckCircle,
+  Calculator,
+  CheckSquare
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -55,6 +60,7 @@ const Resources = () => {
       readTime: "45 min read",
       tags: ["AI Automation", "Business Strategy", "ROI Analysis", "Implementation"],
       featured: true,
+      image: "/images/generated/ai-automation-guide.svg",
       content: `
         This comprehensive guide provides everything you need to know about implementing AI workflow automation in your business:
 
@@ -105,6 +111,7 @@ const Resources = () => {
       readTime: "Variable",
       tags: ["n8n", "Workflow Templates", "Automation", "Production Ready"],
       featured: true,
+      image: "/images/generated/workflow-optimization.svg",
       content: `
         **Customer Service Automation Templates:**
         - Ticket routing and escalation workflows
@@ -160,6 +167,7 @@ const Resources = () => {
       readTime: "30 min assessment",
       tags: ["AI Readiness", "Maturity Assessment", "Digital Transformation", "Strategy"],
       featured: false,
+      image: "/images/generated/ai-implementation.svg",
       content: `
         **Assessment Dimensions:**
 
@@ -640,16 +648,24 @@ const Resources = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredResources.map((resource) => (
                   <Card key={resource.id} className={`glass-card hover-lift ${resource.featured ? 'border-primary/50' : ''}`}>
+                    <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden rounded-t-lg">
+                      <img 
+                        src={resource.image || "/images/generated/ai-automation-guide.svg"} 
+                        alt={resource.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                      {resource.featured && (
+                        <Badge className="absolute top-4 right-4 bg-primary/20 text-primary border-primary/30">
+                          Featured
+                        </Badge>
+                      )}
+                    </div>
                     <CardHeader>
                       <div className="flex items-start justify-between mb-2">
                         <Badge variant="secondary" className="text-xs">
                           {resource.type}
                         </Badge>
-                        {resource.featured && (
-                          <Badge className="bg-primary/20 text-primary border-primary/30">
-                            Featured
-                          </Badge>
-                        )}
                       </div>
                       <CardTitle className="text-xl leading-tight">{resource.title}</CardTitle>
                       <CardDescription className="text-sm">{resource.description}</CardDescription>
@@ -781,7 +797,7 @@ const Resources = () => {
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div className="flex items-center gap-2">
                           <CheckCircle className="w-4 h-4 text-green-500" />
-                          100 evaluation criteria
+                          5-minute assessment
                         </div>
                         <div className="flex items-center gap-2">
                           <CheckCircle className="w-4 h-4 text-green-500" />
@@ -796,9 +812,20 @@ const Resources = () => {
                           Actionable insights
                         </div>
                       </div>
-                      <Button className="w-full">
-                        Start Assessment
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button className="w-full">
+                            <CheckSquare className="w-4 h-4 mr-2" />
+                            Start Assessment
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>AI Readiness Assessment</DialogTitle>
+                          </DialogHeader>
+                          <AIReadinessAssessment />
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </CardContent>
                 </Card>
@@ -833,9 +860,20 @@ const Resources = () => {
                           Scenario modeling
                         </div>
                       </div>
-                      <Button className="w-full">
-                        Calculate ROI
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button className="w-full">
+                            <Calculator className="w-4 h-4 mr-2" />
+                            Calculate ROI
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                          <DialogHeader>
+                            <DialogTitle>AI Automation ROI Calculator</DialogTitle>
+                          </DialogHeader>
+                          <ROICalculator />
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </CardContent>
                 </Card>

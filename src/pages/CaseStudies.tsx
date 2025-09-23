@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ConsultationModal from "@/components/modals/ConsultationModal";
+import { ReadMeButton, BlogThumbnail, PageHeader } from "@/components/ImageComponents";
 
 const CaseStudies = () => {
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
@@ -380,6 +381,26 @@ const CaseStudies = () => {
       technologies: ["Regulatory AI", "Document Processing", "Automated Reporting", "Risk Assessment"],
       timeframe: "5 months",
       category: "Financial AI Automation"
+    },
+    {
+      id: 6,
+      slug: "cloudscale-saas",
+      title: "SaaS Platform Achieves 500% User Growth Through AI Automation",
+      industry: "SaaS",
+      company: "CloudScale Solutions",
+      challenge: "Manual onboarding causing 35% user abandonment and 18% monthly churn rate",
+      solution: "AI-powered user onboarding, success automation, and predictive churn prevention",
+      results: [
+        { metric: "User Growth", value: "500% increase", icon: TrendingUp },
+        { metric: "Churn Reduction", value: "82% decrease", icon: Target },
+        { metric: "Onboarding Speed", value: "99% faster", icon: Clock },
+        { metric: "Support Efficiency", value: "84% reduction", icon: Users }
+      ],
+      description: "Transformed SaaS platform with intelligent automation, achieving explosive user growth while dramatically reducing churn and support overhead.",
+      technologies: ["User Analytics", "Behavioral AI", "Automated Onboarding", "Predictive Churn"],
+      timeframe: "9 months",
+      category: "SaaS Growth Automation",
+      hasDetailedCaseStudy: true
     }
   ];
 
@@ -401,9 +422,10 @@ const CaseStudies = () => {
         
         <main>
           {/* Hero Section */}
-          <section className="relative py-24 overflow-hidden">
+          <section className="relative overflow-hidden">
+            <PageHeader type="caseStudies" className="w-full" />
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5" />
-            <div className="container mx-auto px-6 relative">
+            <div className="container mx-auto px-6 relative py-12">
               <div className="flex items-center gap-4 mb-8">
                 <Link to="/" className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors">
                   <ArrowLeft className="h-4 w-4" />
@@ -412,22 +434,17 @@ const CaseStudies = () => {
               </div>
               
               <div className="max-w-4xl mx-auto text-center">
-                <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                  <span className="gradient-text">AI Automation</span><br />
-                  Success Stories
-                </h1>
                 <p className="text-xl md:text-2xl text-foreground/80 mb-8 leading-relaxed">
                   Real companies. Real results. See how industry leaders achieved <strong>300%+ ROI</strong> and 
                   transformed their operations with our AI automation solutions.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button 
-                    size="lg" 
-                    className="btn-hero"
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <ReadMeButton 
+                    variant="primary" 
+                    text="getStarted" 
                     onClick={() => setConsultationModalOpen(true)}
-                  >
-                    Get Your Custom Strategy
-                  </Button>
+                    className="mr-4"
+                  />
                   <Button size="lg" variant="outline" asChild>
                     <Link to="/services">View All Services</Link>
                   </Button>
@@ -456,31 +473,41 @@ const CaseStudies = () => {
           </section>
 
           {/* Case Studies Grid */}
-          <section className="py-24">
+          <section className="py-24 bg-gradient-to-br from-slate-50/50 to-blue-50/50 dark:from-slate-900/20 dark:to-blue-900/20">
             <div className="container mx-auto px-6">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                  <span className="gradient-text">Real Success Stories</span>
+                </h2>
+                <p className="text-xl text-foreground/80 max-w-3xl mx-auto">
+                  Discover how companies across industries achieved remarkable transformations with our AI automation solutions.
+                </p>
+              </div>
+              
               <div className="grid gap-8">
-                {filteredCaseStudies.map((study, index) => (
-                  <Card key={study.id} className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-border/50 backdrop-blur-sm">
-                    <CardHeader className="pb-4">
-                      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-3">
-                            <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-                              {study.category}
-                            </Badge>
-                            <Badge variant="outline">{study.industry}</Badge>
+                {filteredCaseStudies.length > 0 ? (
+                  filteredCaseStudies.map((study, index) => (
+                    <Card key={study.id} className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-border/50 backdrop-blur-sm bg-card/90">
+                      <CardHeader className="pb-4 bg-gradient-to-r from-primary/5 to-secondary/5">
+                        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-3">
+                              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                                {study.category}
+                              </Badge>
+                              <Badge variant="outline">{study.industry}</Badge>
+                            </div>
+                            <CardTitle className="text-2xl lg:text-3xl mb-3 leading-tight">
+                              {study.title}
+                            </CardTitle>
+                            <CardDescription className="text-lg text-foreground/70">
+                              <strong>{study.company}</strong> • {study.timeframe} implementation
+                            </CardDescription>
                           </div>
-                          <CardTitle className="text-2xl lg:text-3xl mb-3 leading-tight">
-                            {study.title}
-                          </CardTitle>
-                          <CardDescription className="text-lg text-foreground/70">
-                            <strong>{study.company}</strong> • {study.timeframe} implementation
-                          </CardDescription>
                         </div>
-                      </div>
-                    </CardHeader>
+                      </CardHeader>
                     
-                    <CardContent className="space-y-8">
+                    <CardContent className="space-y-8 p-8 bg-gradient-to-br from-card/90 to-card/70 backdrop-blur-sm">
                       {/* Challenge & Solution */}
                       <div className="grid lg:grid-cols-2 gap-8">
                         <div>
@@ -529,26 +556,42 @@ const CaseStudies = () => {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/50">
+                      <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border/50 items-center">
                         {study.hasDetailedCaseStudy && (
-                          <Button asChild className="flex-1">
-                            <Link to={`/case-studies/${study.slug}`}>
-                              <ExternalLink className="mr-2 h-4 w-4" />
-                              View Full Case Study
-                            </Link>
-                          </Button>
+                          <Link to={`/case-studies/${study.slug}`}>
+                            <ReadMeButton 
+                              variant="primary" 
+                              text="viewDetails" 
+                              className="mb-2"
+                            />
+                          </Link>
                         )}
-                        <Button 
-                          variant="outline" 
-                          className="flex-1"
+                        <ReadMeButton 
+                          variant="secondary" 
+                          text="learnMore" 
                           onClick={() => setConsultationModalOpen(true)}
-                        >
-                          Get Similar Results
-                        </Button>
+                          className="mb-2"
+                        />
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                ))
+                ) : (
+                  <div className="text-center py-16">
+                    <h3 className="text-2xl font-semibold mb-4 text-foreground/80">
+                      No case studies found for "{selectedIndustry}"
+                    </h3>
+                    <p className="text-foreground/60 mb-6">
+                      Try selecting a different industry or view all case studies.
+                    </p>
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedIndustry("All")}
+                    >
+                      View All Case Studies
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </section>

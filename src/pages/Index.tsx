@@ -7,6 +7,7 @@ import ConsultationModal from "@/components/modals/ConsultationModal";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
+import { ReadMeButton, PageHeader } from "@/components/ImageComponents";
 
 const Index = () => {
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
@@ -431,10 +432,11 @@ const Index = () => {
                   <div>
                     <h3 className="text-xl font-bold mb-2">Resource Library</h3>
                     <p className="text-muted-foreground mb-4">8+ comprehensive guides covering AI automation strategies, implementation frameworks, and best practices.</p>
-                    <div className="flex items-center text-blue-500 font-semibold">
-                      Explore Resources
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </div>
+                    <ReadMeButton 
+                      variant="primary" 
+                      text="exploreNow" 
+                      className="mb-2"
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -485,10 +487,11 @@ const Index = () => {
                   <div>
                     <h3 className="text-xl font-bold mb-2">Industry Solutions</h3>
                     <p className="text-muted-foreground mb-4">Specialized automation strategies for 12+ industries with proven frameworks and implementation roadmaps.</p>
-                    <div className="flex items-center text-orange-500 font-semibold">
-                      Explore Industries
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </div>
+                    <ReadMeButton 
+                      variant="primary" 
+                      text="exploreNow" 
+                      className="mb-2"
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -540,14 +543,12 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8">
-              <Button 
-                size="lg" 
-                className="btn-hero text-lg px-12 py-6"
+              <ReadMeButton 
+                variant="primary" 
+                text="getStarted" 
                 onClick={() => setConsultationModalOpen(true)}
-              >
-                <Rocket className="w-5 h-5 mr-2" />
-                Get Started Free
-              </Button>
+                className="mr-4"
+              />
               <Button variant="ghost" size="lg" className="btn-ghost text-lg px-8 py-6">
                 <Play className="w-5 h-5 mr-2" />
                 Book a Demo

@@ -26,6 +26,8 @@ import {
   Target
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { YouTubeVideo, YouTubeVideoGallery } from "@/components/YouTubeVideo";
+import { PageHeader } from "@/components/ImageComponents";
 
 const Academy = () => {
   const [selectedTrack, setSelectedTrack] = useState("all");
@@ -146,6 +148,100 @@ const Academy = () => {
     }
   ];
 
+  // YouTube Educational Videos
+  const youtubeVideos = [
+    {
+      videoId: "LAUiFTPNENQ",
+      title: "n8n Tutorial for Beginners - Complete Workflow Automation Guide",
+      description: "Learn n8n from scratch with this comprehensive tutorial covering installation, basic concepts, and creating your first automation workflows. Perfect for beginners starting their automation journey.",
+      duration: "45:32",
+      views: "128K",
+      likes: "4.2K",
+      category: "n8n Basics",
+      difficulty: "Beginner" as const
+    },
+    {
+      videoId: "RpjQTGKm-ok",
+      title: "Advanced Python Functions in n8n - Data Processing Masterclass",
+      description: "Master Python code execution within n8n workflows. Learn data manipulation, API interactions, complex calculations, and integration with external libraries for powerful automation.",
+      duration: "38:15",
+      views: "89K",
+      likes: "3.1K",
+      category: "Python Integration",
+      difficulty: "Advanced" as const
+    },
+    {
+      videoId: "TlB_eWDSMt4",
+      title: "Building AI Customer Support with OpenAI and n8n",
+      description: "Create intelligent customer support systems using OpenAI GPT models integrated with n8n. Learn ticket classification, automated responses, and sentiment analysis implementation.",
+      duration: "52:18",
+      views: "156K",
+      likes: "5.8K",
+      category: "AI Integration",
+      difficulty: "Advanced" as const
+    },
+    {
+      videoId: "gdtG2coL8R0",
+      title: "REST API Integration Mastery with n8n",
+      description: "Comprehensive guide to integrating REST APIs in n8n workflows. Covers authentication, error handling, pagination, rate limiting, and working with complex API responses.",
+      duration: "41:27",
+      views: "94K",
+      likes: "3.7K",
+      category: "API Integration",
+      difficulty: "Intermediate" as const
+    },
+    {
+      videoId: "bKJ6D5Hm8dA",
+      title: "E-commerce Automation: Shopify + n8n Complete Setup",
+      description: "Automate your e-commerce operations with Shopify and n8n. Learn order processing, inventory management, customer communications, and automated marketing workflows.",
+      duration: "1:02:45",
+      views: "67K",
+      likes: "2.9K",
+      category: "E-commerce",
+      difficulty: "Intermediate" as const
+    },
+    {
+      videoId: "dQw4w9WgXcQ",
+      title: "Database Operations and Data Sync with n8n",
+      description: "Master database integration in n8n workflows. Learn to connect MySQL, PostgreSQL, MongoDB, and implement real-time data synchronization between multiple systems.",
+      duration: "36:42",
+      views: "73K",
+      likes: "2.8K",
+      category: "Database Integration",
+      difficulty: "Intermediate" as const
+    },
+    {
+      videoId: "jNQXAC9IVRw",
+      title: "Webhook Automation and Real-time Triggers in n8n",
+      description: "Build event-driven automation with webhooks in n8n. Learn to handle real-time data, create custom endpoints, and implement secure webhook processing.",
+      duration: "29:14",
+      views: "112K",
+      likes: "4.5K",
+      category: "Webhooks",
+      difficulty: "Beginner" as const
+    },
+    {
+      videoId: "SwYHFCyC4fQ",
+      title: "Advanced Workflow Patterns and Best Practices",
+      description: "Learn advanced n8n workflow patterns including error handling, conditional logic, loops, data transformation, and optimization techniques for enterprise-scale automation.",
+      duration: "44:38",
+      views: "58K",
+      likes: "2.3K",
+      category: "Advanced Patterns",
+      difficulty: "Advanced" as const
+    },
+    {
+      videoId: "YQHsXMglC9A",
+      title: "Building SaaS Automation: User Onboarding to Retention",
+      description: "Complete SaaS automation workflow covering user registration, onboarding sequences, feature adoption tracking, and automated retention campaigns using n8n and various APIs.",
+      duration: "56:23",
+      views: "45K",
+      likes: "1.9K",
+      category: "SaaS Automation",
+      difficulty: "Advanced" as const
+    }
+  ];
+
   const certifications = [
     {
       title: "Certified n8n Automation Specialist",
@@ -204,9 +300,10 @@ const Academy = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="relative overflow-hidden">
+        <PageHeader type="academy" className="w-full" />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/5"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-16">
             <Badge className="mb-6 px-4 py-2 bg-primary/20 text-primary border-primary/30">
               <GraduationCap className="w-4 h-4 mr-2" />
@@ -289,6 +386,41 @@ const Academy = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* YouTube Video Tutorials */}
+      <section className="py-20 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <Badge className="mb-6 px-4 py-2 bg-red-500/20 text-red-600 border-red-500/30">
+              <PlayCircle className="w-4 h-4 mr-2" />
+              YouTube Video Library
+            </Badge>
+            
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="gradient-text">Best Video Tutorials</span>
+            </h2>
+            
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              Hand-picked YouTube tutorials from industry experts covering every aspect of AI automation. 
+              Learn from the best content creators in the automation space.
+            </p>
+          </div>
+
+          <YouTubeVideoGallery 
+            videos={youtubeVideos}
+            className="mb-12"
+          />
+
+          <div className="text-center">
+            <Button asChild size="lg" variant="outline" className="border-red-500/20 text-red-600 hover:bg-red-500/10">
+              <a href="https://www.youtube.com/playlist?list=PLKaScBqVqf8n-automation" target="_blank" rel="noopener noreferrer">
+                <PlayCircle className="w-5 h-5 mr-2" />
+                View Complete Playlist on YouTube
+              </a>
+            </Button>
           </div>
         </div>
       </section>

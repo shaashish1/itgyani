@@ -21,11 +21,13 @@ import Academy from "./pages/Academy";
 import Industries from "./pages/Industries";
 import Careers from "./pages/Careers";
 import Blog from "./pages/Blog";
+import BlogDetail from "./pages/BlogDetail";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import AdminBlogPage from "./pages/AdminBlogPage";
+import ImageShowcase from "./pages/ImageShowcase";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,11 +57,13 @@ const App = () => (
             <Route path="/industries" element={<Industries />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogDetail />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/admin/blog" element={<AdminBlogPage />} />
+            <Route path="/images" element={<ImageShowcase />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
