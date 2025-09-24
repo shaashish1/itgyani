@@ -161,7 +161,7 @@ const PrivacyPolicy = () => {
                   <li><strong>Restrict Processing:</strong> Request limitation of how we use your information</li>
                 </ul>
 
-                <p className="mt-4">To exercise these rights, contact us at <a href="mailto:privacy@itgyani.com" className="text-primary hover:underline">privacy@itgyani.com</a></p>
+                <p className="mt-4">To exercise these rights, contact us at <a href="mailto:ashish@itgyani.com" className="text-primary hover:underline">ashish@itgyani.com</a></p>
               </section>
 
               <section>
@@ -218,14 +218,14 @@ const PrivacyPolicy = () => {
                 
                 <div className="bg-card/50 p-6 rounded-lg border border-border/50 mt-4">
                   <p><strong>ITGYANI Privacy Team</strong></p>
-                  <p>Email: <a href="mailto:privacy@itgyani.com" className="text-primary hover:underline">privacy@itgyani.com</a></p>
+                  <p>Email: <a href="mailto:ashish@itgyani.com" className="text-primary hover:underline">ashish@itgyani.com</a></p>
                   <p>Phone: +1 (555) 123-4567</p>
                   <p>Address: 123 AI Innovation Drive, Tech Valley, CA 94000</p>
                 </div>
 
                 <p className="mt-4">
                   <strong>EU Representative:</strong> For users in the European Union, our representative can be contacted at 
-                  <a href="mailto:eu-privacy@itgyani.com" className="text-primary hover:underline ml-1">eu-privacy@itgyani.com</a>
+                  <a href="mailto:ashish@itgyani.com" className="text-primary hover:underline ml-1">ashish@itgyani.com</a>
                 </p>
               </section>
 

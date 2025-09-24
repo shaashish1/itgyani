@@ -357,7 +357,7 @@ const Careers = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button size="lg" className="btn-hero" asChild>
-                    <a href="mailto:careers@itgyani.com">Send Your Resume</a>
+                    <a href="mailto:ashish@itgyani.com">Send Your Resume</a>
                   </Button>
                   <Button size="lg" variant="outline" asChild>
                     <Link to="/#contact">Contact Us</Link>

@@ -416,7 +416,7 @@ const Academy = () => {
 
           <div className="text-center">
             <Button asChild size="lg" variant="outline" className="border-red-500/20 text-red-600 hover:bg-red-500/10">
-              <a href="https://www.youtube.com/playlist?list=PLKaScBqVqf8n-automation" target="_blank" rel="noopener noreferrer">
+              <a href="https://www.youtube.com/c/n8n-io" target="_blank" rel="noopener noreferrer">
                 <PlayCircle className="w-5 h-5 mr-2" />
                 View Complete Playlist on YouTube
               </a>

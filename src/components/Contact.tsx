@@ -22,7 +22,7 @@ function Contact() {
     {
       icon: <Mail className="h-5 w-5" />,
       title: "Email Us",
-      details: "hello@itgyani.ai",
+      details: "ashish@itgyani.com",
       action: "Send Email"
     },
     {
