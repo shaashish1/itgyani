@@ -319,69 +319,69 @@ const Academy = () => {
   // YouTube Educational Videos
   const youtubeVideos = [
     {
-      videoId: "LAUiFTPNENQ",
-      title: "n8n Tutorial for Beginners - Complete Workflow Automation Guide",
-      description: "Learn n8n from scratch with this comprehensive tutorial covering installation, basic concepts, and creating your first automation workflows. Perfect for beginners starting their automation journey.",
-      duration: "45:32",
-      views: "128K",
-      likes: "4.2K",
+      videoId: "CfD17vBCPEU",
+      title: "n8n Tutorial for Beginners - Complete AI Automation Guide",
+      description: "Complete 98-minute masterclass showing how to create AI-powered business automation from scratch. Build AI-powered email automation, smart customer support chatbot with sentiment analysis, and website & Telegram integration.",
+      duration: "1:38:12",
+      views: "45K",
+      likes: "1.8K",
       category: "n8n Basics",
       difficulty: "Beginner" as const
     },
     {
-      videoId: "RpjQTGKm-ok",
-      title: "Advanced Python Functions in n8n - Data Processing Masterclass",
-      description: "Master Python code execution within n8n workflows. Learn data manipulation, API interactions, complex calculations, and integration with external libraries for powerful automation.",
-      duration: "38:15",
-      views: "89K",
-      likes: "3.1K",
-      category: "Python Integration",
-      difficulty: "Advanced" as const
-    },
-    {
-      videoId: "TlB_eWDSMt4",
-      title: "Building AI Customer Support with OpenAI and n8n",
-      description: "Create intelligent customer support systems using OpenAI GPT models integrated with n8n. Learn ticket classification, automated responses, and sentiment analysis implementation.",
-      duration: "52:18",
+      videoId: "2GZ2SNXWK-c",
+      title: "N8N FULL COURSE 6 HOURS - Build & Sell AI Automations + Agents",
+      description: "Complete 6-hour course covering everything from basics to advanced AI automation. Learn to build and sell AI automations and agents using n8n platform with real-world examples.",
+      duration: "6:00:00",
       views: "156K",
       likes: "5.8K",
-      category: "AI Integration",
+      category: "Advanced AI",
       difficulty: "Advanced" as const
     },
     {
-      videoId: "gdtG2coL8R0",
-      title: "REST API Integration Mastery with n8n",
-      description: "Comprehensive guide to integrating REST APIs in n8n workflows. Covers authentication, error handling, pagination, rate limiting, and working with complex API responses.",
+      videoId: "ufk_qiAhiqw",
+      title: "Master n8n in 1 Hour - Automate Workflows & Build AI Agents",
+      description: "Learn n8n fundamentals in just 1 hour. Covers first workflow, data transformation, routing, using AI in workflows, debugging, HTTP nodes, AI agents, and looping patterns.",
+      duration: "1:00:00",
+      views: "89K",
+      likes: "3.1K",
+      category: "Quick Start",
+      difficulty: "Intermediate" as const
+    },
+    {
+      videoId: "lK3veuZAg0c",
+      title: "Step-by-Step: N8N Webhooks (From Beginner to Pro)",
+      description: "Detailed walkthrough of how the N8N webhook node functions, including practical examples and advanced webhook patterns. Learn to build event-driven automation systems.",
       duration: "41:27",
       views: "94K",
       likes: "3.7K",
-      category: "API Integration",
+      category: "Webhooks",
       difficulty: "Intermediate" as const
     },
     {
-      videoId: "bKJ6D5Hm8dA",
-      title: "E-commerce Automation: Shopify + n8n Complete Setup",
-      description: "Automate your e-commerce operations with Shopify and n8n. Learn order processing, inventory management, customer communications, and automated marketing workflows.",
-      duration: "1:02:45",
+      videoId: "3hDQGhcmBg4",
+      title: "How To Connect ChatGPT To N8N In Minutes!",
+      description: "Quick tutorial showing exactly how to connect ChatGPT to n8n step by step. Learn to set up OpenAI credentials, avoid common errors, understand pricing, and pick the right ChatGPT model.",
+      duration: "12:45",
       views: "67K",
       likes: "2.9K",
-      category: "E-commerce",
-      difficulty: "Intermediate" as const
+      category: "AI Integration",
+      difficulty: "Beginner" as const
     },
     {
-      videoId: "dQw4w9WgXcQ",
-      title: "Database Operations and Data Sync with n8n",
-      description: "Master database integration in n8n workflows. Learn to connect MySQL, PostgreSQL, MongoDB, and implement real-time data synchronization between multiple systems.",
+      videoId: "dcuxyPuwV7k",
+      title: "N8N + Postgres Event-Driven Workflows",
+      description: "Learn to trigger automations in n8n based on database changes in PostgreSQL without constantly polling. Use Postgres triggers and functions for real-time automation.",
       duration: "36:42",
       views: "73K",
       likes: "2.8K",
       category: "Database Integration",
-      difficulty: "Intermediate" as const
+      difficulty: "Advanced" as const
     },
     {
-      videoId: "jNQXAC9IVRw",
-      title: "Webhook Automation and Real-time Triggers in n8n",
-      description: "Build event-driven automation with webhooks in n8n. Learn to handle real-time data, create custom endpoints, and implement secure webhook processing.",
+      videoId: "2oea8rihdGM",
+      title: "How to Use Webhooks in n8n (Step-by-Step Beginner's Guide)",
+      description: "Clear, beginner-friendly walkthrough of webhooks in n8n. Learn to set up webhook triggers, parse incoming payloads, and build responsive automation workflows.",
       duration: "29:14",
       views: "112K",
       likes: "4.5K",
@@ -389,24 +389,54 @@ const Academy = () => {
       difficulty: "Beginner" as const
     },
     {
-      videoId: "SwYHFCyC4fQ",
-      title: "Advanced Workflow Patterns and Best Practices",
-      description: "Learn advanced n8n workflow patterns including error handling, conditional logic, loops, data transformation, and optimization techniques for enterprise-scale automation.",
-      duration: "44:38",
+      videoId: "DkV7ztrhLh8",
+      title: "Complete n8n Masterclass: Build AI Agents & Automate (7.5 Hours)",
+      description: "All-in-one guide to mastering n8n with AI integration, agent-based automation, and product-building skills. Complete masterclass from beginner to professional level.",
+      duration: "7:30:00",
       views: "58K",
       likes: "2.3K",
-      category: "Advanced Patterns",
+      category: "Masterclass",
       difficulty: "Advanced" as const
     },
     {
-      videoId: "YQHsXMglC9A",
-      title: "Building SaaS Automation: User Onboarding to Retention",
-      description: "Complete SaaS automation workflow covering user registration, onboarding sequences, feature adoption tracking, and automated retention campaigns using n8n and various APIs.",
-      duration: "56:23",
+      videoId: "RRIgP3Msgqs",
+      title: "n8n Tutorial For Beginners: Set Up AI Agents That Save You Hours",
+      description: "Learn to build AI agents using n8n self-hosted that automate repetitive tasks without coding. Includes a real-life, practical AI agent example for YouTube workflow automation.",
+      duration: "45:23",
       views: "45K",
       likes: "1.9K",
-      category: "SaaS Automation",
+      category: "AI Agents",
+      difficulty: "Beginner" as const
+    },
+    {
+      videoId: "cgbtHBVmMFc",
+      title: "n8n Tutorial: Understanding Webhooks, If/Switch and API Nodes",
+      description: "Develop deeper understanding of n8n by learning webhooks, API calls, and workflow routing using If/Switch nodes. Build a custom API while mastering core concepts.",
+      duration: "35:18",
+      views: "89K",
+      likes: "3.4K",
+      category: "API Integration",
+      difficulty: "Intermediate" as const
+    },
+    {
+      videoId: "FNFL_jsbnyE",
+      title: "Easy Tutorial on OpenAI ChatGPT AI Agents in n8n",
+      description: "Learn to properly create OpenAI ChatGPT AI Agents in n8n. Comprehensive tutorial covering AI agent setup, configuration, and advanced automation patterns.",
+      duration: "52:12",
+      views: "67K",
+      likes: "2.7K",
+      category: "AI Agents",
       difficulty: "Advanced" as const
+    },
+    {
+      videoId: "AURnISajubk",
+      title: "Master n8n in 2 Hours: Complete Beginner's Guide for 2025",
+      description: "Full masterclass on n8n covering everything you need to know to go from beginner to professional. Updated for 2025 with latest features and best practices.",
+      duration: "2:00:00",
+      views: "78K",
+      likes: "3.2K",
+      category: "Complete Guide",
+      difficulty: "Beginner" as const
     }
   ];
 
