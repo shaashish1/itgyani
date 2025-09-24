@@ -1,4 +1,5 @@
 import { useState } from "react";
+import resourcesHeroImage from "@/assets/resources-hero.jpg";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
@@ -60,7 +61,7 @@ const Resources = () => {
       readTime: "45 min read",
       tags: ["AI Automation", "Business Strategy", "ROI Analysis", "Implementation"],
       featured: true,
-      image: "/images/generated/ai-automation-guide.svg",
+      image: resourcesHeroImage,
       content: `
         This comprehensive guide provides everything you need to know about implementing AI workflow automation in your business:
 

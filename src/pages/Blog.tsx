@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import blogDefaultImage from "@/assets/blog-default.jpg";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
@@ -71,7 +72,7 @@ const Blog = () => {
         openGraph: {
           title: "The Ultimate Guide to AI Automation in 2024",
           description: "Transform your business with AI automation strategies",
-          image: "/hero-bg.jpg"
+          image: blogDefaultImage
         }
       },
       wordCount: 2500,
@@ -96,7 +97,7 @@ const Blog = () => {
         openGraph: {
           title: "Building Intelligent Business Workflows",
           description: "Combine n8n and AI for powerful automation",
-          image: "/hero-bg.jpg"
+          image: blogDefaultImage
         }
       },
       wordCount: 1800,
@@ -121,7 +122,7 @@ const Blog = () => {
         openGraph: {
           title: "Digital Transformation Success Stories",
           description: "Real ROI from AI implementation case studies",
-          image: "/hero-bg.jpg"
+          image: blogDefaultImage
         }
       },
       wordCount: 2200,

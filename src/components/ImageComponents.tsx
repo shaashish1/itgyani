@@ -5,6 +5,15 @@
 
 import React from 'react';
 
+// Blog images and hero images
+import blogDefaultImage from "@/assets/blog-default.jpg";
+import academyHeroImage from "@/assets/academy-hero.jpg";
+import caseStudyHeroImage from "@/assets/case-study-hero.jpg";
+import servicesHeroImage from "@/assets/services-hero.jpg";
+import contactHeroImage from "@/assets/contact-hero.jpg";
+import resourcesHeroImage from "@/assets/resources-hero.jpg";
+import aboutHeroImage from "@/assets/about-hero.jpg";
+
 // Image paths configuration
 const IMAGE_PATHS = {
   buttons: {
@@ -28,13 +37,13 @@ const IMAGE_PATHS = {
   },
   
   pageHeaders: {
-    services: '/images/generated/services-header.svg',
-    caseStudies: '/images/generated/case-studies-header.svg',
-    blog: '/images/generated/blog-header.svg',
-    about: '/images/generated/about-header.svg',
-    contact: '/images/generated/contact-header.svg',
-    resources: '/images/generated/resources-header.svg',
-    academy: '/images/generated/academy-header.svg'
+    services: servicesHeroImage,
+    caseStudies: caseStudyHeroImage,
+    blog: blogDefaultImage,
+    about: aboutHeroImage,
+    contact: contactHeroImage,
+    resources: resourcesHeroImage,
+    academy: academyHeroImage
   },
   
   social: {

@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from "react";
+import caseStudyHeroImage from "@/assets/case-study-hero.jpg";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -178,7 +179,7 @@ const CaseStudyDetail = () => {
         quote: "The AI automation transformation exceeded every expectation. We not only solved our operational challenges but achieved growth we never thought possible. The ROI was evident within the first month.",
         author: "Sarah Mitchell",
         title: "CEO, TechFlow Electronics",
-        image: "/hero-bg.jpg"
+        image: caseStudyHeroImage
       },
 
       // Next Steps

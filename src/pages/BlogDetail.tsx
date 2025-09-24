@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import blogDefaultImage from "@/assets/blog-default.jpg";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -359,7 +360,7 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
           openGraph: {
             title: "The Ultimate Guide to AI Automation in 2024",
             description: "Transform your business with AI automation strategies",
-            image: "/hero-bg.jpg"
+            image: blogDefaultImage
           }
         },
         wordCount: 2500,
@@ -392,7 +393,7 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
           openGraph: {
             title: "Building Your First AI Automation Workflow",
             description: "Learn to build your first AI automation workflow",
-            image: "/default-og-image.jpg"
+            image: blogDefaultImage
           }
         },
         wordCount: 1500,
@@ -439,7 +440,7 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
       <meta name="keywords" content={blogPost.seo?.keywords?.join(", ")} />
       <meta property="og:title" content={blogPost.seo?.openGraph?.title || blogPost.title} />
       <meta property="og:description" content={blogPost.seo?.openGraph?.description || blogPost.excerpt} />
-      <meta property="og:image" content={blogPost.seo?.openGraph?.image || "/hero-bg.jpg"} />
+      <meta property="og:image" content={blogPost.seo?.openGraph?.image || blogDefaultImage} />
       
       <div className="min-h-screen bg-background">
         <Header />

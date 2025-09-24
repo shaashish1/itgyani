@@ -8,6 +8,7 @@ import { openRouterBlogService, BlogGenerationRequest } from './openRouterBlog';
 import { huggingFaceImageService } from './huggingFaceImageBrowser';
 import { blogSchedulingService } from './blogSchedulingBrowser';
 import { blogStorageService, BlogPost } from './blogStorageBrowser';
+import blogDefaultImage from "../assets/blog-default.jpg";
 
 export interface BlogCreationRequest {
   topic: string;
@@ -113,7 +114,7 @@ class AIBlogIntegrationService {
           openGraph: {
             title: generatedContent.title,
             description: generatedContent.metaDescription,
-            image: blogImages[0]?.url || '/default-og-image.jpg'
+            image: blogDefaultImage || '/default-og-image.jpg'
           }
         },
         generatedBy: 'AI Blog System',

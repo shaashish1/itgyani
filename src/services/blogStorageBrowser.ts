@@ -4,6 +4,8 @@
  * Uses localStorage and IndexedDB for browser-based storage
  */
 
+import blogDefaultImage from "../assets/blog-default.jpg";
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -145,7 +147,7 @@ class BrowserBlogStorageService {
           openGraph: {
             title: blogData.title || 'Untitled Post',
             description: blogData.metaDescription || '',
-            image: blogData.featuredImage || '/default-og-image.jpg'
+            image: blogDefaultImage || '/default-og-image.jpg'
           }
         },
         wordCount,
