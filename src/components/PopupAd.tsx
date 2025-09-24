@@ -13,11 +13,6 @@ interface PopupAdProps {
   className?: string;
 }
 
-declare global {
-  interface Window {
-    adsbygoogle?: any[];
-  }
-}
 
 const PopupAd: React.FC<PopupAdProps> = ({
   type,

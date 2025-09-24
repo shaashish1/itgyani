@@ -38,7 +38,7 @@ const BlogDetail = () => {
       setLoading(true);
       
       // Try to load from storage first
-      const result = await blogStorageService.getBlogPost(postSlug);
+      const result = await blogStorageService.loadBlogPost(postSlug);
       
       if (result.success && result.data) {
         setBlogPost(result.data);
@@ -387,6 +387,14 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
         updatedAt: new Date("2024-01-20"),
         status: "published",
         metaDescription: "Learn to build your first AI automation workflow",
+        seo: {
+          keywords: ["Getting Started", "Tutorial"],
+          openGraph: {
+            title: "Building Your First AI Automation Workflow",
+            description: "Learn to build your first AI automation workflow",
+            image: "/default-og-image.jpg"
+          }
+        },
         wordCount: 1500,
         readingTime: 8,
         generatedBy: "Demo Content"
