@@ -1,5 +1,13 @@
 import { useState } from "react";
 import resourcesHeroImage from "@/assets/resources-hero.jpg";
+import resourceN8nGuide from "@/assets/resource-n8n-guide.jpg";
+import resourceTemplates from "@/assets/resource-templates.jpg";
+import resourceAiAssessment from "@/assets/resource-ai-assessment.jpg";
+import resourceMarketingAutomation from "@/assets/resource-marketing-automation.jpg";
+import resourceCustomerService from "@/assets/resource-customer-service.jpg";
+import resourceEcommerce from "@/assets/resource-ecommerce.jpg";
+import resourceFinancial from "@/assets/resource-financial.jpg";
+import resourceHealthcare from "@/assets/resource-healthcare.jpg";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
@@ -61,7 +69,7 @@ const Resources = () => {
       readTime: "45 min read",
       tags: ["AI Automation", "Business Strategy", "ROI Analysis", "Implementation"],
       featured: true,
-      image: resourcesHeroImage,
+      image: resourceN8nGuide,
       content: `
         This comprehensive guide provides everything you need to know about implementing AI workflow automation in your business:
 
@@ -112,7 +120,7 @@ const Resources = () => {
       readTime: "Variable",
       tags: ["n8n", "Workflow Templates", "Automation", "Production Ready"],
       featured: true,
-      image: "/images/generated/workflow-optimization.svg",
+      image: resourceTemplates,
       content: `
         **Customer Service Automation Templates:**
         - Ticket routing and escalation workflows
@@ -168,7 +176,7 @@ const Resources = () => {
       readTime: "30 min assessment",
       tags: ["AI Readiness", "Maturity Assessment", "Digital Transformation", "Strategy"],
       featured: false,
-      image: "/images/generated/ai-implementation.svg",
+      image: resourceAiAssessment,
       content: `
         **Assessment Dimensions:**
 
@@ -221,6 +229,7 @@ const Resources = () => {
       readTime: "3 hours",
       tags: ["Business Intelligence", "Data Analytics", "Decision Making", "Automation"],
       featured: false,
+      image: resourceMarketingAutomation,
       content: `
         **Module 1: BI Automation Fundamentals (30 minutes)**
         - Traditional BI vs Automated BI
@@ -269,6 +278,7 @@ const Resources = () => {
       readTime: "35 min read",
       tags: ["Customer Service", "AI Chatbots", "Automation", "CX Optimization"],
       featured: false,
+      image: resourceCustomerService,
       content: `
         **Executive Summary:**
         This guide presents a comprehensive approach to revolutionizing customer service through AI automation, based on successful implementations across 150+ companies.
@@ -330,6 +340,7 @@ const Resources = () => {
       readTime: "4 hours",
       tags: ["E-commerce", "Sales Automation", "Revenue Optimization", "Customer Retention"],
       featured: true,
+      image: resourceEcommerce,
       content: `
         **Section 1: E-commerce Automation Strategy**
         - Market analysis and competitive positioning
@@ -389,6 +400,7 @@ const Resources = () => {
       readTime: "50 min read",
       tags: ["Financial Services", "Risk Management", "Compliance", "Algorithmic Trading"],
       featured: false,
+      image: resourceFinancial,
       content: `
         **Introduction to Financial AI Automation:**
         The financial services industry is undergoing rapid transformation through AI automation. This guide provides a roadmap for implementation while maintaining regulatory compliance and risk management standards.
@@ -452,6 +464,7 @@ const Resources = () => {
       readTime: "40 min read",
       tags: ["Healthcare", "Patient Care", "Clinical Workflows", "HIPAA Compliance"],
       featured: false,
+      image: resourceHealthcare,
       content: `
         **Healthcare AI Automation Overview:**
         Healthcare automation requires special consideration for patient privacy, regulatory compliance, and clinical safety. This guide provides proven frameworks for successful implementation.
