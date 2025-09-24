@@ -686,9 +686,20 @@ const CaseStudyDetail = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 {Object.entries(caseStudy.metrics).map(([key, metric]) => (
                   <Card key={key} className="p-4 text-center">
-                    <div className="text-2xl font-bold text-primary mb-1">
-                      {typeof metric === 'object' && 'improvement' in metric ? String(metric.improvement) : String(metric)}
-                    </div>
+                     <div className="text-2xl font-bold text-primary mb-1">
+                       {(() => {
+                         if (typeof metric === 'object' && metric !== null) {
+                           // Handle objects with improvement/increase/reduction properties
+                           if ('improvement' in metric) return metric.improvement;
+                           if ('increase' in metric) return `+${metric.increase}`;
+                           if ('reduction' in metric) return `-${metric.reduction}`;
+                           // Fallback to first available value
+                           return Object.values(metric)[0] || '';
+                         }
+                         // Handle direct string values
+                         return String(metric);
+                       })()}
+                     </div>
                     <div className="text-sm text-foreground/70 capitalize">
                       {key.replace(/([A-Z])/g, ' $1').trim()}
                     </div>
