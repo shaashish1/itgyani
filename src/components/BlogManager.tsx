@@ -438,7 +438,7 @@ const BlogManager: React.FC<BlogManagerProps> = ({ className = '' }) => {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  {generatedBlog.tags?.map((tag: string, index: number) => (
+                  {(generatedBlog.tags || []).map((tag: string, index: number) => (
                     <Badge key={index} variant="secondary">{tag}</Badge>
                   ))}
                 </div>
@@ -451,7 +451,7 @@ const BlogManager: React.FC<BlogManagerProps> = ({ className = '' }) => {
                   <div>
                     <h4 className="font-medium mb-2">Generated Images:</h4>
                     <div className="grid grid-cols-2 gap-2">
-                      {generatedBlog.images.map((image: any, index: number) => (
+                      {(generatedBlog.images || []).map((image: any, index: number) => (
                         <img 
                           key={index}
                           src={image.url} 
@@ -665,7 +665,7 @@ const BlogManager: React.FC<BlogManagerProps> = ({ className = '' }) => {
                 {scheduledBlogs.length === 0 ? (
                   <p className="text-center text-gray-500 py-8">No scheduled blogs found</p>
                 ) : (
-                  scheduledBlogs.map((blog) => (
+                  (scheduledBlogs || []).map((blog) => (
                     <div key={blog.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-3">
                         {getStatusIcon(blog.status)}
