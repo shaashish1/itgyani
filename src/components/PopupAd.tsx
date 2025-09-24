@@ -140,7 +140,7 @@ const PopupAd: React.FC<PopupAdProps> = ({
 
   // Initialize AdSense
   useEffect(() => {
-    if (isVisible && window.adsbygoogle) {
+    if (isVisible && typeof window !== 'undefined' && window.adsbygoogle) {
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (err) {

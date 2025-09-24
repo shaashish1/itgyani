@@ -14,9 +14,8 @@ const AdSenseControlPanel: React.FC = () => {
   const [showPanel, setShowPanel] = useState(false);
   const config = getAdSenseConfig();
 
-  if (process.env.NODE_ENV === 'production') {
-    return null; // Hide in production
-  }
+  // Always hide in production-like environments
+  return null;
 
   return (
     <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999 }}>

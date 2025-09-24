@@ -144,11 +144,9 @@ export const ADSENSE_CONFIG = {
 export const getAdSenseConfig = () => {
   const config = { ...ADSENSE_CONFIG };
   
-  // Production vs Development settings
-  if (process.env.NODE_ENV === 'development') {
-    config.testMode = true;
-    config.popups.enabled = false; // No popups in development
-  }
+  // Use safe defaults for browser environment
+  config.testMode = true; // Default to test mode for safety
+  config.popups.enabled = false; // No popups by default
   
   // Test mode configuration
   if (config.testMode) {

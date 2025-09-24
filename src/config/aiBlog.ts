@@ -248,16 +248,9 @@ export const AI_BLOG_CONFIG = {
 export const getAIBlogConfig = () => {
   const config = { ...AI_BLOG_CONFIG };
   
-  // Production overrides
-  if (process.env.NODE_ENV === 'production') {
-    config.debug = false;
-    config.scheduling.publishing.autoPublish = false; // Always require manual approval in production
-  }
-  
-  // Environment variable overrides
-  if (process.env.OPENROUTER_API_KEY) {
-    config.openRouter.apiKey = process.env.OPENROUTER_API_KEY;
-  }
+  // Always use safe defaults for browser environment
+  config.debug = false;
+  config.scheduling.publishing.autoPublish = false; // Always require manual approval
   
   return config;
 };

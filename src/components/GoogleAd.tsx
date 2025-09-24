@@ -18,12 +18,6 @@ interface GoogleAdProps {
     | 'header' | 'contentTop' | 'contentMiddle' | 'contentBottom' | 'sidebar' | 'footer' | 'auto';
 }
 
-declare global {
-  interface Window {
-    adsbygoogle?: any[];
-  }
-}
-
 const GoogleAd = ({
   adSlot,
   adFormat = "auto", 
@@ -86,8 +80,8 @@ const GoogleAd = ({
           />
         </div>
         
-        {/* Development/Debug Info - Remove in production */}
-        {process.env.NODE_ENV === 'development' && (
+        {/* Development/Debug Info - Disabled for browser compatibility */}
+        {false && (
           <div className="text-xs text-gray-500 text-center mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
             📢 AdSense Debug: Publisher ID {ADSENSE_CONFIG.publisherId} | Slot: {actualAdSlot} | Position: {position} | Format: {adFormat}
           </div>
