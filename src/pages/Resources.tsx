@@ -525,6 +525,7 @@ const Resources = () => {
       id: 1,
       title: "The Future of Work: AI Automation Impact on Employment and Skills",
       description: "Research-based analysis of how AI automation is reshaping the job market, creating new opportunities, and transforming skill requirements across industries.",
+      category: "White Papers",
       downloadCount: "15.2K+",
       pages: 42,
       tags: ["Future of Work", "Employment", "Skills Development", "Industry Analysis"]
@@ -533,6 +534,7 @@ const Resources = () => {
       id: 2,
       title: "ROI Analysis: Quantifying the Business Value of AI Automation",
       description: "Comprehensive methodology for calculating and measuring the return on investment from AI automation initiatives, with real-world data and benchmarks.",
+      category: "White Papers",
       downloadCount: "11.8K+",
       pages: 38,
       tags: ["ROI Analysis", "Business Value", "Financial Metrics", "Performance Measurement"]
@@ -541,6 +543,7 @@ const Resources = () => {
       id: 3,
       title: "Security and Compliance in AI Automation: Best Practices Guide",
       description: "Essential security frameworks, compliance requirements, and risk management strategies for implementing AI automation in regulated industries.",
+      category: "White Papers",
       downloadCount: "9.4K+",
       pages: 35,
       tags: ["Security", "Compliance", "Risk Management", "Governance"]
@@ -554,7 +557,9 @@ const Resources = () => {
       duration: "45 minutes",
       difficulty: "Beginner",
       views: "28.5K",
-      description: "Step-by-step tutorial for creating your first automated workflow using n8n and AI components."
+      category: "Video Tutorials",
+      description: "Step-by-step tutorial for creating your first automated workflow using n8n and AI components.",
+      tags: ["n8n Workflows", "AI Implementation", "Automation Guides"]
     },
     {
       id: 2,
@@ -562,7 +567,9 @@ const Resources = () => {
       duration: "1 hour 15 minutes", 
       difficulty: "Advanced",
       views: "12.3K",
-      description: "Deep dive into complex data processing workflows, machine learning integration, and performance optimization."
+      category: "Video Tutorials",
+      description: "Deep dive into complex data processing workflows, machine learning integration, and performance optimization.",
+      tags: ["Business Intelligence", "AI Implementation", "Automation Guides"]
     },
     {
       id: 3,
@@ -570,7 +577,9 @@ const Resources = () => {
       duration: "55 minutes",
       difficulty: "Intermediate",
       views: "19.7K",
-      description: "Complete guide to building intelligent chatbots for customer service with natural language processing."
+      category: "Video Tutorials",
+      description: "Complete guide to building intelligent chatbots for customer service with natural language processing.",
+      tags: ["AI Implementation", "Case Studies", "Automation Guides"]
     }
   ];
 
@@ -579,6 +588,22 @@ const Resources = () => {
                          resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resource.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === "All" || resource.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const filteredWhitepapers = whitepapers.filter(paper => {
+    const matchesSearch = paper.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         paper.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         paper.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = selectedCategory === "All" || paper.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const filteredVideoTutorials = videoTutorials.filter(video => {
+    const matchesSearch = video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         video.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         video.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = selectedCategory === "All" || video.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -745,7 +770,7 @@ const Resources = () => {
 
             <TabsContent value="whitepapers">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {whitepapers.map((paper) => (
+                {filteredWhitepapers.map((paper) => (
                   <Card key={paper.id} className="glass-card hover-lift">
                     <CardHeader>
                       <Badge variant="secondary" className="w-fit text-xs mb-2">
@@ -807,7 +832,7 @@ const Resources = () => {
 
             <TabsContent value="videos">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {videoTutorials.map((video) => (
+                {filteredVideoTutorials.map((video) => (
                   <Card key={video.id} className="glass-card hover-lift">
                     <CardHeader>
                       <Badge variant="secondary" className="w-fit text-xs mb-2">
