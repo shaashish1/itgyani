@@ -583,6 +583,237 @@ const Resources = () => {
     }
   ];
 
+  const workflowUseCases = [
+    {
+      id: 1,
+      title: "Communication & Messaging Automations",
+      description: "Streamline team communication with Telegram, Discord, Slack, and WhatsApp workflow automations.",
+      category: "n8n Workflows",
+      type: "Workflow Collection",
+      workflowCount: "180+",
+      integrations: ["Telegram", "Discord", "Slack", "WhatsApp", "Teams", "SMS"],
+      complexity: "Low to High",
+      tags: ["Communication", "Team Collaboration", "Notifications", "Chat Automation"],
+      useCases: [
+        "Automated team notifications and alerts",
+        "Customer support chatbot workflows",
+        "Cross-platform message synchronization",
+        "Incident response communication chains",
+        "Meeting scheduling and reminders",
+        "Social media monitoring and responses"
+      ]
+    },
+    {
+      id: 2,
+      title: "AI & Machine Learning Workflows",
+      description: "Leverage OpenAI, Anthropic, and Hugging Face APIs for intelligent automation and content generation.",
+      category: "n8n Workflows",
+      type: "AI Collection",
+      workflowCount: "250+",
+      integrations: ["OpenAI", "Anthropic", "Hugging Face", "Stable Diffusion", "Whisper"],
+      complexity: "Medium to High",
+      tags: ["AI", "Machine Learning", "Content Generation", "Data Analysis"],
+      useCases: [
+        "Automated content creation and copywriting",
+        "Document analysis and summarization",
+        "Image generation and processing",
+        "Sentiment analysis and customer feedback",
+        "Language translation and localization",
+        "Code generation and review automation"
+      ]
+    },
+    {
+      id: 3,
+      title: "Database & Data Processing Workflows",
+      description: "Automate data operations across PostgreSQL, MySQL, MongoDB, and cloud databases.",
+      category: "n8n Workflows",
+      type: "Data Collection",
+      workflowCount: "195+",
+      integrations: ["PostgreSQL", "MySQL", "MongoDB", "Airtable", "Redis", "InfluxDB"],
+      complexity: "Medium to High",
+      tags: ["Database", "Data Processing", "ETL", "Analytics"],
+      useCases: [
+        "Automated data backup and synchronization",
+        "Real-time data pipeline automation",
+        "Database monitoring and alerting",
+        "ETL processes for data warehousing",
+        "Data quality validation and cleaning",
+        "Automated reporting and dashboard updates"
+      ]
+    },
+    {
+      id: 4,
+      title: "E-commerce & Retail Automations",
+      description: "Optimize online stores with Shopify, Stripe, and payment processing workflow automations.",
+      category: "n8n Workflows",
+      type: "Business Collection",
+      workflowCount: "160+",
+      integrations: ["Shopify", "WooCommerce", "Stripe", "PayPal", "Square", "Magento"],
+      complexity: "Medium",
+      tags: ["E-commerce", "Payments", "Inventory", "Customer Service"],
+      useCases: [
+        "Automated order processing and fulfillment",
+        "Inventory management and stock alerts",
+        "Customer onboarding and lifecycle emails",
+        "Payment processing and refund automation",
+        "Product data synchronization",
+        "Abandoned cart recovery campaigns"
+      ]
+    },
+    {
+      id: 5,
+      title: "Cloud Storage & File Management",
+      description: "Automate file operations across Google Drive, Dropbox, OneDrive, and document processing.",
+      category: "n8n Workflows",
+      type: "Productivity Collection",
+      workflowCount: "140+",
+      integrations: ["Google Drive", "Dropbox", "OneDrive", "Box", "Amazon S3", "FTP"],
+      complexity: "Low to Medium",
+      tags: ["File Management", "Cloud Storage", "Document Processing", "Backup"],
+      useCases: [
+        "Automated file backup and archiving",
+        "Document conversion and processing",
+        "File synchronization across platforms",
+        "Automated folder organization",
+        "Document approval workflows",
+        "Media processing and optimization"
+      ]
+    },
+    {
+      id: 6,
+      title: "Marketing & Advertising Automation",
+      description: "Scale marketing campaigns with email automation, social media, and lead generation workflows.",
+      category: "n8n Workflows",
+      type: "Marketing Collection",
+      workflowCount: "175+",
+      integrations: ["Mailchimp", "HubSpot", "Facebook Ads", "Google Ads", "LinkedIn", "Twitter"],
+      complexity: "Medium",
+      tags: ["Marketing", "Email Automation", "Social Media", "Lead Generation"],
+      useCases: [
+        "Automated email marketing campaigns",
+        "Social media posting and engagement",
+        "Lead scoring and qualification",
+        "Marketing attribution tracking",
+        "A/B testing automation",
+        "Customer segmentation and targeting"
+      ]
+    },
+    {
+      id: 7,
+      title: "CRM & Sales Process Automation",
+      description: "Streamline sales operations with Salesforce, HubSpot, and pipeline management workflows.",
+      category: "n8n Workflows",
+      type: "Sales Collection",
+      workflowCount: "130+",
+      integrations: ["Salesforce", "HubSpot", "Pipedrive", "Zoho CRM", "ActiveCampaign"],
+      complexity: "Medium to High",
+      tags: ["CRM", "Sales", "Pipeline Management", "Customer Relations"],
+      useCases: [
+        "Automated lead capture and routing",
+        "Sales pipeline progression tracking",
+        "Customer onboarding sequences",
+        "Follow-up task automation",
+        "Deal stage notifications",
+        "Sales performance reporting"
+      ]
+    },
+    {
+      id: 8,
+      title: "Project Management Workflows",
+      description: "Enhance team productivity with Jira, GitHub, Trello, and Asana automation workflows.",
+      category: "n8n Workflows",
+      type: "Productivity Collection",
+      workflowCount: "120+",
+      integrations: ["Jira", "GitHub", "Trello", "Asana", "Monday.com", "ClickUp"],
+      complexity: "Medium",
+      tags: ["Project Management", "Team Collaboration", "Task Automation", "DevOps"],
+      useCases: [
+        "Automated task creation and assignment",
+        "Project status tracking and reporting",
+        "Code deployment notifications",
+        "Bug tracking and resolution workflows",
+        "Sprint planning automation",
+        "Time tracking and billing integration"
+      ]
+    },
+    {
+      id: 9,
+      title: "Social Media Management",
+      description: "Automate social media presence across LinkedIn, Twitter, Facebook, and Instagram platforms.",
+      category: "n8n Workflows",
+      type: "Social Collection",
+      workflowCount: "110+",
+      integrations: ["LinkedIn", "Twitter/X", "Facebook", "Instagram", "TikTok", "YouTube"],
+      complexity: "Low to Medium",
+      tags: ["Social Media", "Content Publishing", "Engagement", "Analytics"],
+      useCases: [
+        "Automated content scheduling and publishing",
+        "Social media monitoring and responses",
+        "Engagement tracking and analytics",
+        "Influencer outreach automation",
+        "Content curation and sharing",
+        "Brand mention alerts and responses"
+      ]
+    },
+    {
+      id: 10,
+      title: "Financial & Accounting Automation",
+      description: "Streamline financial operations with QuickBooks, Xero, and expense management workflows.",
+      category: "n8n Workflows",
+      type: "Finance Collection",
+      workflowCount: "95+",
+      integrations: ["QuickBooks", "Xero", "FreshBooks", "Stripe", "PayPal", "Wave"],
+      complexity: "Medium to High",
+      tags: ["Finance", "Accounting", "Invoicing", "Expense Management"],
+      useCases: [
+        "Automated invoice generation and sending",
+        "Expense tracking and categorization",
+        "Payment processing and reconciliation",
+        "Financial reporting automation",
+        "Tax calculation and filing assistance",
+        "Budget monitoring and alerts"
+      ]
+    },
+    {
+      id: 11,
+      title: "Web Scraping & Data Extraction",
+      description: "Extract and process web data with advanced scraping workflows and data validation.",
+      category: "n8n Workflows",
+      type: "Data Collection",
+      workflowCount: "85+",
+      integrations: ["Puppeteer", "Playwright", "BeautifulSoup", "Scrapy", "APIs"],
+      complexity: "Medium to High",
+      tags: ["Web Scraping", "Data Extraction", "API Integration", "Data Validation"],
+      useCases: [
+        "Automated price monitoring and alerts",
+        "Competitor analysis and tracking",
+        "News and content aggregation",
+        "Lead generation from web sources",
+        "Product catalog synchronization",
+        "Market research data collection"
+      ]
+    },
+    {
+      id: 12,
+      title: "DevOps & Technical Infrastructure",
+      description: "Automate deployment, monitoring, and infrastructure management with DevOps workflows.",
+      category: "n8n Workflows",
+      type: "Technical Collection",
+      workflowCount: "105+",
+      integrations: ["Docker", "Kubernetes", "AWS", "Azure", "GCP", "Jenkins", "GitLab CI"],
+      complexity: "High",
+      tags: ["DevOps", "Infrastructure", "Monitoring", "Deployment"],
+      useCases: [
+        "Automated CI/CD pipeline management",
+        "Infrastructure monitoring and alerting",
+        "Server provisioning and configuration",
+        "Security scanning and compliance checks",
+        "Backup and disaster recovery automation",
+        "Performance monitoring and optimization"
+      ]
+    }
+  ];
+
   const filteredResources = resources.filter(resource => {
     const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -604,6 +835,15 @@ const Resources = () => {
                          video.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          video.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = selectedCategory === "All" || video.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const filteredWorkflowUseCases = workflowUseCases.filter(workflow => {
+    const matchesSearch = workflow.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         workflow.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         workflow.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                         workflow.integrations.some(integration => integration.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesCategory = selectedCategory === "All" || workflow.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -664,10 +904,14 @@ const Resources = () => {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="guides" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-12">
+            <TabsList className="grid w-full grid-cols-5 mb-12">
               <TabsTrigger value="guides" className="flex items-center gap-2">
                 <FileText className="w-4 h-4" />
                 Guides & Templates
+              </TabsTrigger>
+              <TabsTrigger value="workflows" className="flex items-center gap-2">
+                <Workflow className="w-4 h-4" />
+                n8n Workflows
               </TabsTrigger>
               <TabsTrigger value="whitepapers" className="flex items-center gap-2">
                 <BookOpen className="w-4 h-4" />
@@ -765,6 +1009,124 @@ const Resources = () => {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="workflows">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredWorkflowUseCases.map((workflow) => (
+                  <Card key={workflow.id} className="glass-card hover-lift border-primary/20">
+                    <CardHeader>
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {workflow.type}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs text-primary">
+                          {workflow.workflowCount} workflows
+                        </Badge>
+                      </div>
+                      <CardTitle className="text-xl leading-tight">{workflow.title}</CardTitle>
+                      <CardDescription className="text-sm">{workflow.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Complexity:</span>
+                            <Badge variant="outline" className="text-xs">
+                              {workflow.complexity}
+                            </Badge>
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-sm font-medium mb-2">Key Integrations:</h4>
+                            <div className="flex flex-wrap gap-1">
+                              {workflow.integrations.slice(0, 4).map((integration, index) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  {integration}
+                                </Badge>
+                              ))}
+                              {workflow.integrations.length > 4 && (
+                                <Badge variant="outline" className="text-xs">
+                                  +{workflow.integrations.length - 4}
+                                </Badge>
+                              )}
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 className="text-sm font-medium mb-2">Use Cases:</h4>
+                            <ul className="text-xs text-muted-foreground space-y-1">
+                              {workflow.useCases.slice(0, 3).map((useCase, index) => (
+                                <li key={index} className="flex items-start gap-2">
+                                  <CheckCircle className="w-3 h-3 text-green-500 mt-0.5 flex-shrink-0" />
+                                  {useCase}
+                                </li>
+                              ))}
+                              {workflow.useCases.length > 3 && (
+                                <li className="text-xs text-primary">
+                                  +{workflow.useCases.length - 3} more use cases
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          {workflow.tags.slice(0, 3).map((tag, index) => (
+                            <Badge key={index} variant="outline" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        <Button 
+                          className="w-full"
+                          onClick={() => {
+                            window.open('https://github.com/Zie619/n8n-workflows', '_blank');
+                          }}
+                        >
+                          <Workflow className="w-4 h-4 mr-2" />
+                          Browse Workflows
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              
+              <div className="mt-12 p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg">
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold mb-4">Complete n8n Workflow Collection</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Access 2,053+ production-ready automation workflows with 365+ integrations. 
+                    From simple notifications to complex AI-powered business processes.
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-primary">2,053+</div>
+                      <div className="text-sm text-muted-foreground">Total Workflows</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-primary">365+</div>
+                      <div className="text-sm text-muted-foreground">Integrations</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-primary">29,445</div>
+                      <div className="text-sm text-muted-foreground">Total Nodes</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-primary">33.8K</div>
+                      <div className="text-sm text-muted-foreground">GitHub Stars</div>
+                    </div>
+                  </div>
+                  <Button size="lg" onClick={() => {
+                    window.open('https://github.com/Zie619/n8n-workflows', '_blank');
+                  }}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Access Full Repository
+                  </Button>
+                </div>
               </div>
             </TabsContent>
 
