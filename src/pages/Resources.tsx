@@ -818,7 +818,13 @@ const Resources = () => {
     const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          resource.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = selectedCategory === "All" || resource.category === selectedCategory;
+    const matchesCategory = selectedCategory === "All" || 
+                           resource.category === selectedCategory ||
+                           (selectedCategory === "Templates" && resource.category === "Templates") ||
+                           (selectedCategory === "Automation Guides" && resource.category === "Automation Guides") ||
+                           (selectedCategory === "AI Implementation" && resource.category === "AI Implementation") ||
+                           (selectedCategory === "Business Intelligence" && resource.category === "Business Intelligence") ||
+                           (selectedCategory === "Case Studies" && resource.category === "Case Studies");
     return matchesSearch && matchesCategory;
   });
 
@@ -826,7 +832,7 @@ const Resources = () => {
     const matchesSearch = paper.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          paper.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          paper.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = selectedCategory === "All" || paper.category === selectedCategory;
+    const matchesCategory = selectedCategory === "All" || selectedCategory === "White Papers";
     return matchesSearch && matchesCategory;
   });
 
@@ -834,7 +840,7 @@ const Resources = () => {
     const matchesSearch = video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          video.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          video.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = selectedCategory === "All" || video.category === selectedCategory;
+    const matchesCategory = selectedCategory === "All" || selectedCategory === "Video Tutorials";
     return matchesSearch && matchesCategory;
   });
 
@@ -843,7 +849,7 @@ const Resources = () => {
                          workflow.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          workflow.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
                          workflow.integrations.some(integration => integration.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = selectedCategory === "All" || workflow.category === selectedCategory;
+    const matchesCategory = selectedCategory === "All" || selectedCategory === "n8n Workflows";
     return matchesSearch && matchesCategory;
   });
 
