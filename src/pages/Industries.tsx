@@ -301,6 +301,30 @@ const Industries = () => {
           "Patient satisfaction increased from 3.2 to 4.6/5 (+44%)",
           "Administrative costs reduced by 40%"
         ]
+      },
+
+      technologies: [
+        "n8n Workflow Automation Platform",
+        "Epic EHR Integration",
+        "Microsoft Healthcare Bot",
+        "Twilio for Patient Communication",
+        "AWS for HIPAA-Compliant Infrastructure",
+        "Salesforce Health Cloud",
+        "Tableau for Healthcare Analytics",
+        "Natural Language Processing for Clinical Notes",
+        "HL7 FHIR for Healthcare Interoperability"
+      ],
+
+      roi: {
+        investment: "$80,000 - $250,000",
+        payback: "4-10 months",
+        annualROI: "250-400%",
+        breakdown: [
+          "Administrative efficiency savings: 35-50%",
+          "Patient scheduling optimization: 20-30%",
+          "Clinical workflow improvements: 25-35%",
+          "Reduced no-show rates: 15-25%"
+        ]
       }
     },
 
@@ -364,6 +388,30 @@ const Industries = () => {
           "Trade execution speed improved by 97% (450ms to 12ms)",
           "Compliance accuracy improved from 94% to 99.8%",
           "Operational costs reduced by 28%"
+        ]
+      },
+
+      technologies: [
+        "n8n Workflow Automation Platform",
+        "Python for Algorithmic Trading",
+        "TensorFlow for Risk Modeling",
+        "Bloomberg Terminal API Integration",
+        "FIX Protocol for Trade Execution",
+        "Apache Kafka for Real-time Data Streaming",
+        "PostgreSQL for Financial Data Storage",
+        "Redis for High-Speed Caching",
+        "Docker for Containerized Deployment"
+      ],
+
+      roi: {
+        investment: "$200,000 - $750,000",
+        payback: "6-14 months",
+        annualROI: "350-500%",
+        breakdown: [
+          "Trading performance improvements: 40-60%",
+          "Risk management cost savings: 25-35%",
+          "Compliance automation savings: 20-30%",
+          "Operational efficiency gains: 15-25%"
         ]
       }
     },
@@ -429,6 +477,30 @@ const Industries = () => {
           "Energy efficiency improved from 72% to 91% (+26%)",
           "Revenue increased by 22% through improved productivity"
         ]
+      },
+
+      technologies: [
+        "n8n Workflow Automation Platform",
+        "TensorFlow for Predictive Maintenance Models",
+        "IoT Sensors and Edge Computing",
+        "Computer Vision for Quality Control",
+        "SAP Manufacturing Integration",
+        "Siemens MindSphere Industrial IoT",
+        "Microsoft Azure Industrial IoT",
+        "Historian Database Systems",
+        "MQTT and OPC-UA Industrial Protocols"
+      ],
+
+      roi: {
+        investment: "$150,000 - $500,000",
+        payback: "6-12 months",
+        annualROI: "280-450%",
+        breakdown: [
+          "Downtime reduction savings: 30-50%",
+          "Quality improvement cost savings: 15-25%",
+          "Maintenance cost optimization: 20-30%",
+          "Energy efficiency improvements: 10-20%"
+        ]
       }
     },
 
@@ -493,6 +565,30 @@ const Industries = () => {
           "Customer lifetime value increased by 85%",
           "Net Revenue Retention improved from 95% to 118%"
         ]
+      },
+
+      technologies: [
+        "n8n Workflow Automation Platform",
+        "OpenAI GPT for Customer Communication",
+        "Mixpanel for Product Analytics",
+        "Intercom for Customer Messaging",
+        "HubSpot CRM Integration",
+        "Stripe for Billing Automation",
+        "Segment for Customer Data Platform",
+        "Amplitude for User Behavior Analytics",
+        "PagerDuty for Alert Management"
+      ],
+
+      roi: {
+        investment: "$50,000 - $150,000",
+        payback: "3-6 months",
+        annualROI: "300-500%",
+        breakdown: [
+          "Churn reduction revenue savings: 40-60%",
+          "Support automation cost savings: 25-35%",
+          "Onboarding efficiency improvements: 20-30%",
+          "Expansion revenue increases: 15-25%"
+        ]
       }
     },
 
@@ -556,6 +652,30 @@ const Industries = () => {
           "Student satisfaction scores increased from 3.4 to 4.2/5 (+24%)",
           "Faculty time spent on administrative tasks reduced by 45%",
           "Overall operational costs reduced by 25%"
+        ]
+      },
+
+      technologies: [
+        "n8n Workflow Automation Platform",
+        "Salesforce Education Cloud",
+        "Canvas Learning Management System",
+        "Microsoft Power Platform",
+        "Google Workspace for Education",
+        "Zoom for Educational Technology",
+        "Tableau for Educational Analytics",
+        "AWS for Cloud Infrastructure",
+        "Twilio for Communication Automation"
+      ],
+
+      roi: {
+        investment: "$100,000 - $300,000",
+        payback: "8-15 months",
+        annualROI: "200-350%",
+        breakdown: [
+          "Administrative efficiency savings: 30-45%",
+          "Student retention revenue improvements: 25-40%",
+          "Faculty productivity gains: 20-30%",
+          "Operational cost reductions: 15-25%"
         ]
       }
     }
