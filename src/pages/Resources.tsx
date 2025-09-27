@@ -586,59 +586,131 @@ const Resources = () => {
   const workflowUseCases = [
     {
       id: 1,
-      title: "Communication & Messaging Automations",
-      description: "Streamline team communication with Telegram, Discord, Slack, and WhatsApp workflow automations.",
+      title: "Slack Communication Workflows",
+      description: "Production-ready Slack automation workflows for team communication, notifications, and integrations.",
       category: "n8n Workflows",
-      type: "Workflow Collection",
-      workflowCount: "180+",
-      integrations: ["Telegram", "Discord", "Slack", "WhatsApp", "Teams", "SMS"],
-      complexity: "Low to High",
-      tags: ["Communication", "Team Collaboration", "Notifications", "Chat Automation"],
+      type: "JSON Workflows",
+      workflowCount: "15+",
+      integrations: ["Slack", "Stripe", "Typeform", "HubSpot", "Hunter", "GraphQL"],
+      complexity: "Medium",
+      tags: ["Slack", "Team Communication", "Notifications", "CRM Integration"],
+      downloadableWorkflows: [
+        {
+          name: "Slack Stripe Payment Notifications",
+          filename: "0008_Slack_Stripe_Create_Triggered.json",
+          description: "Get Slack notifications when Stripe payments are created",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Slack/0008_Slack_Stripe_Create_Triggered.json"
+        },
+        {
+          name: "Slack Typeform Response Automation",
+          filename: "0124_Slack_Typeform_Create_Triggered.json", 
+          description: "Automatically send Typeform responses to Slack channels",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Slack/0124_Slack_Typeform_Create_Triggered.json"
+        },
+        {
+          name: "Slack HubSpot Lead Notifications",
+          filename: "1172_Slack_HubSpot_Send_Triggered.json",
+          description: "Send Slack alerts for new HubSpot leads and contacts",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Slack/1172_Slack_HubSpot_Send_Triggered.json"
+        },
+        {
+          name: "Slack Email Integration Workflow", 
+          filename: "1194_Slack_Emailreadimap_Create.json",
+          description: "Monitor IMAP email and send summaries to Slack",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Slack/1194_Slack_Emailreadimap_Create.json"
+        }
+      ],
       useCases: [
         "Automated team notifications and alerts",
-        "Customer support chatbot workflows",
-        "Cross-platform message synchronization",
-        "Incident response communication chains",
-        "Meeting scheduling and reminders",
-        "Social media monitoring and responses"
+        "Payment and transaction notifications", 
+        "Form submission alerts",
+        "CRM integration notifications",
+        "Email workflow automation",
+        "Cross-platform data synchronization"
       ]
     },
     {
       id: 2,
-      title: "AI & Machine Learning Workflows",
-      description: "Leverage OpenAI, Anthropic, and Hugging Face APIs for intelligent automation and content generation.",
-      category: "n8n Workflows",
-      type: "AI Collection",
-      workflowCount: "250+",
-      integrations: ["OpenAI", "Anthropic", "Hugging Face", "Stable Diffusion", "Whisper"],
-      complexity: "Medium to High",
-      tags: ["AI", "Machine Learning", "Content Generation", "Data Analysis"],
+      title: "Airtable Data Management Workflows",
+      description: "Automate Airtable operations with webhook triggers, data processing, and third-party integrations.",
+      category: "n8n Workflows", 
+      type: "JSON Workflows",
+      workflowCount: "3+",
+      integrations: ["Airtable", "Mindee", "Vonage", "Webhooks", "SMS"],
+      complexity: "Medium",
+      tags: ["Airtable", "Database", "Data Processing", "Document Processing"],
+      downloadableWorkflows: [
+        {
+          name: "Airtable Record Creation Trigger",
+          filename: "0756_Airtable_Create_Triggered.json",
+          description: "Trigger workflows when new records are created in Airtable",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Airtable/0756_Airtable_Create_Triggered.json"
+        },
+        {
+          name: "Airtable + Mindee Document Processing",
+          filename: "1120_Airtable_Mindee_Automate_Webhook.json",
+          description: "Process documents with Mindee AI and store results in Airtable",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Airtable/1120_Airtable_Mindee_Automate_Webhook.json"
+        },
+        {
+          name: "Airtable + Vonage SMS Automation",
+          filename: "1138_Airtable_Vonage_Automation_Scheduled.json",
+          description: "Send SMS notifications via Vonage based on Airtable data",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Airtable/1138_Airtable_Vonage_Automation_Scheduled.json"
+        }
+      ],
       useCases: [
-        "Automated content creation and copywriting",
-        "Document analysis and summarization",
-        "Image generation and processing",
-        "Sentiment analysis and customer feedback",
-        "Language translation and localization",
-        "Code generation and review automation"
+        "Automated database record processing",
+        "Document analysis and data extraction",
+        "SMS notification workflows",
+        "Webhook-triggered data operations",
+        "Third-party API integrations",
+        "Scheduled data synchronization"
       ]
     },
     {
       id: 3,
-      title: "Database & Data Processing Workflows",
-      description: "Automate data operations across PostgreSQL, MySQL, MongoDB, and cloud databases.",
+      title: "Gmail Email Automation Workflows",
+      description: "Automate Gmail operations with Google Drive integration, calendar sync, and email processing.",
       category: "n8n Workflows",
-      type: "Data Collection",
-      workflowCount: "195+",
-      integrations: ["PostgreSQL", "MySQL", "MongoDB", "Airtable", "Redis", "InfluxDB"],
-      complexity: "Medium to High",
-      tags: ["Database", "Data Processing", "ETL", "Analytics"],
+      type: "JSON Workflows", 
+      workflowCount: "7+",
+      integrations: ["Gmail", "Google Drive", "Google Sheets", "Google Calendar", "Binary Data"],
+      complexity: "Medium",
+      tags: ["Gmail", "Email Automation", "Google Workspace", "File Management"],
+      downloadableWorkflows: [
+        {
+          name: "Gmail to Google Drive Backup",
+          filename: "0036_Gmail_GoogleDrive_Import.json",
+          description: "Automatically save Gmail attachments to Google Drive",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Gmail/0036_Gmail_GoogleDrive_Import.json"
+        },
+        {
+          name: "Gmail Binary Data Processing",
+          filename: "0221_Gmail_Movebinarydata_Send.json", 
+          description: "Process and move binary data from Gmail attachments",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Gmail/0221_Gmail_Movebinarydata_Send.json"
+        },
+        {
+          name: "Gmail Calendar Integration",
+          filename: "0319_Gmail_Googlecalendartool_Send_Triggered.json",
+          description: "Create calendar events from Gmail content automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Gmail/0319_Gmail_Googlecalendartool_Send_Triggered.json"
+        },
+        {
+          name: "Gmail to Google Sheets Logger",
+          filename: "0852_Gmail_GoogleSheets_Create_Triggered.json",
+          description: "Log Gmail data to Google Sheets for tracking and analysis", 
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Gmail/0852_Gmail_GoogleSheets_Create_Triggered.json"
+        }
+      ],
       useCases: [
-        "Automated data backup and synchronization",
-        "Real-time data pipeline automation",
-        "Database monitoring and alerting",
-        "ETL processes for data warehousing",
-        "Data quality validation and cleaning",
-        "Automated reporting and dashboard updates"
+        "Automated email backup and archiving",
+        "Gmail attachment processing",
+        "Email-to-calendar integration",
+        "Email data logging and tracking",
+        "Google Workspace automation",
+        "Email-triggered workflows"
       ]
     },
     {
@@ -1060,6 +1132,29 @@ const Resources = () => {
                             </div>
                           </div>
 
+                          {workflow.downloadableWorkflows && (
+                            <div>
+                              <h4 className="text-sm font-medium mb-2">Available Workflows:</h4>
+                              <div className="space-y-2 max-h-32 overflow-y-auto">
+                                {workflow.downloadableWorkflows.slice(0, 3).map((wf, index) => (
+                                  <div key={index} className="p-2 bg-muted/30 rounded text-xs">
+                                    <div className="font-medium text-foreground mb-1">{wf.name}</div>
+                                    <div className="text-muted-foreground mb-2">{wf.description}</div>
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      className="h-6 text-xs px-2"
+                                      onClick={() => window.open(wf.downloadUrl, '_blank')}
+                                    >
+                                      <Download className="w-3 h-3 mr-1" />
+                                      Download JSON
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
                           <div>
                             <h4 className="text-sm font-medium mb-2">Use Cases:</h4>
                             <ul className="text-xs text-muted-foreground space-y-1">
@@ -1086,15 +1181,30 @@ const Resources = () => {
                           ))}
                         </div>
 
-                        <Button 
-                          className="w-full"
-                          onClick={() => {
-                            window.open('https://github.com/Zie619/n8n-workflows', '_blank');
-                          }}
-                        >
-                          <Workflow className="w-4 h-4 mr-2" />
-                          Browse Workflows
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            className="flex-1"
+                            onClick={() => {
+                              window.open('https://github.com/Zie619/n8n-workflows', '_blank');
+                            }}
+                          >
+                            <Workflow className="w-4 h-4 mr-2" />
+                            Browse All
+                          </Button>
+                          {workflow.downloadableWorkflows && (
+                            <Button 
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => {
+                                // Download the first workflow as example
+                                window.open(workflow.downloadableWorkflows[0].downloadUrl, '_blank');
+                              }}
+                            >
+                              <Download className="w-4 h-4 mr-2" />
+                              Sample JSON
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
