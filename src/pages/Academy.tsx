@@ -708,43 +708,12 @@ const Academy = () => {
                       {course.content}
                     </p>
                     
-                    <Button 
-                      className="w-full"
-                      onClick={() => {
-                        // Map courses to relevant YouTube videos
-                        const getVideoForCourse = (courseId: number) => {
-                          const videoMap: Record<number, string> = {
-                            1: "CfD17vBCPEU", // n8n Tutorial for Beginners
-                            2: "2GZ2SNXWK-c", // Advanced AI Automation
-                            3: "cgbtHBVmMFc", // API Integration
-                            4: "FNFL_jsbnyE", // AI Customer Support
-                            5: "2GZ2SNXWK-c", // E-commerce Automation
-                            6: "dcuxyPuwV7k", // Database Integration
-                            7: "2GZ2SNXWK-c", // Email Marketing
-                            8: "AURnISajubk", // Social Media Automation
-                            9: "dcuxyPuwV7k", // Database Management
-                            10: "2GZ2SNXWK-c", // CRM Automation
-                            11: "lK3veuZAg0c", // Webhook Security
-                            12: "ufk_qiAhiqw", // Project Management
-                            13: "3hDQGhcmBg4", // AI Content Generation
-                            14: "2GZ2SNXWK-c", // Inventory Management
-                            15: "ufk_qiAhiqw", // Customer Onboarding
-                            16: "FNFL_jsbnyE", // Voice Assistant
-                            17: "2GZ2SNXWK-c", // Multi-Channel Marketing
-                            18: "DkV7ztrhLh8", // IoT Integration
-                            19: "2GZ2SNXWK-c", // Compliance Automation
-                            20: "ufk_qiAhiqw"  // Performance Monitoring
-                          };
-                          return videoMap[courseId] || "CfD17vBCPEU";
-                        };
-                        
-                        const videoId = getVideoForCourse(course.id);
-                        window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
-                      }}
-                    >
-                      <PlayCircle className="w-4 h-4 mr-2" />
-                      Start Course
-                    </Button>
+                    <Link to={`/course/${course.id}`}>
+                      <Button className="w-full">
+                        <BookOpen className="w-4 h-4 mr-2" />
+                        Start Course
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>

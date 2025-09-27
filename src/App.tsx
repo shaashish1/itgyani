@@ -27,6 +27,7 @@ import TermsOfService from "./pages/TermsOfService";
 import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import AdminBlogPage from "./pages/AdminBlogPage";
+import CourseDetail from "./pages/CourseDetail";
 import ImageShowcase from "./pages/ImageShowcase";
 import NotFound from "./pages/NotFound";
 
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/academy" element={<Academy />} />
+            <Route path="/course/:courseId" element={<CourseDetail />} />
             <Route path="/industries" element={<Industries />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/blog" element={<Blog />} />
