@@ -177,15 +177,7 @@ const FutureFlowIndex = () => {
                   </Card>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-12">
-                <Bot className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">AI Content Coming Soon</h3>
-                <p className="text-muted-foreground">
-                  Our AI is preparing fresh content. Check back soon for the latest insights!
-                </p>
-              </div>
-            )}
+            ) : null}
 
             <div className="text-center mt-12">
               <Button size="lg" asChild>
