@@ -61,9 +61,9 @@ serve(async (req) => {
       });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    const HUGGING_FACE_TOKEN = Deno.env.get('HUGGING_FACE_ACCESS_TOKEN');
+    if (!HUGGING_FACE_TOKEN) {
+      throw new Error('HUGGING_FACE_ACCESS_TOKEN is not configured');
     }
 
     const results = {
@@ -132,27 +132,27 @@ Format your response as JSON with these fields:
   "readingTime": estimated_reading_time_in_minutes
 }`;
 
-        // Call Lovable AI (Gemini 2.5 Flash - free this week)
+        // Call HuggingFace Inference API with Qwen model
         const startTime = Date.now();
         let generatedContent: string;
         let tokensUsed = 0;
         try {
-          const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          const systemPrompt = 'You are an expert content writer for FutureFlow AI, specializing in creating engaging, SEO-optimized blog posts about AI, automation, and future technology. Always respond with valid JSON only, no markdown code blocks.';
+          const fullPrompt = `${systemPrompt}\n\n${prompt}`;
+          
+          const aiResponse = await fetch('https://api-inference.huggingface.co/models/Qwen/Qwen2.5-Omni-3B', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+              'Authorization': `Bearer ${HUGGING_FACE_TOKEN}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              model: 'google/gemini-2.5-flash',
-              messages: [
-                {
-                  role: 'system',
-                  content: 'You are an expert content writer for FutureFlow AI, specializing in creating engaging, SEO-optimized blog posts about AI, automation, and future technology. Always respond with valid JSON only, no markdown code blocks.'
-                },
-                { role: 'user', content: prompt }
-              ],
-              max_completion_tokens: 4000,
+              inputs: fullPrompt,
+              parameters: {
+                max_new_tokens: 4000,
+                temperature: 0.7,
+                return_full_text: false
+              }
             }),
           });
 
@@ -180,8 +180,9 @@ Format your response as JSON with these fields:
           }
 
           const aiData = await aiResponse.json();
-          generatedContent = aiData.choices?.[0]?.message?.content ?? '';
-          tokensUsed = aiData.usage?.total_tokens || 0;
+          // HuggingFace returns either array or object
+          generatedContent = Array.isArray(aiData) ? aiData[0]?.generated_text || '' : aiData.generated_text || '';
+          tokensUsed = 0; // HuggingFace doesn't return token counts in free tier
         } catch (error: any) {
           console.error(`Lovable AI error for topic ${topicData.topic}:`, error);
           results.errors.push(`AI error for "${topicData.topic}": ${error.message || 'Unknown error'}`);
@@ -241,7 +242,7 @@ Format your response as JSON with these fields:
           .insert({
             blog_post_id: blogPost.id,
             prompt: topicData.topic,
-            model_used: 'google/gemini-2.5-flash',
+            model_used: 'Qwen/Qwen2.5-Omni-3B',
             tokens_used: tokensUsed,
             generation_time_ms: generationTime,
             status: 'success'
