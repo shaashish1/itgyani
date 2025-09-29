@@ -18,14 +18,14 @@ import {
 import { Link } from "react-router-dom";
 
 const About = () => {
-  const achievements = [
-    { metric: "500+", label: "Businesses Automated", icon: Users },
-    { metric: "$100M+", label: "Cost Savings Generated", icon: TrendingUp },
-    { metric: "98%", label: "Client Satisfaction Rate", icon: Star },
-    { metric: "40+", label: "Countries Served", icon: Globe }
+  const stats = [
+    { metric: "500+", label: "Businesses Automated", icon: <Users className="h-6 w-6" /> },
+    { metric: "$100M+", label: "Cost Savings Generated", icon: <TrendingUp className="h-6 w-6" /> },
+    { metric: "98%", label: "Client Satisfaction Rate", icon: <Star className="h-6 w-6" /> },
+    { metric: "40+", label: "Countries Served", icon: <Globe className="h-6 w-6" /> }
   ];
 
-  const achievements = [
+  const certifications = [
     "Certified n8n Implementation Partners",
     "AI/ML Integration Specialists",
     "Enterprise Security Compliant",
@@ -62,10 +62,10 @@ const About = () => {
             </p>
 
             <div className="grid grid-cols-2 gap-4 mb-8">
-              {achievements.map((achievement, index) => (
+              {certifications.map((certification, index) => (
                 <div key={index} className="flex items-center gap-3">
                   <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                  <span className="text-sm text-foreground/80">{achievement}</span>
+                  <span className="text-sm text-foreground/80">{certification}</span>
                 </div>
               ))}
             </div>
@@ -86,7 +86,7 @@ const About = () => {
                       {stat.icon}
                     </div>
                     <div className="text-3xl font-bold gradient-text mb-2">
-                      {stat.number}
+                      {stat.metric}
                     </div>
                     <div className="text-sm text-foreground/70">
                       {stat.label}
