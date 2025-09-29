@@ -38,3 +38,6 @@ port = 54330
 
 [functions.generate-blog]
 verify_jwt = true
+
+[functions.generate-blog-batch]
+verify_jwt = true

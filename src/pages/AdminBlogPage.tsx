@@ -23,6 +23,7 @@ import {
 
 import BlogManager from '@/components/BlogManager';
 import AIBlogGenerator from '@/components/admin/AIBlogGenerator';
+import { BatchBlogGenerator } from '@/components/admin/BatchBlogGenerator';
 
 const AdminBlogPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -139,14 +140,19 @@ const AdminBlogPage: React.FC = () => {
 
         {/* Main Content */}
         <Tabs defaultValue="blog-manager" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="blog-manager">Blog Management</TabsTrigger>
+            <TabsTrigger value="batch-generator">Batch Generator</TabsTrigger>
             <TabsTrigger value="system-settings">System Settings</TabsTrigger>
             <TabsTrigger value="security-logs">Security Logs</TabsTrigger>
           </TabsList>
 
           <TabsContent value="blog-manager">
             <BlogManager className="space-y-6" />
+          </TabsContent>
+
+          <TabsContent value="batch-generator">
+            <BatchBlogGenerator />
           </TabsContent>
 
           <TabsContent value="system-settings" className="space-y-6">
