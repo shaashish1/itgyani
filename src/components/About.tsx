@@ -1,37 +1,28 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
+  ArrowRight, 
+  Target, 
+  Eye, 
   Users, 
   Award, 
   TrendingUp, 
-  Globe,
+  Globe, 
+  Lightbulb,
   CheckCircle,
-  ArrowRight
+  Star,
+  Zap,
+  Bot
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const About = () => {
-  const stats = [
-    {
-      number: "500+",
-      label: "Businesses Automated",
-      icon: <Users className="h-6 w-6" />
-    },
-    {
-      number: "10M+",
-      label: "Tasks Processed",
-      icon: <TrendingUp className="h-6 w-6" />
-    },
-    {
-      number: "99.9%",
-      label: "Uptime Guarantee",
-      icon: <Award className="h-6 w-6" />
-    },
-    {
-      number: "50+",
-      label: "Countries Served",
-      icon: <Globe className="h-6 w-6" />
-    }
+  const achievements = [
+    { metric: "500+", label: "Businesses Automated", icon: Users },
+    { metric: "$100M+", label: "Cost Savings Generated", icon: TrendingUp },
+    { metric: "98%", label: "Client Satisfaction Rate", icon: Star },
+    { metric: "40+", label: "Countries Served", icon: Globe }
   ];
 
   const achievements = [

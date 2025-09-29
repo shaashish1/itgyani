@@ -1,18 +1,14 @@
-import Header from "@/components/Header";
+import FutureFlowHeader from "@/components/FutureFlowHeader";
 import About from "@/components/About";
 import Footer from "@/components/Footer";
-import PopupManager from "@/components/PopupManager";
 
 const AboutPage = () => (
   <div className="min-h-screen bg-background">
-    <Header />
+    <FutureFlowHeader />
     <main>
       <About />
     </main>
     <Footer />
-    
-    {/* Popup Advertisement System */}
-    <PopupManager page="about" />
   </div>
 );
 
