@@ -1,6 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
-import { HfInference } from 'https://esm.sh/@huggingface/inference@2.3.2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -62,12 +61,10 @@ serve(async (req) => {
       });
     }
 
-    const HUGGING_FACE_TOKEN = Deno.env.get('HUGGING_FACE_ACCESS_TOKEN');
-    if (!HUGGING_FACE_TOKEN) {
-      throw new Error('HUGGING_FACE_ACCESS_TOKEN is not configured');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
-
-    const hf = new HfInference(HUGGING_FACE_TOKEN);
 
     const results = {
       successful: 0,
@@ -135,38 +132,59 @@ Format your response as JSON with these fields:
   "readingTime": estimated_reading_time_in_minutes
 }`;
 
-        // Call HuggingFace AI with free model
+        // Call Lovable AI (Gemini 2.5 Flash - free this week)
         const startTime = Date.now();
-        console.log('Calling HuggingFace API...');
-        
         let generatedContent: string;
+        let tokensUsed = 0;
         try {
-          const systemMessage = 'You are an expert content writer for FutureFlow AI, specializing in creating engaging, SEO-optimized blog posts about AI, automation, and future technology. Always respond with valid JSON format only, no markdown code blocks.';
-          const fullPrompt = `${systemMessage}\n\n${prompt}`;
-          
-          const response = await hf.textGeneration({
-            model: "mistralai/Mistral-7B-Instruct-v0.3",
-            inputs: fullPrompt,
-            parameters: {
-              max_new_tokens: 3000,
-              temperature: 0.7,
-              return_full_text: false,
-            }
+          const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'google/gemini-2.5-flash',
+              messages: [
+                {
+                  role: 'system',
+                  content: 'You are an expert content writer for FutureFlow AI, specializing in creating engaging, SEO-optimized blog posts about AI, automation, and future technology. Always respond with valid JSON only, no markdown code blocks.'
+                },
+                { role: 'user', content: prompt }
+              ],
+              max_completion_tokens: 4000,
+            }),
           });
 
-          generatedContent = response.generated_text || '';
-          console.log('Raw AI response length:', generatedContent.length);
-        } catch (error: any) {
-          console.error(`HuggingFace API error for topic ${topicData.topic}:`, error);
-          
-          if (error.message?.includes('rate limit') || error.message?.includes('429')) {
-            results.errors.push(`Rate limit exceeded at topic ${i + 1}. Consider increasing delay.`);
+          if (!aiResponse.ok) {
+            const errorText = await aiResponse.text();
+            console.error(`AI API error for topic ${topicData.topic}:`, aiResponse.status, errorText);
+            if (aiResponse.status === 429) {
+              results.errors.push(`Rate limit exceeded at topic ${i + 1}. Consider increasing delay.`);
+              results.failed++;
+              await new Promise(resolve => setTimeout(resolve, 10000));
+              continue;
+            }
+            if (aiResponse.status === 402) {
+              return new Response(JSON.stringify({ 
+                error: 'AI credits exhausted. Please add more credits to your workspace.',
+                results 
+              }), {
+                status: 402,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+              });
+            }
+            results.errors.push(`AI error for "${topicData.topic}": ${aiResponse.status}`);
             results.failed++;
-            await new Promise(resolve => setTimeout(resolve, 10000));
             continue;
           }
 
-          results.errors.push(`AI error for "${topicData.topic}": ${error.message}`);
+          const aiData = await aiResponse.json();
+          generatedContent = aiData.choices?.[0]?.message?.content ?? '';
+          tokensUsed = aiData.usage?.total_tokens || 0;
+        } catch (error: any) {
+          console.error(`Lovable AI error for topic ${topicData.topic}:`, error);
+          results.errors.push(`AI error for "${topicData.topic}": ${error.message || 'Unknown error'}`);
           results.failed++;
           continue;
         }
@@ -223,8 +241,8 @@ Format your response as JSON with these fields:
           .insert({
             blog_post_id: blogPost.id,
             prompt: topicData.topic,
-            model_used: 'mistralai/Mistral-7B-Instruct-v0.3',
-            tokens_used: 0, // HuggingFace doesn't provide token count
+            model_used: 'google/gemini-2.5-flash',
+            tokens_used: tokensUsed,
             generation_time_ms: generationTime,
             status: 'success'
           });
