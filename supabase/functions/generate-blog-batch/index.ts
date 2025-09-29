@@ -82,14 +82,15 @@ serve(async (req) => {
         console.log(`Processing topic ${i + 1}/${topics.length}: ${topicData.topic}`);
 
         // Get category info
-        const { data: categoryData } = await supabaseClient
+        const { data: categoryData, error: categoryError } = await supabaseClient
           .from('categories')
           .select('*')
           .eq('slug', topicData.category)
-          .single();
+          .maybeSingle();
 
-        if (!categoryData) {
-          results.errors.push(`Invalid category for topic: ${topicData.topic}`);
+        if (categoryError || !categoryData) {
+          console.error(`Category lookup failed for "${topicData.category}":`, categoryError);
+          results.errors.push(`Invalid category "${topicData.category}" for topic: ${topicData.topic}`);
           results.failed++;
           continue;
         }

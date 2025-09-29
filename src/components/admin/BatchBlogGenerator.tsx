@@ -114,7 +114,7 @@ export function BatchBlogGenerator() {
   const [tone, setTone] = useState<'professional' | 'casual' | 'technical'>('professional');
   const [audience, setAudience] = useState<'beginner' | 'intermediate' | 'advanced'>('intermediate');
   const [length, setLength] = useState<'short' | 'medium' | 'long'>('medium');
-  const [category, setCategory] = useState('ai-automation');
+  const [category, setCategory] = useState('ai-machine-learning');
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [results, setResults] = useState<any>(null);
@@ -234,10 +234,12 @@ export function BatchBlogGenerator() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="ai-automation">AI & Automation</SelectItem>
-                  <SelectItem value="business-transformation">Business Transformation</SelectItem>
-                  <SelectItem value="tech-innovation">Tech Innovation</SelectItem>
-                  <SelectItem value="workflow-optimization">Workflow Optimization</SelectItem>
+                  <SelectItem value="ai-machine-learning">AI & Machine Learning</SelectItem>
+                  <SelectItem value="automation">Automation</SelectItem>
+                  <SelectItem value="n8n-workflows">n8n Workflows</SelectItem>
+                  <SelectItem value="quantum-computing">Quantum Computing</SelectItem>
+                  <SelectItem value="edge-ai">Edge AI</SelectItem>
+                  <SelectItem value="future-tech">Future Tech</SelectItem>
                 </SelectContent>
               </Select>
             </div>
