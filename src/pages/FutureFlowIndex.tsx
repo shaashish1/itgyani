@@ -84,13 +84,14 @@ const FutureFlowIndex = () => {
             <div className="text-center mb-16">
               <Badge variant="secondary" className="mb-4">
                 <TrendingUp className="w-4 h-4 mr-2" />
-                Latest Insights
+                Latest AI Insights
               </Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                AI-Powered Content Hub
+                Expert AI & Automation Content
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Stay ahead with our automatically generated, SEO-optimized content on the latest in AI, automation, and future technology.
+                Explore in-depth articles, case studies, and insights on AI automation, machine learning implementation, 
+                and digital transformation strategies. Updated daily with cutting-edge industry knowledge.
               </p>
             </div>
 
@@ -203,13 +204,14 @@ const FutureFlowIndex = () => {
             <div className="text-center mb-16">
               <Badge variant="secondary" className="mb-4">
                 <Zap className="w-4 h-4 mr-2" />
-                Our Services
+                Enterprise AI Solutions
               </Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Transform Your Business with AI
+                Transform Operations with Intelligent Automation
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                From consultation to implementation, we provide end-to-end AI automation solutions tailored to your business needs.
+                Proven AI automation solutions delivering 300%+ ROI. From initial strategy to full-scale implementation, 
+                we've helped over 500 companies automate workflows, reduce costs, and accelerate growth.
               </p>
             </div>
 
@@ -219,9 +221,10 @@ const FutureFlowIndex = () => {
                   <div className="p-3 bg-primary/10 rounded-lg w-fit mb-4">
                     <Bot className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle>AI Automation Consulting</CardTitle>
+                  <CardTitle>AI Strategy & Consulting</CardTitle>
                   <CardDescription>
-                    Expert guidance on implementing AI-driven automation solutions for your specific industry and use case.
+                    Transform your business with expert AI implementation strategies. Our consultants analyze your processes, 
+                    identify automation opportunities, and create custom roadmaps delivering measurable ROI within 30 days.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -239,9 +242,10 @@ const FutureFlowIndex = () => {
                   <div className="p-3 bg-primary/10 rounded-lg w-fit mb-4">
                     <Zap className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle>n8n Workflow Design</CardTitle>
+                  <CardTitle>n8n Workflow Automation</CardTitle>
                   <CardDescription>
-                    Custom workflow automation using n8n, designed to streamline your business processes and boost productivity.
+                    Enterprise-grade n8n workflow solutions integrating AI, APIs, and business systems. Eliminate manual processes, 
+                    reduce errors by 95%, and scale operations without adding headcount. Custom-built for your unique workflows.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -259,9 +263,10 @@ const FutureFlowIndex = () => {
                   <div className="p-3 bg-primary/10 rounded-lg w-fit mb-4">
                     <Users className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle>Premium Learning</CardTitle>
+                  <CardTitle>AI Training & Certification</CardTitle>
                   <CardDescription>
-                    Access exclusive courses, workshops, and resources to master AI automation and stay ahead of the curve.
+                    Comprehensive AI automation training programs for teams and individuals. Learn to build, deploy, and optimize 
+                    AI workflows with hands-on projects, expert mentorship, and industry-recognized certifications.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -281,10 +286,11 @@ const FutureFlowIndex = () => {
         <section className="py-24 bg-primary/5">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ready to Transform Your Business?
+              Start Your AI Automation Journey Today
             </h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of professionals who are already leveraging AI automation to scale their operations and stay competitive.
+              Join 500+ companies achieving 300%+ ROI through intelligent automation. Get a free consultation, 
+              custom implementation roadmap, and ROI projection for your business—no commitment required.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button size="lg" asChild>
