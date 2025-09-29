@@ -245,26 +245,42 @@ const CourseDetail = () => {
             {/* Video Player */}
             <Card className="glass-card mb-6">
               <CardContent className="p-0">
-                <div className="relative bg-black rounded-t-lg aspect-video">
-                  {/* Placeholder for video player */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
+                <div className="relative bg-black rounded-t-lg aspect-video group">
+                  {/* Actual Video Element */}
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-contain rounded-t-lg"
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onEnded={() => {
+                      setIsPlaying(false);
+                      markLessonComplete(currentLessonData.id);
+                    }}
+                    poster={`https://img.youtube.com/vi/placeholder/maxresdefault.jpg`}
+                  >
+                    <source src={currentLessonData.videoUrl} type="video/mp4" />
+                    <p className="text-white p-4">Your browser does not support the video tag.</p>
+                  </video>
+                  
+                  {/* Play/Pause Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
                     <Button
                       size="lg"
                       onClick={togglePlayPause}
                       className="bg-white/20 hover:bg-white/30 backdrop-blur-sm"
                     >
                       {isPlaying ? (
-                        <PauseCircle className="w-8 h-8" />
+                        <PauseCircle className="w-12 h-12" />
                       ) : (
-                        <PlayCircle className="w-8 h-8" />
+                        <PlayCircle className="w-12 h-12" />
                       )}
                     </Button>
                   </div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="bg-black/50 backdrop-blur-sm rounded px-3 py-2">
-                      <h3 className="text-white font-medium">{currentLessonData.title}</h3>
-                      <p className="text-white/80 text-sm">{currentLessonData.duration}</p>
-                    </div>
+                  
+                  {/* Video Info Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                    <h3 className="text-white font-medium text-lg">{currentLessonData.title}</h3>
+                    <p className="text-white/80 text-sm">{currentLessonData.duration}</p>
                   </div>
                 </div>
               </CardContent>
