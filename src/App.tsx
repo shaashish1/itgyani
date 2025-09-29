@@ -4,9 +4,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import Index from "./pages/Index";
+import FutureFlowIndex from "./pages/FutureFlowIndex";
 import ServicesPage from "./pages/Services";
 import AIStudio from "./pages/AIStudio";
+import AuthPage from "./components/auth/AuthPage";
 import BusinessAutomation from "./pages/services/BusinessAutomation";
 import AICustomerSupport from "./pages/services/AICustomerSupport";
 import DataIntegration from "./pages/services/DataIntegration";
@@ -41,7 +42,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<FutureFlowIndex />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/ai-studio" element={<AIStudio />} />
             <Route path="/services/business-automation" element={<BusinessAutomation />} />
@@ -64,6 +65,7 @@ const App = () => (
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/auth" element={<AuthPage />} />
             <Route path="/admin/blog" element={<AdminBlogPage />} />
             <Route path="/images" element={<ImageShowcase />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

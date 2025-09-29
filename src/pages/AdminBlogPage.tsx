@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 
 import BlogManager from '@/components/BlogManager';
+import AIBlogGenerator from '@/components/admin/AIBlogGenerator';
 
 const AdminBlogPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
