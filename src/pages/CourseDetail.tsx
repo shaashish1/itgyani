@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,8 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { 
   ArrowLeft,
-  PlayCircle,
-  PauseCircle,
   Clock,
   Users,
   Star,
@@ -28,8 +26,6 @@ const CourseDetail = () => {
   const { courseId } = useParams();
   const [currentLesson, setCurrentLesson] = useState(0);
   const [completedLessons, setCompletedLessons] = useState<number[]>([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   // Course data - in real implementation, fetch from API
   const courseData = {
@@ -49,7 +45,7 @@ const CourseDetail = () => {
           duration: "15 min",
           type: "video",
           content: "Introduction to automation concepts and n8n platform overview",
-          videoUrl: "/videos/lesson1.mp4" // Placeholder - replace with actual content
+          videoUrl: "https://www.youtube.com/embed/4cQWJViybAQ"
         },
         {
           id: 2,
@@ -57,7 +53,7 @@ const CourseDetail = () => {
           duration: "18 min",
           type: "hands-on",
           content: "Step-by-step guide to creating your first automation workflow",
-          videoUrl: "/videos/lesson2.mp4"
+          videoUrl: "https://www.youtube.com/embed/0WhxkC7C-ds"
         },
         {
           id: 3,
@@ -65,7 +61,7 @@ const CourseDetail = () => {
           duration: "20 min",
           type: "video",
           content: "Deep dive into n8n nodes and how to connect them effectively",
-          videoUrl: "/videos/lesson3.mp4"
+          videoUrl: "https://www.youtube.com/embed/Rmi-ckbMOQE"
         },
         {
           id: 4,
@@ -73,7 +69,7 @@ const CourseDetail = () => {
           duration: "22 min",
           type: "hands-on",
           content: "Learn to manipulate and transform data between workflow steps",
-          videoUrl: "/videos/lesson4.mp4"
+          videoUrl: "https://www.youtube.com/embed/bxVaMS8d75M"
         },
         {
           id: 5,
@@ -81,7 +77,7 @@ const CourseDetail = () => {
           duration: "16 min", 
           type: "video",
           content: "Best practices for handling errors and debugging workflows",
-          videoUrl: "/videos/lesson5.mp4"
+          videoUrl: "https://www.youtube.com/embed/XEUVl3bbMhI"
         },
         {
           id: 6,
@@ -89,7 +85,7 @@ const CourseDetail = () => {
           duration: "25 min",
           type: "project",
           content: "Build a complete email automation workflow from scratch",
-          videoUrl: "/videos/lesson6.mp4"
+          videoUrl: "https://www.youtube.com/embed/XyVSq8d4hxE"
         },
         {
           id: 7,
@@ -97,7 +93,7 @@ const CourseDetail = () => {
           duration: "18 min",
           type: "video",
           content: "Understanding different trigger types and scheduling options",
-          videoUrl: "/videos/lesson7.mp4"
+          videoUrl: "https://www.youtube.com/embed/5XFDynXUo0E"
         },
         {
           id: 8,
@@ -105,7 +101,7 @@ const CourseDetail = () => {
           duration: "26 min",
           type: "project",
           content: "Complete capstone project and guidance for continued learning",
-          videoUrl: "/videos/lesson8.mp4"
+          videoUrl: "https://www.youtube.com/embed/RRIgP3Msgqs"
         }
       ]
     }
@@ -140,17 +136,6 @@ const CourseDetail = () => {
   const markLessonComplete = (lessonId: number) => {
     if (!completedLessons.includes(lessonId)) {
       setCompletedLessons([...completedLessons, lessonId]);
-    }
-  };
-
-  const togglePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -245,40 +230,19 @@ const CourseDetail = () => {
             {/* Video Player */}
             <Card className="glass-card mb-6">
               <CardContent className="p-0">
-                <div className="relative bg-black rounded-t-lg aspect-video group">
-                  {/* Actual Video Element */}
-                  <video
-                    ref={videoRef}
-                    className="w-full h-full object-contain rounded-t-lg"
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onEnded={() => {
-                      setIsPlaying(false);
-                      markLessonComplete(currentLessonData.id);
-                    }}
-                    poster={`https://img.youtube.com/vi/placeholder/maxresdefault.jpg`}
-                  >
-                    <source src={currentLessonData.videoUrl} type="video/mp4" />
-                    <p className="text-white p-4">Your browser does not support the video tag.</p>
-                  </video>
-                  
-                  {/* Play/Pause Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
-                    <Button
-                      size="lg"
-                      onClick={togglePlayPause}
-                      className="bg-white/20 hover:bg-white/30 backdrop-blur-sm"
-                    >
-                      {isPlaying ? (
-                        <PauseCircle className="w-12 h-12" />
-                      ) : (
-                        <PlayCircle className="w-12 h-12" />
-                      )}
-                    </Button>
-                  </div>
+                <div className="relative bg-black rounded-t-lg aspect-video">
+                  {/* YouTube Embed */}
+                  <iframe
+                    className="w-full h-full rounded-t-lg"
+                    src={currentLessonData.videoUrl}
+                    title={currentLessonData.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
                   
                   {/* Video Info Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pointer-events-none">
                     <h3 className="text-white font-medium text-lg">{currentLessonData.title}</h3>
                     <p className="text-white/80 text-sm">{currentLessonData.duration}</p>
                   </div>
