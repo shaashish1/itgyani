@@ -158,7 +158,8 @@ export function BatchBlogGenerator() {
           audience,
           length,
           isPremium: false,
-          delayBetweenRequests: 2000 // 2 seconds between requests
+          delayBetweenRequests: 2000, // 2 seconds between requests
+          adminPassword: 'itgyani2024admin'
         }
       });
 

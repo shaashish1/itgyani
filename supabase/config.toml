@@ -40,4 +40,4 @@ port = 54330
 verify_jwt = true
 
 [functions.generate-blog-batch]
-verify_jwt = true
+verify_jwt = false
