@@ -1524,34 +1524,11 @@ const Resources = () => {
 
                         <Button 
                           className="w-full"
-                          onClick={() => {
-                            // Map resources to relevant AI automation documents
-                            const getDownloadUrl = (resourceId: number) => {
-                              const downloadMap: Record<number, string> = {
-                                1: "https://docs.n8n.io/assets/n8n-workflow-automation-guide.pdf", 
-                                2: "https://github.com/n8n-io/n8n/raw/master/packages/workflow/templates/workflow-templates.pdf",
-                                3: "https://cdn.openai.com/API/ai-implementation-framework.pdf",
-                                4: "https://assets.openai.com/research/ai-customer-service-automation.pdf", 
-                                5: "https://cdn.hubspot.com/hubfs/ai-marketing-automation-playbook.pdf",
-                                6: "https://shopify.dev/assets/ecommerce-automation-mastery-guide.pdf",
-                                7: "https://www.finra.org/sites/default/files/financial-ai-transformation-guide.pdf",
-                                8: "https://www.hhs.gov/sites/default/files/healthcare-workflow-automation.pdf"
-                              };
-                              return downloadMap[resourceId] || `#download-resource-${resourceId}`;
-                            };
-                            
-                            const url = getDownloadUrl(resource.id);
-                            if (url.startsWith('http')) {
-                              window.open(url, '_blank');
-                            } else {
-                              // Fallback for placeholder URLs - would normally trigger actual download
-                              console.log(`Downloading resource: ${resource.title}`);
-                              alert(`This would download: ${resource.title}\n\nIn a production environment, this would download the actual PDF resource.`);
-                            }
-                          }}
+                          asChild
                         >
-                          <Download className="w-4 h-4 mr-2" />
-                          Download Resource
+                          <Link to={`/resources/${resource.id}`}>
+                            View Resource
+                          </Link>
                         </Button>
                       </div>
                     </CardContent>
