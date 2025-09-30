@@ -103,7 +103,7 @@ const FutureFlowHeader = () => {
               <Bot className="h-6 w-6 text-primary" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              FutureFlow AI
+              ITGYANI
             </span>
           </Link>
 
@@ -221,7 +221,7 @@ const FutureFlowHeader = () => {
                     <Bot className="h-6 w-6 text-primary" />
                   </div>
                   <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                    FutureFlow AI
+                    ITGYANI
                   </span>
                 </Link>
                 
