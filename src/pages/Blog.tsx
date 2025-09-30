@@ -12,6 +12,8 @@ import { ArrowLeft, Search, Calendar, Clock, User, TrendingUp, Brain, Zap, Targe
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ReadMeButton, BlogThumbnail, PageHeader } from "@/components/ImageComponents";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { BlogSidebar } from "@/components/BlogSidebar";
 interface BlogPost {
   id: string;
   title: string;
@@ -164,7 +166,10 @@ const Blog = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <main>
+        <SidebarProvider>
+          <div className="flex w-full">
+            <div className="flex-1 min-w-0">
+              <main>
           {/* Hero Section */}
           <section className="relative overflow-hidden">
             <PageHeader type="blog" className="w-full" />
@@ -470,10 +475,15 @@ const Blog = () => {
               </div>
             </div>
           </section>
-        </main>
+              </main>
 
-        <Footer />
-        <PopupManager page="blog" />
+              <Footer />
+              <PopupManager page="blog" />
+            </div>
+            
+            <BlogSidebar posts={blogPosts} />
+          </div>
+        </SidebarProvider>
       </div>
     </>;
 };
