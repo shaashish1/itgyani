@@ -9,8 +9,24 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Search, Calendar, Clock, User, TrendingUp, Brain, Zap, Target, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { blogStorageService, BlogPost } from "@/services/blogStorageBrowser";
+import { supabase } from "@/integrations/supabase/client";
 import { ReadMeButton, BlogThumbnail, PageHeader } from "@/components/ImageComponents";
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  author_id?: string;
+  category: string;
+  tags: string[];
+  publishedAt: Date;
+  updatedAt: Date;
+  status: 'draft' | 'published' | 'archived';
+  metaDescription: string;
+  readingTime: number;
+}
+
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -25,23 +41,47 @@ const Blog = () => {
   const loadBlogPosts = async () => {
     try {
       setLoading(true);
-      const result = await blogStorageService.listBlogPosts({
-        status: 'published',
-        sortBy: 'publishedAt',
-        sortOrder: 'desc'
-      });
-      if (result.success && result.data) {
-        setBlogPosts(result.data);
-        // Set first 3 as featured
-        setFeaturedPosts(result.data.slice(0, 3));
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select(`
+          *,
+          categories (
+            name,
+            slug
+          )
+        `)
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading blog posts:', error);
+        setBlogPosts(getDemoBlogPosts());
+        setFeaturedPosts(getDemoBlogPosts().slice(0, 3));
+      } else if (data && data.length > 0) {
+        const formattedPosts = data.map(post => ({
+          id: post.id,
+          title: post.title,
+          slug: post.slug,
+          content: post.content || '',
+          excerpt: post.excerpt || '',
+          author_id: post.author_id,
+          category: post.categories?.name || 'General',
+          tags: post.tags || [],
+          publishedAt: new Date(post.published_at || post.created_at),
+          updatedAt: new Date(post.updated_at),
+          status: post.status as 'published',
+          metaDescription: post.meta_description || '',
+          readingTime: post.reading_time || 5
+        }));
+        setBlogPosts(formattedPosts);
+        setFeaturedPosts(formattedPosts.slice(0, 3));
       } else {
-        // Fallback to demo posts if no real posts exist
+        // No posts found, use demo posts
         setBlogPosts(getDemoBlogPosts());
         setFeaturedPosts(getDemoBlogPosts().slice(0, 3));
       }
     } catch (error) {
       console.error('Failed to load blog posts:', error);
-      // Fallback to demo posts
       setBlogPosts(getDemoBlogPosts());
       setFeaturedPosts(getDemoBlogPosts().slice(0, 3));
     } finally {
@@ -56,72 +96,42 @@ const Blog = () => {
     slug: "ai-automation-guide-2024",
     content: "Discover how AI automation is revolutionizing industries and learn practical strategies to implement intelligent workflows that deliver 300%+ ROI...",
     excerpt: "Discover how AI automation is revolutionizing industries and learn practical strategies to implement intelligent workflows that deliver 300%+ ROI.",
-    author: "ITGYANI AI",
+    author_id: "demo-author",
     category: "technology",
     tags: ["AI Automation", "Business Transformation", "ROI", "Strategy"],
     publishedAt: new Date("2024-01-15"),
     updatedAt: new Date("2024-01-15"),
     status: "published",
     metaDescription: "Complete guide to AI automation in 2024 with practical implementation strategies and ROI calculation methods.",
-    seo: {
-      keywords: ["AI Automation", "Business Transformation", "ROI"],
-      openGraph: {
-        title: "The Ultimate Guide to AI Automation in 2024",
-        description: "Transform your business with AI automation strategies",
-        image: blogDefaultImage
-      }
-    },
-    wordCount: 2500,
-    readingTime: 12,
-    generatedBy: "Demo Content"
+    readingTime: 12
   }, {
     id: "demo-2",
     title: "Building Intelligent Business Workflows with n8n and AI",
     slug: "intelligent-workflows-n8n-ai",
     content: "Learn how to create powerful business workflows that combine n8n automation with AI capabilities for maximum efficiency...",
     excerpt: "Learn how to create powerful business workflows that combine n8n automation with AI capabilities for maximum efficiency.",
-    author: "ITGYANI AI",
+    author_id: "demo-author",
     category: "automation",
     tags: ["n8n", "Workflows", "AI Integration", "Business Automation"],
     publishedAt: new Date("2024-01-12"),
     updatedAt: new Date("2024-01-12"),
     status: "published",
     metaDescription: "Master n8n workflow automation with AI integration for intelligent business processes.",
-    seo: {
-      keywords: ["n8n", "Workflow Automation", "AI Integration"],
-      openGraph: {
-        title: "Building Intelligent Business Workflows",
-        description: "Combine n8n and AI for powerful automation",
-        image: blogDefaultImage
-      }
-    },
-    wordCount: 1800,
-    readingTime: 9,
-    generatedBy: "Demo Content"
+    readingTime: 9
   }, {
     id: "demo-3",
     title: "Digital Transformation Success Stories: Real ROI from AI Implementation",
     slug: "digital-transformation-ai-roi",
     content: "Explore real-world case studies showing how businesses achieved significant ROI through strategic AI implementation...",
     excerpt: "Explore real-world case studies showing how businesses achieved significant ROI through strategic AI implementation.",
-    author: "ITGYANI AI",
+    author_id: "demo-author",
     category: "business",
     tags: ["Digital Transformation", "Case Studies", "ROI", "AI Implementation"],
     publishedAt: new Date("2024-01-10"),
     updatedAt: new Date("2024-01-10"),
     status: "published",
     metaDescription: "Real case studies of digital transformation success with AI implementation and measurable ROI.",
-    seo: {
-      keywords: ["Digital Transformation", "AI ROI", "Case Studies"],
-      openGraph: {
-        title: "Digital Transformation Success Stories",
-        description: "Real ROI from AI implementation case studies",
-        image: blogDefaultImage
-      }
-    },
-    wordCount: 2200,
-    readingTime: 11,
-    generatedBy: "Demo Content"
+    readingTime: 11
   }];
   const categories = ["All", "Technology", "Business", "Automation", "Industry", "AI Studio"];
 
@@ -220,7 +230,7 @@ const Blog = () => {
                           <div className="flex items-center gap-4">
                             <span className="flex items-center gap-1">
                               <User className="h-4 w-4" />
-                              {post.author}
+                              ITGYANI AI
                             </span>
                             <span className="flex items-center gap-1">
                               <Calendar className="h-4 w-4" />
@@ -277,7 +287,7 @@ const Blog = () => {
                         <div className="flex items-center justify-between text-xs text-foreground/60 mb-4">
                           <span className="flex items-center gap-1">
                             <User className="h-3 w-3" />
-                            {post.author}
+                            ITGYANI AI
                           </span>
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />

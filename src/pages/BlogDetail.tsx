@@ -18,8 +18,24 @@ import {
   MessageCircle,
   ArrowRight
 } from "lucide-react";
-import { blogStorageService, BlogPost } from "@/services/blogStorageBrowser";
+import { supabase } from "@/integrations/supabase/client";
 import { ReadMeButton } from "@/components/ImageComponents";
+
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string;
+  author_id?: string;
+  category: string;
+  tags: string[];
+  publishedAt: Date;
+  updatedAt: Date;
+  status: 'draft' | 'published' | 'archived';
+  metaDescription: string;
+  readingTime: number;
+}
 
 const BlogDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -38,13 +54,22 @@ const BlogDetail = () => {
     try {
       setLoading(true);
       
-      // Try to load from storage first
-      const result = await blogStorageService.loadBlogPost(postSlug);
-      
-      if (result.success && result.data) {
-        setBlogPost(result.data);
-        await loadRelatedPosts(result.data.category);
-      } else {
+      // Try to load from Supabase first
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select(`
+          *,
+          categories (
+            name,
+            slug
+          )
+        `)
+        .eq('slug', postSlug)
+        .eq('status', 'published')
+        .single();
+
+      if (error || !data) {
+        console.error('Error loading blog post:', error);
         // Fallback to demo content
         const demoPost = getDemoPost(postSlug);
         if (demoPost) {
@@ -53,6 +78,24 @@ const BlogDetail = () => {
         } else {
           navigate('/blog');
         }
+      } else {
+        const formattedPost = {
+          id: data.id,
+          title: data.title,
+          slug: data.slug,
+          content: data.content || '',
+          excerpt: data.excerpt || '',
+          author_id: data.author_id,
+          category: data.categories?.name || 'General',
+          tags: data.tags || [],
+          publishedAt: new Date(data.published_at || data.created_at),
+          updatedAt: new Date(data.updated_at),
+          status: data.status as 'published',
+          metaDescription: data.meta_description || '',
+          readingTime: data.reading_time || 5
+        };
+        setBlogPost(formattedPost);
+        await loadRelatedPosts(formattedPost.category);
       }
     } catch (error) {
       console.error('Failed to load blog post:', error);
@@ -70,16 +113,38 @@ const BlogDetail = () => {
 
   const loadRelatedPosts = async (category: string) => {
     try {
-      const result = await blogStorageService.listBlogPosts({
-        status: 'published',
-        category: category,
-        limit: 3
-      });
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select(`
+          *,
+          categories (
+            name,
+            slug
+          )
+        `)
+        .eq('status', 'published')
+        .neq('slug', slug)
+        .limit(3);
       
-      if (result.success && result.data) {
-        setRelatedPosts(result.data.filter(post => post.slug !== slug));
-      } else {
+      if (error || !data) {
         setRelatedPosts(getDemoRelatedPosts(category));
+      } else {
+        const formattedPosts = data.map(post => ({
+          id: post.id,
+          title: post.title,
+          slug: post.slug,
+          content: post.content || '',
+          excerpt: post.excerpt || '',
+          author_id: post.author_id,
+          category: post.categories?.name || 'General',
+          tags: post.tags || [],
+          publishedAt: new Date(post.published_at || post.created_at),
+          updatedAt: new Date(post.updated_at),
+          status: post.status as 'published',
+          metaDescription: post.meta_description || '',
+          readingTime: post.reading_time || 5
+        }));
+        setRelatedPosts(formattedPosts);
       }
     } catch (error) {
       setRelatedPosts(getDemoRelatedPosts(category));
@@ -348,24 +413,14 @@ The key to success lies in strategic planning, starting with manageable pilots, 
 Ready to begin your AI automation journey? Contact our experts for a free consultation and personalized roadmap.
         `,
         excerpt: "Discover how AI automation is revolutionizing industries and learn practical strategies to implement intelligent workflows that deliver 300%+ ROI.",
-        author: "ITGYANI AI",
+        author_id: "demo-author",
         category: "technology",
         tags: ["AI Automation", "Business Transformation", "ROI", "Strategy"],
         publishedAt: new Date("2024-01-15"),
         updatedAt: new Date("2024-01-15"),
         status: "published",
         metaDescription: "Complete guide to AI automation in 2024 with practical implementation strategies and ROI calculation methods.",
-        seo: {
-          keywords: ["AI Automation", "Business Transformation", "ROI"],
-          openGraph: {
-            title: "The Ultimate Guide to AI Automation in 2024",
-            description: "Transform your business with AI automation strategies",
-            image: blogDefaultImage
-          }
-        },
-        wordCount: 2500,
-        readingTime: 12,
-        generatedBy: "Demo Content"
+        readingTime: 12
       },
       // Add other demo posts...
     };
@@ -381,24 +436,14 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
         slug: "first-ai-automation-workflow",
         content: "Learn the basics...",
         excerpt: "Step-by-step guide to creating your first AI-powered automation workflow",
-        author: "ITGYANI AI",
+        author_id: "demo-author",
         category: category,
         tags: ["Getting Started", "Tutorial"],
         publishedAt: new Date("2024-01-20"),
         updatedAt: new Date("2024-01-20"),
         status: "published",
         metaDescription: "Learn to build your first AI automation workflow",
-        seo: {
-          keywords: ["Getting Started", "Tutorial"],
-          openGraph: {
-            title: "Building Your First AI Automation Workflow",
-            description: "Learn to build your first AI automation workflow",
-            image: blogDefaultImage
-          }
-        },
-        wordCount: 1500,
-        readingTime: 8,
-        generatedBy: "Demo Content"
+        readingTime: 8
       }
     ];
   };
@@ -437,10 +482,10 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
       {/* SEO Meta Tags */}
       <title>{blogPost.title} | ITGYANI Blog</title>
       <meta name="description" content={blogPost.metaDescription} />
-      <meta name="keywords" content={blogPost.seo?.keywords?.join(", ")} />
-      <meta property="og:title" content={blogPost.seo?.openGraph?.title || blogPost.title} />
-      <meta property="og:description" content={blogPost.seo?.openGraph?.description || blogPost.excerpt} />
-      <meta property="og:image" content={blogPost.seo?.openGraph?.image || blogDefaultImage} />
+      <meta name="keywords" content={blogPost.tags?.join(", ")} />
+      <meta property="og:title" content={blogPost.title} />
+      <meta property="og:description" content={blogPost.excerpt} />
+      <meta property="og:image" content={blogDefaultImage} />
       
       <div className="min-h-screen bg-background">
         <Header />
@@ -469,7 +514,7 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                   </div>
                   <div className="flex items-center gap-1 text-sm text-foreground/70">
                     <User className="h-4 w-4" />
-                    {blogPost.author}
+                    ITGYANI AI
                   </div>
                 </div>
 
