@@ -144,20 +144,26 @@ export const ADSENSE_CONFIG = {
 export const getAdSenseConfig = () => {
   const config = { ...ADSENSE_CONFIG };
   
-  // Use safe defaults for browser environment
-  config.testMode = true; // Default to test mode for safety
-  config.popups.enabled = false; // No popups by default
+  // Detect if we're in production (deployed) or development (local/preview)
+  const isProduction = window.location.hostname !== 'localhost' && 
+                       !window.location.hostname.includes('127.0.0.1') &&
+                       !window.location.hostname.includes('lovable.app');
   
-  // Test mode configuration
+  // Use test mode in development, real ads in production
+  config.testMode = !isProduction;
+  config.popups.enabled = false; // Keep popups disabled for policy compliance
+  
+  // In test/development mode, use Google's test IDs
   if (config.testMode) {
-    // Use Google's test publisher ID for testing
-    config.publisherId = "ca-pub-3940256099942544"; // Google test publisher
+    // Use Google's official test publisher ID
+    config.publisherId = "ca-pub-3940256099942544";
     
-    // Override all slots with test slots
+    // Override all slots with Google's test slot ID
     Object.keys(config.adSlots).forEach(key => {
-      config.adSlots[key] = "6300978111"; // Google test slot
+      config.adSlots[key] = "6300978111";
     });
   }
+  // In production, the real IDs from ADSENSE_CONFIG will be used automatically
   
   return config;
 };
@@ -233,7 +239,14 @@ export const getAdSenseConfig = () => {
  *    - ❌ Popups: DISABLED (policy compliance)
  *    - ✅ Content ads: ENABLED
  *    - ✅ Mobile optimization: ENABLED
- *    - ✅ Test mode: Available
+ *    - ✅ Auto environment detection: ENABLED
+ *    - ✅ Development: Shows placeholders
+ *    - ✅ Production: Shows real ads automatically
+ * 
+ * 🎯 AUTOMATIC ENVIRONMENT HANDLING:
+ *    - Development/Preview: Test ads (placeholders)
+ *    - Production (custom domain): Real ads with your Publisher ID
+ *    - No code changes needed when deploying!
  * 
  * For support: https://support.google.com/adsense/
  */

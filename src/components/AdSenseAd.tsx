@@ -53,7 +53,7 @@ const AdSenseAd: React.FC<AdSenseAdProps> = ({
   // Get the ad slot ID
   const adSlot = config.adSlots[slot] || config.adSlots.auto;
 
-  // Test mode - professional placeholder
+  // Test mode - show professional placeholder
   if (config.testMode) {
     return (
       <div 
@@ -78,7 +78,7 @@ const AdSenseAd: React.FC<AdSenseAdProps> = ({
                 </svg>
               </div>
               <p className="text-sm font-medium text-muted-foreground">Advertisement Space</p>
-              <p className="text-xs text-muted-foreground/60">Sponsored Content</p>
+              <p className="text-xs text-muted-foreground/60">Development Mode - Real ads will show in production</p>
             </div>
           </div>
           <div className="absolute top-2 right-2">
@@ -91,6 +91,7 @@ const AdSenseAd: React.FC<AdSenseAdProps> = ({
     );
   }
 
+  // Production mode - render real AdSense ad
   return (
     <div className={`adsense-ad ${className}`} style={{
       ...style,
