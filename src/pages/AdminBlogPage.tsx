@@ -24,6 +24,7 @@ import {
 import BlogManager from '@/components/BlogManager';
 import AIBlogGenerator from '@/components/admin/AIBlogGenerator';
 import { BatchBlogGenerator } from '@/components/admin/BatchBlogGenerator';
+import { TopicProcessor } from '@/components/admin/TopicProcessor';
 
 const AdminBlogPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -151,7 +152,8 @@ const AdminBlogPage: React.FC = () => {
             <BlogManager className="space-y-6" />
           </TabsContent>
 
-          <TabsContent value="batch-generator">
+          <TabsContent value="batch-generator" className="space-y-6">
+            <TopicProcessor />
             <BatchBlogGenerator />
           </TabsContent>
 
