@@ -25,6 +25,7 @@ interface BlogPost {
   status: 'draft' | 'published' | 'archived';
   metaDescription: string;
   readingTime: number;
+  featured_image_url?: string;
 }
 
 const Blog = () => {
@@ -211,6 +212,13 @@ const Blog = () => {
                 <div className="grid lg:grid-cols-2 gap-8">
                   {featuredPosts.map(post => <Card key={post.id} className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-border/50 backdrop-blur-sm group">
                       <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 relative overflow-hidden">
+                        {post.featured_image_url && (
+                          <img 
+                            src={post.featured_image_url} 
+                            alt={post.title}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                         <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
                           Featured
@@ -270,6 +278,13 @@ const Blog = () => {
                 </div> : <div className="grid lg:grid-cols-3 gap-8">
                   {filteredPosts.map(post => <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
                       <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
+                        {post.featured_image_url && (
+                          <img 
+                            src={post.featured_image_url} 
+                            alt={post.title}
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                         <Badge variant="secondary" className="absolute top-4 left-4">
                           {post.category}
