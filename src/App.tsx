@@ -18,6 +18,7 @@ import SchedulingManagement from "./pages/services/SchedulingManagement";
 import AutomationDetail from "./pages/automations/AutomationDetail";
 import CaseStudies from "./pages/CaseStudies";
 import CaseStudyDetail from "./pages/CaseStudyDetail";
+import CaseStudyReport from "./pages/CaseStudyReport";
 import Resources from "./pages/Resources";
 import Academy from "./pages/Academy";
 import Industries from "./pages/Industries";
@@ -66,6 +67,7 @@ const App = () => (
             <Route path="/automation/:toolName" element={<AutomationDetail />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
+            <Route path="/case-studies/:id/report" element={<CaseStudyReport />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/academy" element={<Academy />} />
             <Route path="/course/:courseId" element={<CourseDetail />} />

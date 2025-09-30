@@ -23,7 +23,7 @@ import {
   Target, 
   CheckCircle, 
   ArrowRight,
-  Download,
+  FileText,
   ExternalLink,
   Building,
   BarChart3,
@@ -729,9 +729,13 @@ const CaseStudyDetail = () => {
                   <Lightbulb className="mr-2 h-5 w-5" />
                   Get Similar Results
                 </Button>
-                <Button variant="outline" size="lg">
-                  <Download className="mr-2 h-5 w-5" />
-                  Download Case Study
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => navigate(`/case-studies/${id}/report`)}
+                >
+                  <FileText className="mr-2 h-5 w-5" />
+                  View Full Report
                 </Button>
               </div>
             </div>
