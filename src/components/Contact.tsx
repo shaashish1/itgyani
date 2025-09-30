@@ -129,9 +129,9 @@ function Contact() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Contact Form */}
-          <div className="lg:col-span-2">
+          <div>
             <Card className="glass-card">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold mb-6">Send us a Message</h3>
@@ -207,24 +207,6 @@ function Contact() {
               </CardContent>
             </Card>
 
-            {/* Contact Information Cards - Moved below form */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {contactInfo.map((info, index) => (
-                <Card key={index} className="glass-card hover-glow">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center text-primary flex-shrink-0">
-                        {info.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-sm">{info.title}</div>
-                        <div className="text-foreground/70 text-sm">{info.details}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </div>
 
           {/* Quick Actions Sidebar */}
