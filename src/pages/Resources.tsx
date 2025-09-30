@@ -715,173 +715,659 @@ const Resources = () => {
     },
     {
       id: 4,
-      title: "E-commerce & Retail Automations",
-      description: "Optimize online stores with Shopify, Stripe, and payment processing workflow automations.",
+      title: "HubSpot CRM Automation Workflows",
+      description: "Streamline HubSpot CRM operations with automated lead management, contact sync, and deal tracking.",
       category: "n8n Workflows",
-      type: "Business Collection",
-      workflowCount: "160+",
-      integrations: ["Shopify", "WooCommerce", "Stripe", "PayPal", "Square", "Magento"],
+      type: "JSON Workflows",
+      workflowCount: "8+",
+      integrations: ["HubSpot", "Gmail", "Slack", "Google Sheets", "Webhooks"],
       complexity: "Medium",
-      tags: ["E-commerce", "Payments", "Inventory", "Customer Service"],
+      tags: ["HubSpot", "CRM", "Lead Management", "Sales Automation"],
+      downloadableWorkflows: [
+        {
+          name: "HubSpot Contact Creation Automation",
+          filename: "0007_HubSpot_Create_Triggered.json",
+          description: "Automatically create HubSpot contacts from form submissions",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/HubSpot/0007_HubSpot_Create_Triggered.json"
+        },
+        {
+          name: "HubSpot Email Campaign Integration",
+          filename: "0015_HubSpot_Emailsend_Send.json",
+          description: "Send automated email campaigns through HubSpot",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/HubSpot/0015_HubSpot_Emailsend_Send.json"
+        },
+        {
+          name: "HubSpot + Google Sheets Sync",
+          filename: "0197_HubSpot_GoogleSheets_Update.json",
+          description: "Sync HubSpot data with Google Sheets automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/HubSpot/0197_HubSpot_GoogleSheets_Update.json"
+        },
+        {
+          name: "HubSpot Deal Stage Notifications",
+          filename: "0984_HubSpot_Slack_Send_Triggered.json",
+          description: "Get Slack notifications when HubSpot deals change stages",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/HubSpot/0984_HubSpot_Slack_Send_Triggered.json"
+        }
+      ],
       useCases: [
-        "Automated order processing and fulfillment",
-        "Inventory management and stock alerts",
-        "Customer onboarding and lifecycle emails",
-        "Payment processing and refund automation",
-        "Product data synchronization",
-        "Abandoned cart recovery campaigns"
+        "Automated contact creation and enrichment",
+        "Lead scoring and qualification workflows",
+        "Sales pipeline stage notifications",
+        "Email campaign automation",
+        "CRM data synchronization",
+        "Deal tracking and reporting"
       ]
     },
     {
       id: 5,
-      title: "Cloud Storage & File Management",
-      description: "Automate file operations across Google Drive, Dropbox, OneDrive, and document processing.",
+      title: "Notion Workspace Automation",
+      description: "Automate Notion databases, pages, and workflows for enhanced productivity and team collaboration.",
       category: "n8n Workflows",
-      type: "Productivity Collection",
-      workflowCount: "140+",
-      integrations: ["Google Drive", "Dropbox", "OneDrive", "Box", "Amazon S3", "FTP"],
-      complexity: "Low to Medium",
-      tags: ["File Management", "Cloud Storage", "Document Processing", "Backup"],
+      type: "JSON Workflows",
+      workflowCount: "12+",
+      integrations: ["Notion", "Google Calendar", "Slack", "Telegram", "RSS Feeds"],
+      complexity: "Medium",
+      tags: ["Notion", "Productivity", "Database Management", "Team Collaboration"],
+      downloadableWorkflows: [
+        {
+          name: "Notion Database Creation Trigger",
+          filename: "0011_Notion_Create_Triggered.json",
+          description: "Trigger workflows when new items are added to Notion databases",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Notion/0011_Notion_Create_Triggered.json"
+        },
+        {
+          name: "Notion + Google Calendar Sync",
+          filename: "0048_Notion_GoogleCalendar_Create_Scheduled.json",
+          description: "Sync Notion tasks with Google Calendar events",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Notion/0048_Notion_GoogleCalendar_Create_Scheduled.json"
+        },
+        {
+          name: "Notion RSS Feed Aggregator",
+          filename: "0081_Notion_RssFeedRead_Create_Scheduled.json",
+          description: "Automatically add RSS feed articles to Notion databases",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Notion/0081_Notion_RssFeedRead_Create_Scheduled.json"
+        },
+        {
+          name: "Notion Slack Integration",
+          filename: "0326_Notion_Slack_Create_Triggered.json",
+          description: "Post Notion updates to Slack channels automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Notion/0326_Notion_Slack_Create_Triggered.json"
+        }
+      ],
       useCases: [
-        "Automated file backup and archiving",
-        "Document conversion and processing",
-        "File synchronization across platforms",
-        "Automated folder organization",
-        "Document approval workflows",
-        "Media processing and optimization"
+        "Automated task and project management",
+        "Calendar integration and scheduling",
+        "Content aggregation from RSS feeds",
+        "Team notification workflows",
+        "Database automation and syncing",
+        "Knowledge base management"
       ]
     },
     {
       id: 6,
-      title: "Marketing & Advertising Automation",
-      description: "Scale marketing campaigns with email automation, social media, and lead generation workflows.",
+      title: "Telegram Bot Automation Workflows",
+      description: "Build powerful Telegram bots with automated messaging, notifications, and interactive commands.",
       category: "n8n Workflows",
-      type: "Marketing Collection",
-      workflowCount: "175+",
-      integrations: ["Mailchimp", "HubSpot", "Facebook Ads", "Google Ads", "LinkedIn", "Twitter"],
-      complexity: "Medium",
-      tags: ["Marketing", "Email Automation", "Social Media", "Lead Generation"],
+      type: "JSON Workflows",
+      workflowCount: "15+",
+      integrations: ["Telegram", "OpenAI", "RSS Feeds", "HTTP", "Webhooks", "GitHub"],
+      complexity: "Low to Medium",
+      tags: ["Telegram", "Chatbot", "Messaging", "Notifications"],
+      downloadableWorkflows: [
+        {
+          name: "Telegram Message Webhook Trigger",
+          filename: "0010_Telegram_Send_Webhook.json",
+          description: "Respond to Telegram messages with automated replies",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0010_Telegram_Send_Webhook.json"
+        },
+        {
+          name: "Telegram RSS Feed Bot",
+          filename: "0090_Telegram_RssFeedRead_Send_Scheduled.json",
+          description: "Send RSS feed updates to Telegram channels automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0090_Telegram_RssFeedRead_Send_Scheduled.json"
+        },
+        {
+          name: "Telegram GitHub Notifications",
+          filename: "0271_Telegram_GitHub_Send_Triggered.json",
+          description: "Get GitHub repository updates in Telegram",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0271_Telegram_GitHub_Send_Triggered.json"
+        },
+        {
+          name: "Telegram AI Chat Bot",
+          filename: "0943_Telegram_OpenAI_Send_Webhook.json",
+          description: "Create an AI-powered Telegram chatbot using OpenAI",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0943_Telegram_OpenAI_Send_Webhook.json"
+        }
+      ],
       useCases: [
-        "Automated email marketing campaigns",
-        "Social media posting and engagement",
-        "Lead scoring and qualification",
-        "Marketing attribution tracking",
-        "A/B testing automation",
-        "Customer segmentation and targeting"
+        "Automated customer support chatbots",
+        "News and content distribution",
+        "Team notifications and alerts",
+        "GitHub repository monitoring",
+        "AI-powered conversational interfaces",
+        "Scheduled announcements and reminders"
       ]
     },
     {
       id: 7,
-      title: "CRM & Sales Process Automation",
-      description: "Streamline sales operations with Salesforce, HubSpot, and pipeline management workflows.",
+      title: "Google Sheets Data Automation",
+      description: "Automate spreadsheet operations with data sync, reporting, and third-party integrations.",
       category: "n8n Workflows",
-      type: "Sales Collection",
-      workflowCount: "130+",
-      integrations: ["Salesforce", "HubSpot", "Pipedrive", "Zoho CRM", "ActiveCampaign"],
-      complexity: "Medium to High",
-      tags: ["CRM", "Sales", "Pipeline Management", "Customer Relations"],
+      type: "JSON Workflows",
+      workflowCount: "20+",
+      integrations: ["Google Sheets", "Gmail", "Slack", "Airtable", "HTTP", "OpenAI"],
+      complexity: "Low to Medium",
+      tags: ["Google Sheets", "Data Processing", "Spreadsheets", "Reporting"],
+      downloadableWorkflows: [
+        {
+          name: "Google Sheets Row Trigger",
+          filename: "0004_GoogleSheets_Create_Triggered.json",
+          description: "Trigger workflows when new rows are added to Google Sheets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Google%20Sheets/0004_GoogleSheets_Create_Triggered.json"
+        },
+        {
+          name: "Google Sheets + Slack Integration",
+          filename: "0039_GoogleSheets_Slack_Send_Scheduled.json",
+          description: "Send Google Sheets data summaries to Slack on schedule",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Google%20Sheets/0039_GoogleSheets_Slack_Send_Scheduled.json"
+        },
+        {
+          name: "Google Sheets AI Data Enrichment",
+          filename: "0734_GoogleSheets_OpenAI_Update_Scheduled.json",
+          description: "Enrich Google Sheets data using OpenAI automation",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Google%20Sheets/0734_GoogleSheets_OpenAI_Update_Scheduled.json"
+        },
+        {
+          name: "Gmail to Google Sheets Logger",
+          filename: "0852_Gmail_GoogleSheets_Create_Triggered.json",
+          description: "Automatically log Gmail data to Google Sheets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Gmail/0852_Gmail_GoogleSheets_Create_Triggered.json"
+        }
+      ],
       useCases: [
-        "Automated lead capture and routing",
-        "Sales pipeline progression tracking",
-        "Customer onboarding sequences",
-        "Follow-up task automation",
-        "Deal stage notifications",
-        "Sales performance reporting"
+        "Automated data logging and tracking",
+        "Real-time reporting and dashboards",
+        "Email to spreadsheet automation",
+        "AI-powered data enrichment",
+        "Cross-platform data synchronization",
+        "Scheduled report generation"
       ]
     },
     {
       id: 8,
-      title: "Project Management Workflows",
-      description: "Enhance team productivity with Jira, GitHub, Trello, and Asana automation workflows.",
+      title: "Discord Server Automation",
+      description: "Automate Discord server management with bots, notifications, and community engagement workflows.",
       category: "n8n Workflows",
-      type: "Productivity Collection",
-      workflowCount: "120+",
-      integrations: ["Jira", "GitHub", "Trello", "Asana", "Monday.com", "ClickUp"],
+      type: "JSON Workflows",
+      workflowCount: "10+",
+      integrations: ["Discord", "GitHub", "Twitter", "RSS Feeds", "OpenAI", "Webhooks"],
       complexity: "Medium",
-      tags: ["Project Management", "Team Collaboration", "Task Automation", "DevOps"],
+      tags: ["Discord", "Community Management", "Bots", "Notifications"],
+      downloadableWorkflows: [
+        {
+          name: "Discord Message Webhook Bot",
+          filename: "0033_Discord_Send_Webhook.json",
+          description: "Send automated messages to Discord channels via webhooks",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/0033_Discord_Send_Webhook.json"
+        },
+        {
+          name: "Discord GitHub Integration",
+          filename: "0138_Discord_GitHub_Send_Triggered.json",
+          description: "Post GitHub updates to Discord channels automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/0138_Discord_GitHub_Send_Triggered.json"
+        },
+        {
+          name: "Discord RSS Feed Bot",
+          filename: "0282_Discord_RssFeedRead_Send_Scheduled.json",
+          description: "Share RSS feed content in Discord channels on schedule",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/0282_Discord_RssFeedRead_Send_Scheduled.json"
+        },
+        {
+          name: "Discord AI Moderation Bot",
+          filename: "1069_Discord_OpenAI_Send_Webhook.json",
+          description: "AI-powered Discord moderation and response bot",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/1069_Discord_OpenAI_Send_Webhook.json"
+        }
+      ],
       useCases: [
-        "Automated task creation and assignment",
-        "Project status tracking and reporting",
-        "Code deployment notifications",
-        "Bug tracking and resolution workflows",
-        "Sprint planning automation",
-        "Time tracking and billing integration"
+        "Automated community announcements",
+        "GitHub repository monitoring",
+        "Content aggregation and sharing",
+        "AI-powered moderation",
+        "Welcome messages and onboarding",
+        "Event notifications and reminders"
       ]
     },
     {
       id: 9,
-      title: "Social Media Management",
-      description: "Automate social media presence across LinkedIn, Twitter, Facebook, and Instagram platforms.",
+      title: "Trello Project Management Automation",
+      description: "Automate Trello boards with card creation, task management, and team collaboration workflows.",
       category: "n8n Workflows",
-      type: "Social Collection",
-      workflowCount: "110+",
-      integrations: ["LinkedIn", "Twitter/X", "Facebook", "Instagram", "TikTok", "YouTube"],
+      type: "JSON Workflows",
+      workflowCount: "8+",
+      integrations: ["Trello", "Slack", "Gmail", "Google Calendar", "Webhooks"],
       complexity: "Low to Medium",
-      tags: ["Social Media", "Content Publishing", "Engagement", "Analytics"],
+      tags: ["Trello", "Project Management", "Task Automation", "Team Collaboration"],
+      downloadableWorkflows: [
+        {
+          name: "Trello Card Creation Webhook",
+          filename: "0003_Trello_Create_Webhook.json",
+          description: "Trigger workflows when new Trello cards are created",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Trello/0003_Trello_Create_Webhook.json"
+        },
+        {
+          name: "Trello + Slack Notifications",
+          filename: "0072_Trello_Slack_Send_Webhook.json",
+          description: "Send Trello updates to Slack channels automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Trello/0072_Trello_Slack_Send_Webhook.json"
+        },
+        {
+          name: "Gmail to Trello Card Automation",
+          filename: "0368_Trello_Gmail_Create_Triggered.json",
+          description: "Create Trello cards from Gmail messages automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Trello/0368_Trello_Gmail_Create_Triggered.json"
+        },
+        {
+          name: "Trello Calendar Sync",
+          filename: "0533_Trello_GoogleCalendar_Create_Scheduled.json",
+          description: "Sync Trello due dates with Google Calendar events",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Trello/0533_Trello_GoogleCalendar_Create_Scheduled.json"
+        }
+      ],
       useCases: [
-        "Automated content scheduling and publishing",
-        "Social media monitoring and responses",
-        "Engagement tracking and analytics",
-        "Influencer outreach automation",
-        "Content curation and sharing",
-        "Brand mention alerts and responses"
+        "Automated task creation and assignment",
+        "Team notification workflows",
+        "Email-to-task conversion",
+        "Calendar integration and scheduling",
+        "Project progress tracking",
+        "Cross-platform task synchronization"
       ]
     },
     {
       id: 10,
-      title: "Financial & Accounting Automation",
-      description: "Streamline financial operations with QuickBooks, Xero, and expense management workflows.",
+      title: "Twitter/X Social Media Automation",
+      description: "Automate Twitter/X operations with posting, monitoring, and engagement workflows.",
       category: "n8n Workflows",
-      type: "Finance Collection",
-      workflowCount: "95+",
-      integrations: ["QuickBooks", "Xero", "FreshBooks", "Stripe", "PayPal", "Wave"],
-      complexity: "Medium to High",
-      tags: ["Finance", "Accounting", "Invoicing", "Expense Management"],
+      type: "JSON Workflows",
+      workflowCount: "12+",
+      integrations: ["Twitter/X", "OpenAI", "RSS Feeds", "Google Sheets", "Webhooks"],
+      complexity: "Medium",
+      tags: ["Twitter", "Social Media", "Content Publishing", "Automation"],
+      downloadableWorkflows: [
+        {
+          name: "Twitter Auto-Post Workflow",
+          filename: "0055_Twitter_Send_Scheduled.json",
+          description: "Schedule and automatically post tweets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Twitter/0055_Twitter_Send_Scheduled.json"
+        },
+        {
+          name: "RSS to Twitter Auto-Publisher",
+          filename: "0156_Twitter_RssFeedRead_Send_Scheduled.json",
+          description: "Automatically share RSS feed content on Twitter",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Twitter/0156_Twitter_RssFeedRead_Send_Scheduled.json"
+        },
+        {
+          name: "Twitter AI Content Generator",
+          filename: "0891_Twitter_OpenAI_Send_Scheduled.json",
+          description: "Generate and post AI-powered tweets automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Twitter/0891_Twitter_OpenAI_Send_Scheduled.json"
+        },
+        {
+          name: "Twitter Mention Monitor",
+          filename: "1043_Twitter_GoogleSheets_Create_Scheduled.json",
+          description: "Track and log Twitter mentions to Google Sheets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Twitter/1043_Twitter_GoogleSheets_Create_Scheduled.json"
+        }
+      ],
       useCases: [
-        "Automated invoice generation and sending",
-        "Expense tracking and categorization",
-        "Payment processing and reconciliation",
-        "Financial reporting automation",
-        "Tax calculation and filing assistance",
-        "Budget monitoring and alerts"
+        "Automated content scheduling and posting",
+        "RSS feed to Twitter integration",
+        "AI-powered content generation",
+        "Brand mention tracking",
+        "Engagement monitoring and analytics",
+        "Multi-account management"
       ]
     },
     {
       id: 11,
-      title: "Web Scraping & Data Extraction",
-      description: "Extract and process web data with advanced scraping workflows and data validation.",
+      title: "LinkedIn Professional Networking",
+      description: "Automate LinkedIn activities including posting, lead generation, and professional engagement.",
       category: "n8n Workflows",
-      type: "Data Collection",
-      workflowCount: "85+",
-      integrations: ["Puppeteer", "Playwright", "BeautifulSoup", "Scrapy", "APIs"],
-      complexity: "Medium to High",
-      tags: ["Web Scraping", "Data Extraction", "API Integration", "Data Validation"],
+      type: "JSON Workflows",
+      workflowCount: "6+",
+      integrations: ["LinkedIn", "Google Sheets", "HubSpot", "OpenAI", "RSS Feeds"],
+      complexity: "Medium",
+      tags: ["LinkedIn", "Networking", "B2B", "Lead Generation"],
+      downloadableWorkflows: [
+        {
+          name: "LinkedIn Auto-Post Workflow",
+          filename: "0134_LinkedIn_Send_Scheduled.json",
+          description: "Schedule and publish LinkedIn posts automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/LinkedIn/0134_LinkedIn_Send_Scheduled.json"
+        },
+        {
+          name: "LinkedIn Lead Tracker",
+          filename: "0487_LinkedIn_GoogleSheets_Create_Scheduled.json",
+          description: "Track LinkedIn leads and log them to Google Sheets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/LinkedIn/0487_LinkedIn_GoogleSheets_Create_Scheduled.json"
+        },
+        {
+          name: "LinkedIn + HubSpot Integration",
+          filename: "0765_LinkedIn_HubSpot_Create_Triggered.json",
+          description: "Sync LinkedIn connections with HubSpot CRM",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/LinkedIn/0765_LinkedIn_HubSpot_Create_Triggered.json"
+        }
+      ],
       useCases: [
-        "Automated price monitoring and alerts",
-        "Competitor analysis and tracking",
-        "News and content aggregation",
-        "Lead generation from web sources",
-        "Product catalog synchronization",
-        "Market research data collection"
+        "Automated professional content publishing",
+        "Lead generation and tracking",
+        "CRM integration and enrichment",
+        "Network growth automation",
+        "Engagement monitoring",
+        "B2B marketing automation"
       ]
     },
     {
       id: 12,
-      title: "DevOps & Technical Infrastructure",
-      description: "Automate deployment, monitoring, and infrastructure management with DevOps workflows.",
+      title: "Stripe Payment Processing",
+      description: "Automate payment workflows with Stripe integration for invoicing, subscriptions, and notifications.",
       category: "n8n Workflows",
-      type: "Technical Collection",
-      workflowCount: "105+",
-      integrations: ["Docker", "Kubernetes", "AWS", "Azure", "GCP", "Jenkins", "GitLab CI"],
-      complexity: "High",
-      tags: ["DevOps", "Infrastructure", "Monitoring", "Deployment"],
+      type: "JSON Workflows",
+      workflowCount: "10+",
+      integrations: ["Stripe", "Slack", "Gmail", "Google Sheets", "Webhooks", "QuickBooks"],
+      complexity: "Medium to High",
+      tags: ["Payments", "Stripe", "E-commerce", "Billing"],
+      downloadableWorkflows: [
+        {
+          name: "Stripe Payment Success Webhook",
+          filename: "0002_Stripe_Webhook.json",
+          description: "Trigger workflows when Stripe payments succeed",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Stripe/0002_Stripe_Webhook.json"
+        },
+        {
+          name: "Stripe + Slack Payment Notifications",
+          filename: "0008_Slack_Stripe_Create_Triggered.json",
+          description: "Get Slack notifications for Stripe payment events",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Slack/0008_Slack_Stripe_Create_Triggered.json"
+        },
+        {
+          name: "Stripe Invoice Generator",
+          filename: "0245_Stripe_GoogleSheets_Create_Scheduled.json",
+          description: "Automatically generate and send Stripe invoices",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Stripe/0245_Stripe_GoogleSheets_Create_Scheduled.json"
+        },
+        {
+          name: "Stripe Subscription Management",
+          filename: "0598_Stripe_Gmail_Send_Webhook.json",
+          description: "Manage Stripe subscriptions with email notifications",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Stripe/0598_Stripe_Gmail_Send_Webhook.json"
+        }
+      ],
       useCases: [
-        "Automated CI/CD pipeline management",
-        "Infrastructure monitoring and alerting",
-        "Server provisioning and configuration",
-        "Security scanning and compliance checks",
-        "Backup and disaster recovery automation",
-        "Performance monitoring and optimization"
+        "Automated payment confirmation emails",
+        "Subscription lifecycle management",
+        "Invoice generation and tracking",
+        "Payment failure notifications",
+        "Revenue reporting automation",
+        "Accounting system integration"
+      ]
+    },
+    {
+      id: 13,
+      title: "GitHub Development Workflow Automation",
+      description: "Automate GitHub operations including issue tracking, PR management, and CI/CD integration.",
+      category: "n8n Workflows",
+      type: "JSON Workflows",
+      workflowCount: "15+",
+      integrations: ["GitHub", "Slack", "Discord", "Telegram", "Jira", "Linear"],
+      complexity: "Medium to High",
+      tags: ["GitHub", "DevOps", "CI/CD", "Development"],
+      downloadableWorkflows: [
+        {
+          name: "GitHub Issue Creation Webhook",
+          filename: "0016_GitHub_Webhook.json",
+          description: "Trigger workflows when GitHub issues are created",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/GitHub/0016_GitHub_Webhook.json"
+        },
+        {
+          name: "GitHub + Slack Integration",
+          filename: "0064_GitHub_Slack_Send_Webhook.json",
+          description: "Send GitHub notifications to Slack channels",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/GitHub/0064_GitHub_Slack_Send_Webhook.json"
+        },
+        {
+          name: "GitHub PR Review Automation",
+          filename: "0312_GitHub_Discord_Send_Webhook.json",
+          description: "Notify team on Discord when PRs need review",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/GitHub/0312_GitHub_Discord_Send_Webhook.json"
+        },
+        {
+          name: "GitHub CI/CD Status Monitor",
+          filename: "0687_GitHub_Telegram_Send_Webhook.json",
+          description: "Monitor GitHub Actions and deployment status",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/GitHub/0687_GitHub_Telegram_Send_Webhook.json"
+        }
+      ],
+      useCases: [
+        "Automated code review notifications",
+        "Issue tracking and assignment",
+        "Pull request management",
+        "CI/CD pipeline monitoring",
+        "Release automation",
+        "Team collaboration alerts"
+      ]
+    },
+    {
+      id: 14,
+      title: "Asana Task Management Automation",
+      description: "Streamline project management with Asana task automation and team collaboration workflows.",
+      category: "n8n Workflows",
+      type: "JSON Workflows",
+      workflowCount: "7+",
+      integrations: ["Asana", "Slack", "Gmail", "Google Calendar", "Webhooks"],
+      complexity: "Medium",
+      tags: ["Asana", "Project Management", "Task Tracking", "Team Productivity"],
+      downloadableWorkflows: [
+        {
+          name: "Asana Task Creation Webhook",
+          filename: "0013_Asana_Create_Webhook.json",
+          description: "Trigger workflows when new Asana tasks are created",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Asana/0013_Asana_Create_Webhook.json"
+        },
+        {
+          name: "Asana + Slack Notifications",
+          filename: "0089_Asana_Slack_Send_Webhook.json",
+          description: "Send Asana updates to Slack automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Asana/0089_Asana_Slack_Send_Webhook.json"
+        },
+        {
+          name: "Gmail to Asana Task Creator",
+          filename: "0423_Asana_Gmail_Create_Triggered.json",
+          description: "Create Asana tasks from Gmail messages",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Asana/0423_Asana_Gmail_Create_Triggered.json"
+        }
+      ],
+      useCases: [
+        "Automated task creation and assignment",
+        "Team notification workflows",
+        "Email-to-task conversion",
+        "Project deadline tracking",
+        "Cross-platform synchronization",
+        "Progress reporting automation"
+      ]
+    },
+    {
+      id: 15,
+      title: "Shopify E-commerce Automation",
+      description: "Automate Shopify store operations including orders, inventory, and customer management.",
+      category: "n8n Workflows",
+      type: "JSON Workflows",
+      workflowCount: "12+",
+      integrations: ["Shopify", "Gmail", "Slack", "Google Sheets", "Stripe", "Mailchimp"],
+      complexity: "Medium to High",
+      tags: ["Shopify", "E-commerce", "Retail", "Order Management"],
+      downloadableWorkflows: [
+        {
+          name: "Shopify Order Webhook",
+          filename: "0026_Shopify_Create_Webhook.json",
+          description: "Trigger workflows when new Shopify orders are placed",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Shopify/0026_Shopify_Create_Webhook.json"
+        },
+        {
+          name: "Shopify + Gmail Order Notifications",
+          filename: "0143_Shopify_Gmail_Send_Webhook.json",
+          description: "Send custom order confirmation emails via Gmail",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Shopify/0143_Shopify_Gmail_Send_Webhook.json"
+        },
+        {
+          name: "Shopify Inventory Tracker",
+          filename: "0376_Shopify_GoogleSheets_Update_Scheduled.json",
+          description: "Track Shopify inventory levels in Google Sheets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Shopify/0376_Shopify_GoogleSheets_Update_Scheduled.json"
+        },
+        {
+          name: "Shopify + Slack Sales Alerts",
+          filename: "0621_Shopify_Slack_Send_Webhook.json",
+          description: "Get Slack notifications for new sales and orders",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Shopify/0621_Shopify_Slack_Send_Webhook.json"
+        }
+      ],
+      useCases: [
+        "Automated order processing",
+        "Inventory management and alerts",
+        "Customer notification workflows",
+        "Sales tracking and reporting",
+        "Abandoned cart recovery",
+        "Product catalog synchronization"
+      ]
+    },
+    {
+      id: 16,
+      title: "OpenAI & AI Integration Workflows",
+      description: "Leverage AI capabilities with OpenAI integration for content generation, analysis, and automation.",
+      category: "n8n Workflows",
+      type: "JSON Workflows",
+      workflowCount: "25+",
+      integrations: ["OpenAI", "Google Sheets", "Slack", "Discord", "Gmail", "Notion"],
+      complexity: "Medium to High",
+      tags: ["AI", "OpenAI", "Machine Learning", "Content Generation"],
+      downloadableWorkflows: [
+        {
+          name: "AI Content Generator",
+          filename: "0512_OpenAI_GoogleSheets_Update_Scheduled.json",
+          description: "Generate AI content and save to Google Sheets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/OpenAI/0512_OpenAI_GoogleSheets_Update_Scheduled.json"
+        },
+        {
+          name: "AI Chatbot for Slack",
+          filename: "0734_OpenAI_Slack_Send_Webhook.json",
+          description: "Create an AI-powered Slack chatbot",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/OpenAI/0734_OpenAI_Slack_Send_Webhook.json"
+        },
+        {
+          name: "AI Email Response Generator",
+          filename: "0876_OpenAI_Gmail_Send_Triggered.json",
+          description: "Generate AI-powered email responses automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/OpenAI/0876_OpenAI_Gmail_Send_Triggered.json"
+        },
+        {
+          name: "AI Data Analysis Workflow",
+          filename: "1021_OpenAI_Notion_Update_Scheduled.json",
+          description: "Analyze data with AI and update Notion databases",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/OpenAI/1021_OpenAI_Notion_Update_Scheduled.json"
+        }
+      ],
+      useCases: [
+        "Automated content generation",
+        "AI-powered chatbots and assistants",
+        "Email response automation",
+        "Data analysis and insights",
+        "Text summarization and translation",
+        "Sentiment analysis and classification"
+      ]
+    },
+    {
+      id: 17,
+      title: "Jira Project Tracking Automation",
+      description: "Automate Jira workflows for issue tracking, sprint management, and team coordination.",
+      category: "n8n Workflows",
+      type: "JSON Workflows",
+      workflowCount: "10+",
+      integrations: ["Jira", "Slack", "GitHub", "Gmail", "Google Sheets"],
+      complexity: "Medium to High",
+      tags: ["Jira", "Agile", "Project Management", "DevOps"],
+      downloadableWorkflows: [
+        {
+          name: "Jira Issue Creation Webhook",
+          filename: "0024_Jira_Create_Webhook.json",
+          description: "Trigger workflows when Jira issues are created",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Jira/0024_Jira_Create_Webhook.json"
+        },
+        {
+          name: "Jira + Slack Notifications",
+          filename: "0097_Jira_Slack_Send_Webhook.json",
+          description: "Send Jira updates to Slack channels",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Jira/0097_Jira_Slack_Send_Webhook.json"
+        },
+        {
+          name: "Jira + GitHub Integration",
+          filename: "0345_Jira_GitHub_Update_Webhook.json",
+          description: "Sync Jira issues with GitHub pull requests",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Jira/0345_Jira_GitHub_Update_Webhook.json"
+        },
+        {
+          name: "Jira Sprint Report Automation",
+          filename: "0789_Jira_GoogleSheets_Create_Scheduled.json",
+          description: "Generate automated sprint reports in Google Sheets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Jira/0789_Jira_GoogleSheets_Create_Scheduled.json"
+        }
+      ],
+      useCases: [
+        "Automated issue tracking and assignment",
+        "Sprint planning and management",
+        "Code deployment synchronization",
+        "Bug tracking workflows",
+        "Team collaboration notifications",
+        "Performance reporting and analytics"
+      ]
+    },
+    {
+      id: 18,
+      title: "Mailchimp Email Marketing Automation",
+      description: "Automate email marketing campaigns with Mailchimp integration for subscriber management and analytics.",
+      category: "n8n Workflows",
+      type: "JSON Workflows",
+      workflowCount: "8+",
+      integrations: ["Mailchimp", "Google Sheets", "Shopify", "WordPress", "Webhooks"],
+      complexity: "Medium",
+      tags: ["Email Marketing", "Mailchimp", "Marketing Automation", "Subscribers"],
+      downloadableWorkflows: [
+        {
+          name: "Mailchimp Subscriber Webhook",
+          filename: "0032_Mailchimp_Subscribe_Webhook.json",
+          description: "Trigger workflows when users subscribe to Mailchimp",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Mailchimp/0032_Mailchimp_Subscribe_Webhook.json"
+        },
+        {
+          name: "Mailchimp + Google Sheets Sync",
+          filename: "0198_Mailchimp_GoogleSheets_Update_Scheduled.json",
+          description: "Sync Mailchimp subscribers with Google Sheets",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Mailchimp/0198_Mailchimp_GoogleSheets_Update_Scheduled.json"
+        },
+        {
+          name: "Shopify to Mailchimp Integration",
+          filename: "0456_Mailchimp_Shopify_Subscribe_Webhook.json",
+          description: "Add Shopify customers to Mailchimp automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Mailchimp/0456_Mailchimp_Shopify_Subscribe_Webhook.json"
+        }
+      ],
+      useCases: [
+        "Automated subscriber management",
+        "Email campaign triggering",
+        "E-commerce customer sync",
+        "Subscriber segmentation",
+        "Marketing analytics tracking",
+        "Welcome email automation"
       ]
     }
   ];
