@@ -414,9 +414,52 @@ const ResourceDetail = () => {
           />
         </div>
 
-        <Card className="p-8">
-          <CardContent className="prose prose-lg dark:prose-invert max-w-none">
-            <div className="whitespace-pre-line">{resource.content}</div>
+        <Card>
+          <CardContent className="p-8 md:p-12">
+            <div className="space-y-8">
+              {resource.content.split('\n\n').map((section, index) => {
+                const trimmedSection = section.trim();
+                if (!trimmedSection) return null;
+
+                // Check if it's a heading (starts with **)
+                if (trimmedSection.startsWith('**') && trimmedSection.includes(':**')) {
+                  const headingText = trimmedSection.replace(/\*\*/g, '').replace(':', '');
+                  return (
+                    <div key={index} className="space-y-4">
+                      <h2 className="text-2xl font-bold text-foreground border-b border-border pb-3">
+                        {headingText}
+                      </h2>
+                    </div>
+                  );
+                }
+
+                // Check if it's a list section (contains bullet points)
+                if (trimmedSection.includes('\n- ')) {
+                  const lines = trimmedSection.split('\n');
+                  return (
+                    <ul key={index} className="space-y-3 ml-6">
+                      {lines.map((line, lineIndex) => {
+                        if (line.trim().startsWith('- ')) {
+                          return (
+                            <li key={lineIndex} className="text-muted-foreground leading-relaxed list-disc">
+                              {line.replace('- ', '')}
+                            </li>
+                          );
+                        }
+                        return null;
+                      })}
+                    </ul>
+                  );
+                }
+
+                // Regular paragraph
+                return (
+                  <p key={index} className="text-muted-foreground leading-relaxed">
+                    {trimmedSection}
+                  </p>
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
 
