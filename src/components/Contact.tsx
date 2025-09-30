@@ -14,7 +14,8 @@ import {
   Send,
   Calendar,
   MessageCircle,
-  Zap
+  Zap,
+  Check
 } from "lucide-react";
 
 function Contact() {
@@ -46,12 +47,18 @@ function Contact() {
   ];
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
+  const [emailValid, setEmailValid] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     company: "",
     message: ""
   });
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,10 +83,16 @@ function Contact() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
+    
+    // Validate email in real-time
+    if (name === "email") {
+      setEmailValid(validateEmail(value));
+    }
   };
 // ...existing code...
 // ...existing code...
@@ -155,15 +168,22 @@ function Contact() {
                       <label className="block text-sm font-medium mb-2">
                         Email Address *
                       </label>
-                      <Input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="john@company.com"
-                        required
-                        className="bg-input/50 border-border/50 focus:border-primary"
-                      />
+                      <div className="relative">
+                        <Input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="john@company.com"
+                          required
+                          className="bg-input/50 border-border/50 focus:border-primary pr-10"
+                        />
+                        {emailValid && (
+                          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                            <Check className="h-5 w-5 text-green-500" />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
