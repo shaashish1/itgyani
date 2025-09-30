@@ -61,9 +61,9 @@ serve(async (req) => {
       });
     }
 
-    const HUGGING_FACE_TOKEN = Deno.env.get('HUGGING_FACE_ACCESS_TOKEN');
-    if (!HUGGING_FACE_TOKEN) {
-      throw new Error('HUGGING_FACE_ACCESS_TOKEN is not configured');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is not configured');
     }
 
     const results = {
@@ -132,27 +132,26 @@ Format your response as JSON with these fields:
   "readingTime": estimated_reading_time_in_minutes
 }`;
 
-        // Call HuggingFace Inference API with Qwen model
+        // Call Lovable AI Gateway with Gemini model
         const startTime = Date.now();
         let generatedContent: string;
         let tokensUsed = 0;
         try {
           const systemPrompt = 'You are an expert content writer for FutureFlow AI, specializing in creating engaging, SEO-optimized blog posts about AI, automation, and future technology. Always respond with valid JSON only, no markdown code blocks.';
-          const fullPrompt = `${systemPrompt}\n\n${prompt}`;
-          
-          const aiResponse = await fetch('https://api-inference.huggingface.co/models/Qwen/Qwen2.5-Omni-3B', {
+
+          const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${HUGGING_FACE_TOKEN}`,
+              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              inputs: fullPrompt,
-              parameters: {
-                max_new_tokens: 4000,
-                temperature: 0.7,
-                return_full_text: false
-              }
+              model: 'google/gemini-2.5-flash',
+              messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: prompt }
+              ],
+              temperature: 0.7
             }),
           });
 
@@ -180,9 +179,9 @@ Format your response as JSON with these fields:
           }
 
           const aiData = await aiResponse.json();
-          // HuggingFace returns either array or object
-          generatedContent = Array.isArray(aiData) ? aiData[0]?.generated_text || '' : aiData.generated_text || '';
-          tokensUsed = 0; // HuggingFace doesn't return token counts in free tier
+          const contentFromAI = aiData?.choices?.[0]?.message?.content ?? '';
+          generatedContent = typeof contentFromAI === 'string' ? contentFromAI : JSON.stringify(contentFromAI);
+          tokensUsed = aiData?.usage?.total_tokens ?? 0;
         } catch (error: any) {
           console.error(`Lovable AI error for topic ${topicData.topic}:`, error);
           results.errors.push(`AI error for "${topicData.topic}": ${error.message || 'Unknown error'}`);
