@@ -30,7 +30,7 @@ const TermsOfService = () => {
             
             <div className="prose prose-lg max-w-none text-foreground/80 space-y-8">
               <p className="text-xl leading-relaxed">
-                <strong>Effective Date:</strong> January 1, 2024
+                <strong>Effective Date:</strong> January 1, 2025
               </p>
               
               <p className="text-xl leading-relaxed">
@@ -270,7 +270,7 @@ const TermsOfService = () => {
 
               <section className="border-t border-border/50 pt-8">
                 <p className="text-sm text-foreground/60">
-                  These Terms of Service were last updated on January 1, 2024. They supersede all previous versions and are effective immediately for new users and 30 days after posting for existing users.
+                  These Terms of Service were last updated on January 1, 2025. They supersede all previous versions and are effective immediately for new users and 30 days after posting for existing users.
                 </p>
               </section>
             </div>

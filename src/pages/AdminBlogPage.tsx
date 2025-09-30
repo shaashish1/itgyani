@@ -31,7 +31,7 @@ const AdminBlogPage: React.FC = () => {
   const [authError, setAuthError] = useState('');
 
   // Simple admin authentication (in production, use proper auth)
-  const ADMIN_PASSWORD = 'itgyani2024admin';
+  const ADMIN_PASSWORD = 'itgyani2025admin';
 
   const handleAdminLogin = () => {
     if (adminPassword === ADMIN_PASSWORD) {

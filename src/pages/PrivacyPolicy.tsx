@@ -30,7 +30,7 @@ const PrivacyPolicy = () => {
             
             <div className="prose prose-lg max-w-none text-foreground/80 space-y-8">
               <p className="text-xl leading-relaxed">
-                <strong>Effective Date:</strong> January 1, 2024
+                <strong>Effective Date:</strong> January 1, 2025
               </p>
               
               <p className="text-xl leading-relaxed">
@@ -231,7 +231,7 @@ const PrivacyPolicy = () => {
 
               <section className="border-t border-border/50 pt-8">
                 <p className="text-sm text-foreground/60">
-                  This Privacy Policy was last updated on January 1, 2024. It supersedes all previous versions and is effective immediately for new users and 30 days after posting for existing users.
+                  This Privacy Policy was last updated on January 1, 2025. It supersedes all previous versions and is effective immediately for new users and 30 days after posting for existing users.
                 </p>
               </section>
             </div>

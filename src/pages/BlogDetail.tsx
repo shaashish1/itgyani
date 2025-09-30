@@ -159,14 +159,14 @@ const BlogDetail = () => {
 
   const getDemoPost = (postSlug: string): BlogPost | null => {
     const demoPosts: Record<string, BlogPost> = {
-      "ai-automation-guide-2024": {
+      "ai-automation-guide-2025": {
         id: "demo-1",
-        title: "The Ultimate Guide to AI Automation in 2024: Transform Your Business",
-        slug: "ai-automation-guide-2024",
+        title: "The Ultimate Guide to AI Automation in 2025: Transform Your Business",
+        slug: "ai-automation-guide-2025",
         content: `
-# The Ultimate Guide to AI Automation in 2024: Transform Your Business
+# The Ultimate Guide to AI Automation in 2025: Transform Your Business
 
-Artificial Intelligence automation has evolved from a futuristic concept to a business necessity. In 2024, companies that embrace AI automation are seeing unprecedented levels of efficiency, cost reduction, and competitive advantage.
+Artificial Intelligence automation has evolved from a futuristic concept to a business necessity. In 2025, companies that embrace AI automation are seeing unprecedented levels of efficiency, cost reduction, and competitive advantage.
 
 ## What is AI Automation?
 
@@ -376,7 +376,7 @@ Our research across 500+ implementations shows:
 
 ## Future Trends in AI Automation
 
-### 2024-2025 Predictions
+### 2025-2026 Predictions
 
 1. **Hyper-Personalization**
    - AI-driven customer experiences
@@ -422,10 +422,10 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
         author_id: "demo-author",
         category: "technology",
         tags: ["AI Automation", "Business Transformation", "ROI", "Strategy"],
-        publishedAt: new Date("2024-01-15"),
-        updatedAt: new Date("2024-01-15"),
+        publishedAt: new Date("2025-01-15"),
+        updatedAt: new Date("2025-01-15"),
         status: "published",
-        metaDescription: "Complete guide to AI automation in 2024 with practical implementation strategies and ROI calculation methods.",
+        metaDescription: "Complete guide to AI automation in 2025 with practical implementation strategies and ROI calculation methods.",
         readingTime: 12
       },
       // Add other demo posts...
@@ -445,8 +445,8 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
         author_id: "demo-author",
         category: category,
         tags: ["Getting Started", "Tutorial"],
-        publishedAt: new Date("2024-01-20"),
-        updatedAt: new Date("2024-01-20"),
+        publishedAt: new Date("2025-01-20"),
+        updatedAt: new Date("2025-01-20"),
         status: "published",
         metaDescription: "Learn to build your first AI automation workflow",
         readingTime: 8

@@ -159,7 +159,7 @@ export function BatchBlogGenerator() {
           length,
           isPremium: false,
           delayBetweenRequests: 2000, // 2 seconds between requests
-          adminPassword: 'itgyani2024admin'
+          adminPassword: 'itgyani2025admin'
         }
       });
 
