@@ -7,6 +7,7 @@ import ConsultationModal from "@/components/modals/ConsultationModal";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
+import AdSenseAd from "@/components/AdSenseAd";
 import { ReadMeButton, PageHeader } from "@/components/ImageComponents";
 
 const Index = () => {
@@ -183,6 +184,18 @@ const Index = () => {
         </div>
       </section>
 
+      {/* AdSense - After Hero */}
+      <section className="py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdSenseAd 
+            slot="content-top" 
+            format="horizontal"
+            responsive={true}
+            className="my-4"
+          />
+        </div>
+      </section>
+
       {/* Workflow Showcase */}
       <section className="py-24 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -260,6 +273,18 @@ const Index = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* AdSense - After Workflow */}
+      <section className="py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdSenseAd 
+            slot="content-mid" 
+            format="rectangle"
+            responsive={true}
+            className="my-4"
+          />
         </div>
       </section>
 
@@ -369,6 +394,18 @@ const Index = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* AdSense - After Integration */}
+      <section className="py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdSenseAd 
+            slot="content-mid" 
+            format="horizontal"
+            responsive={true}
+            className="my-4"
+          />
         </div>
       </section>
 
@@ -515,6 +552,18 @@ const Index = () => {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* AdSense - Before Final CTA */}
+      <section className="py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AdSenseAd 
+            slot="content-bottom" 
+            format="horizontal"
+            responsive={true}
+            className="my-4"
+          />
         </div>
       </section>
 

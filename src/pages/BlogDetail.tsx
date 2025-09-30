@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
+import AdSenseAd from "@/components/AdSenseAd";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -569,6 +570,14 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                   />
                 </div>
 
+                {/* AdSense - Top of Content */}
+                <AdSenseAd 
+                  slot="content-top" 
+                  format="rectangle"
+                  responsive={true}
+                  className="my-8"
+                />
+
                 {/* Author Info */}
                 <div className="flex items-center gap-4 mb-12 p-6 bg-accent/5 rounded-xl border border-border/50">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xl">
@@ -594,7 +603,23 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                     remarkPlugins={[remarkGfm]}
                     components={{
                       h1: ({node, ...props}) => <h1 className="text-4xl font-bold mt-12 mb-6 leading-tight" {...props} />,
-                      h2: ({node, ...props}) => <h2 className="text-3xl font-bold mt-10 mb-5 leading-tight" {...props} />,
+                      h2: ({node, index, ...props}: any) => {
+                        // Insert ad after 2nd H2
+                        const showAd = index === 1;
+                        return (
+                          <>
+                            <h2 className="text-3xl font-bold mt-10 mb-5 leading-tight" {...props} />
+                            {showAd && (
+                              <AdSenseAd 
+                                slot="content-mid" 
+                                format="rectangle"
+                                responsive={true}
+                                className="my-8"
+                              />
+                            )}
+                          </>
+                        );
+                      },
                       h3: ({node, ...props}) => <h3 className="text-2xl font-semibold mt-8 mb-4" {...props} />,
                       h4: ({node, ...props}) => <h4 className="text-xl font-semibold mt-6 mb-3" {...props} />,
                       p: ({node, ...props}) => <p className="text-lg leading-relaxed mb-6 text-foreground/90" {...props} />,
@@ -618,6 +643,14 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                     {blogPost.content}
                   </ReactMarkdown>
                 </article>
+
+                {/* AdSense - Bottom of Content */}
+                <AdSenseAd 
+                  slot="content-bottom" 
+                  format="rectangle"
+                  responsive={true}
+                  className="my-8"
+                />
 
                 {/* Share Section */}
                 <div className="mt-16 pt-8 border-t border-border">
@@ -653,6 +686,20 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                     <Button>Subscribe</Button>
                   </div>
                 </div>
+              </div>
+            </div>
+          </section>
+
+          {/* AdSense - Before Related Posts */}
+          <section className="py-8">
+            <div className="container mx-auto px-6">
+              <div className="max-w-3xl mx-auto">
+                <AdSenseAd 
+                  slot="content-mid" 
+                  format="horizontal"
+                  responsive={true}
+                  className="my-8"
+                />
               </div>
             </div>
           </section>

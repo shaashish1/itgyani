@@ -3,6 +3,7 @@ import blogDefaultImage from "@/assets/blog-default.jpg";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
+import AdSenseAd from "@/components/AdSenseAd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -206,6 +207,18 @@ const Blog = () => {
             </div>
           </section>
 
+          {/* AdSense - Top of Content */}
+          <section className="py-6">
+            <div className="container mx-auto px-6">
+              <AdSenseAd 
+                slot="content-top" 
+                format="horizontal"
+                responsive={true}
+                className="my-4"
+              />
+            </div>
+          </section>
+
           {/* Featured Articles */}
           {selectedCategory === "All" && <section className="py-16">
               <div className="container mx-auto px-6">
@@ -269,6 +282,18 @@ const Blog = () => {
               </div>
             </section>}
 
+          {/* AdSense - Between Featured and All Articles */}
+          <section className="py-6">
+            <div className="container mx-auto px-6">
+              <AdSenseAd 
+                slot="content-mid" 
+                format="rectangle"
+                responsive={true}
+                className="my-4"
+              />
+            </div>
+          </section>
+
           {/* All Articles */}
           <section className="py-16">
             <div className="container mx-auto px-6">
@@ -329,6 +354,18 @@ const Blog = () => {
                       </CardContent>
                     </Card>)}
                 </div>}
+            </div>
+          </section>
+
+          {/* AdSense - Before Newsletter */}
+          <section className="py-6">
+            <div className="container mx-auto px-6">
+              <AdSenseAd 
+                slot="content-bottom" 
+                format="horizontal"
+                responsive={true}
+                className="my-4"
+              />
             </div>
           </section>
 
