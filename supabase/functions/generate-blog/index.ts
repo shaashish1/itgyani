@@ -22,35 +22,7 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
-    );
-
-    // Verify user is authenticated and has admin role
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Check if user has admin role
-    const { data: userRole } = await supabaseClient
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .single();
-
-    if (!userRole || userRole.role !== 'admin') {
-      return new Response(JSON.stringify({ error: 'Admin access required' }), {
-        status: 403,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
+    const body = await req.json();
     const {
       topic,
       category,
@@ -58,8 +30,24 @@ serve(async (req) => {
       audience = 'intermediate',
       length = 'medium',
       keywords = [],
-      isPremium = false
-    }: BlogGenerationRequest = await req.json();
+      isPremium = false,
+      adminPassword
+    } = body;
+
+    // Verify admin password
+    const ADMIN_PASSWORD = 'itgyani2024admin';
+    if (adminPassword !== ADMIN_PASSWORD) {
+      return new Response(JSON.stringify({ error: 'Unauthorized: Invalid admin password' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Use service role key to bypass RLS for admin operations
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
 
     if (!topic || !category) {
       return new Response(JSON.stringify({ error: 'Topic and category are required' }), {
@@ -183,7 +171,7 @@ Format your response as JSON with these fields:
       });
     }
 
-    // Create blog post
+    // Create blog post (without author_id since we don't have authenticated user)
     const { data: blogPost, error: insertError } = await supabaseClient
       .from('blog_posts')
       .insert({
@@ -191,7 +179,6 @@ Format your response as JSON with these fields:
         slug: blogData.slug,
         excerpt: blogData.excerpt,
         content: blogData.content,
-        author_id: user.id,
         category_id: categoryData.id,
         meta_title: blogData.metaTitle,
         meta_description: blogData.metaDescription,

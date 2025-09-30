@@ -76,7 +76,10 @@ const AIBlogGenerator = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke('generate-blog', {
-        body: request
+        body: {
+          ...request,
+          adminPassword: 'itgyani2024admin'
+        }
       });
 
       if (error) {

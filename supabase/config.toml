@@ -37,7 +37,7 @@ enabled = true
 port = 54330
 
 [functions.generate-blog]
-verify_jwt = true
+verify_jwt = false
 
 [functions.generate-blog-batch]
 verify_jwt = false
