@@ -12,8 +12,7 @@ import { ArrowLeft, Search, Calendar, Clock, User, TrendingUp, Brain, Zap, Targe
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ReadMeButton, BlogThumbnail, PageHeader } from "@/components/ImageComponents";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { BlogSidebar } from "@/components/BlogSidebar";
+
 interface BlogPost {
   id: string;
   title: string;
@@ -37,6 +36,10 @@ const Blog = () => {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 6;
 
   // Load real blog posts from storage
   useEffect(() => {
@@ -148,6 +151,27 @@ const Blog = () => {
     const matchesCategory = selectedCategory === "All" || post.category.toLowerCase() === selectedCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const paginatedPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -166,336 +190,144 @@ const Blog = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <SidebarProvider defaultOpen={true}>
-          <div className="flex w-full min-h-screen">
-            <main className="flex-1 min-w-0 overflow-x-hidden">
-          {/* Hero Section */}
-          <section className="relative overflow-hidden">
-            <PageHeader type="blog" className="w-full" />
+        {/* Hero Section */}
+        <section className="relative overflow-hidden">
+          <PageHeader type="blog" className="w-full" />
+          
+          <div className="container mx-auto px-6 relative py-12">
+            <div className="flex items-center gap-4 mb-8">
+              <Link to="/" className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors">
+                <ArrowLeft className="h-4 w-4" />
+                Back to Home
+              </Link>
+            </div>
             
-            <div className="container mx-auto px-6 relative py-12">
-              <div className="flex items-center gap-4 mb-8">
-                <Link to="/" className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors">
-                  <ArrowLeft className="h-4 w-4" />
-                  Back to Home
-                </Link>
-                <div className="ml-auto flex items-center gap-2">
-                  <span className="text-sm text-foreground/60">Toggle Archives</span>
-                  <SidebarTrigger className="p-2 hover:bg-primary/20 rounded-md transition-colors border border-border/50" />
-                </div>
-              </div>
+            <div className="max-w-4xl mx-auto text-center">
+              <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                <span className="gradient-text">AI Automation</span><br />
+                Insights & Guides
+              </h1>
+              <p className="text-xl md:text-2xl text-foreground/80 mb-8 leading-relaxed">
+                Expert insights, practical guides, and proven strategies to help you master 
+                <strong> AI automation</strong> and <strong>AI training</strong> for business success.
+              </p>
               
-              <div className="max-w-4xl mx-auto text-center">
-                <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                  <span className="gradient-text">AI Automation</span><br />
-                  Insights & Guides
-                </h1>
-                <p className="text-xl md:text-2xl text-foreground/80 mb-8 leading-relaxed">
-                  Expert insights, practical guides, and proven strategies to help you master 
-                  <strong> AI automation</strong> and <strong>AI training</strong> for business success.
-                </p>
-                
-                {/* Search Bar */}
-                <div className="max-w-md mx-auto relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-foreground/50" />
-                  <Input type="text" placeholder="Search articles..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10 bg-input/50 border-border/50 focus:border-primary" />
-                </div>
+              {/* Search Bar */}
+              <div className="max-w-md mx-auto relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-foreground/50" />
+                <Input type="text" placeholder="Search articles..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10 bg-input/50 border-border/50 focus:border-primary" />
               </div>
             </div>
-          </section>
-
-          {/* Category Filter */}
-          <section className="py-8 border-b border-border/50">
-            <div className="container mx-auto px-6">
-              <div className="flex flex-wrap gap-2 justify-center">
-                {categories.map(category => <Button key={category} variant={selectedCategory === category ? "default" : "outline"} size="sm" onClick={() => setSelectedCategory(category)} className="transition-all duration-300">
-                    {category}
-                  </Button>)}
-              </div>
-            </div>
-          </section>
-
-          {/* AdSense - Top of Content */}
-          <section className="py-6">
-            <div className="container mx-auto px-6">
-              <AdSenseAd 
-                slot="content-top" 
-                format="horizontal"
-                responsive={true}
-                className="my-4"
-              />
-            </div>
-          </section>
-
-          {/* Featured Articles */}
-          {selectedCategory === "All" && <section className="py-16">
-              <div className="container mx-auto px-6">
-                <h2 className="text-3xl font-bold mb-8 text-center">
-                  <span className="gradient-text">Featured Articles</span>
-                </h2>
-                <div className="grid lg:grid-cols-2 gap-8">
-                  {featuredPosts.map(post => <Card key={post.id} className="overflow-hidden hover:shadow-2xl transition-all duration-500 border-border/50 backdrop-blur-sm group">
-                      <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 relative overflow-hidden">
-                        {post.featured_image_url && (
-                          <img 
-                            src={post.featured_image_url} 
-                            alt={post.title}
-                            className="absolute inset-0 w-full h-full object-cover"
-                          />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                        <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
-                          Featured
-                        </Badge>
-                        <div className="absolute bottom-4 left-4 right-4">
-                          <Badge variant="secondary" className="mb-2">
-                            {post.category}
-                          </Badge>
-                          <h3 className="text-white font-bold text-xl line-clamp-2 group-hover:text-primary transition-colors">
-                            {post.title}
-                          </h3>
-                        </div>
-                      </div>
-                      <CardContent className="p-6">
-                        <p className="text-foreground/70 mb-4 line-clamp-3">{post.excerpt}</p>
-                        <div className="flex items-center justify-between text-sm text-foreground/60 mb-4">
-                          <div className="flex items-center gap-4">
-                            <span className="flex items-center gap-1">
-                              <User className="h-4 w-4" />
-                              ITGYANI AI
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4" />
-                              {formatDate(post.publishedAt)}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="h-4 w-4" />
-                              {post.readingTime} min read
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex flex-wrap gap-1">
-                            {post.tags.slice(0, 2).map((tag, idx) => <Badge key={idx} variant="outline" className="text-xs">
-                                {tag}
-                              </Badge>)}
-                          </div>
-                          <Link to={`/blog/${post.slug}`} className="inline-block ml-auto">
-                            <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
-                              Read More <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-                          </Link>
-                        </div>
-                      </CardContent>
-                    </Card>)}
-                </div>
-              </div>
-            </section>}
-
-          {/* AdSense - Between Featured and All Articles */}
-          <section className="py-6">
-            <div className="container mx-auto px-6">
-              <AdSenseAd 
-                slot="content-mid" 
-                format="rectangle"
-                responsive={true}
-                className="my-4"
-              />
-            </div>
-          </section>
-
-          {/* AdSense - Mid Content Banner */}
-          <section className="py-4">
-            <div className="container mx-auto px-6">
-              <AdSenseAd 
-                slot="mid-banner" 
-                format="horizontal"
-                responsive={true}
-                className="my-4"
-              />
-            </div>
-          </section>
-
-          {/* All Articles */}
-          <section className="py-16">
-            <div className="container mx-auto px-6">
-              <h2 className="text-3xl font-bold mb-8 text-center">
-                {selectedCategory === "All" ? "Latest Articles" : `${selectedCategory} Articles`}
-              </h2>
-              
-              {filteredPosts.length === 0 ? <div className="text-center py-16">
-                  <BookOpen className="h-16 w-16 text-foreground/30 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">No articles found</h3>
-                  <p className="text-foreground/70">Try adjusting your search or filter criteria.</p>
-                </div> : <>
-                  <div className="grid lg:grid-cols-3 gap-8">
-                    {filteredPosts.slice(0, 6).map(post => <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
-                        <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
-                          {post.featured_image_url && (
-                            <img 
-                              src={post.featured_image_url} 
-                              alt={post.title}
-                              className="absolute inset-0 w-full h-full object-cover"
-                            />
-                          )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                          <Badge variant="secondary" className="absolute top-4 left-4">
-                            {post.category}
-                          </Badge>
-                        </div>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
-                            {post.title}
-                          </CardTitle>
-                          <CardDescription className="line-clamp-3 text-foreground/70">
-                            {post.excerpt}
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="flex items-center justify-between text-xs text-foreground/60 mb-4">
-                            <span className="flex items-center gap-1">
-                              <User className="h-3 w-3" />
-                              ITGYANI AI
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {post.readingTime} min read
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex flex-wrap gap-1">
-                              {post.tags.slice(0, 2).map((tag, idx) => <Badge key={idx} variant="outline" className="text-xs">
-                                  {tag}
-                                </Badge>)}
-                            </div>
-                            <Link to={`/blog/${post.slug}`}>
-                              <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
-                                Read More <ArrowRight className="ml-1 h-3 w-3" />
-                              </Button>
-                            </Link>
-                          </div>
-                        </CardContent>
-                      </Card>)}
-                  </div>
-
-                  {/* AdSense - Mid Articles */}
-                  {filteredPosts.length > 6 && (
-                    <div className="my-8">
-                      <AdSenseAd 
-                        slot="mid-articles" 
-                        format="rectangle"
-                        responsive={true}
-                        className="my-6"
-                      />
-                    </div>
-                  )}
-
-                  {filteredPosts.length > 6 && (
-                    <div className="grid lg:grid-cols-3 gap-8 mt-8">
-                      {filteredPosts.slice(6).map(post => <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
-                          <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
-                            {post.featured_image_url && (
-                              <img 
-                                src={post.featured_image_url} 
-                                alt={post.title}
-                                className="absolute inset-0 w-full h-full object-cover"
-                              />
-                            )}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                            <Badge variant="secondary" className="absolute top-4 left-4">
-                              {post.category}
-                            </Badge>
-                          </div>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
-                              {post.title}
-                            </CardTitle>
-                            <CardDescription className="line-clamp-3 text-foreground/70">
-                              {post.excerpt}
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent className="pt-0">
-                            <div className="flex items-center justify-between text-xs text-foreground/60 mb-4">
-                              <span className="flex items-center gap-1">
-                                <User className="h-3 w-3" />
-                                ITGYANI AI
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {post.readingTime} min read
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <div className="flex flex-wrap gap-1">
-                                {post.tags.slice(0, 2).map((tag, idx) => <Badge key={idx} variant="outline" className="text-xs">
-                                    {tag}
-                                  </Badge>)}
-                              </div>
-                              <Link to={`/blog/${post.slug}`}>
-                                <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:underline hover:scale-105 transition-all p-0">
-                                  Read More <ArrowRight className="ml-1 h-3 w-3" />
-                                </Button>
-                              </Link>
-                            </div>
-                          </CardContent>
-                        </Card>)}
-                    </div>
-                  )}
-                </>}
-            </div>
-          </section>
-
-          {/* AdSense - Before Newsletter */}
-          <section className="py-6">
-            <div className="container mx-auto px-6">
-              <AdSenseAd 
-                slot="content-bottom" 
-                format="horizontal"
-                responsive={true}
-                className="my-4"
-              />
-            </div>
-          </section>
-
-          {/* Newsletter CTA */}
-          <section className="py-24 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10">
-            <div className="container mx-auto px-6">
-              <div className="max-w-4xl mx-auto text-center">
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                  Stay Ahead of the <span className="gradient-text">AI Revolution</span>
-                </h2>
-                <p className="text-xl text-foreground/80 mb-8">
-                  Get weekly insights on AI automation trends, implementation guides, 
-                  and exclusive case studies delivered to your inbox.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                  <Input type="email" placeholder="Enter your email" className="flex-1 bg-input/50 border-border/50 focus:border-primary" />
-                  <Button className="btn-hero px-6">
-                    Subscribe Now
-                  </Button>
-                </div>
-                <p className="text-sm text-foreground/60 mt-4">
-                  Join 10,000+ professionals who trust our insights. Unsubscribe anytime.
-                </p>
-              </div>
-            </div>
-          </section>
-        </main>
-            
-            <BlogSidebar posts={blogPosts.map(post => ({
-              id: post.id,
-              title: post.title,
-              slug: post.slug,
-              publishedAt: post.publishedAt,
-              category: post.category,
-              tags: post.tags
-            }))} />
           </div>
-        </SidebarProvider>
+        </section>
 
-        <Footer />
+        {/* Category Filter */}
+        <section className="py-8 border-b border-border/50">
+          <div className="container mx-auto px-6">
+            <div className="flex flex-wrap gap-2 justify-center">
+              {categories.map(category => <Button key={category} variant={selectedCategory === category ? "default" : "outline"} size="sm" onClick={() => setSelectedCategory(category)} className="transition-all duration-300">
+                  {category}
+                </Button>)}
+            </div>
+          </div>
+        </section>
+
+        {/* AdSense - Top of Content */}
+        <section className="py-6">
+          <div className="container mx-auto px-6">
+            <AdSenseAd 
+              slot="content-top" 
+              format="horizontal"
+              responsive={true}
+              className="my-4"
+            />
+          </div>
+        </section>
+
+        {/* Blog Posts Grid */}
+        <section className="py-16">
+          <div className="container mx-auto px-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {paginatedPosts.map((post) => (
+                <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
+                  <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
+                    {post.featured_image_url && (
+                      <img 
+                        src={post.featured_image_url} 
+                        alt={post.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                    <Badge variant="secondary" className="absolute top-4 left-4">
+                      {post.category}
+                    </Badge>
+                  </div>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                      {post.title}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-3 text-foreground/70">
+                      {post.excerpt}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between text-xs text-foreground/60 mb-4">
+                      <span className="flex items-center gap-1">
+                        <User className="h-3 w-3" />
+                        ITGYANI AI
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {post.readingTime} min read
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {post.tags.slice(0, 2).map((tag, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                    <Link to={`/blog/${post.slug}`} className="inline-block">
+                      <Button variant="default" size="sm" className="w-full">
+                        Read More <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-12">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-md border border-primary/20 bg-background hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Previous
+                </button>
+                <span className="text-foreground/80">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-md border border-primary/20 bg-background hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+
         <PopupManager page="blog" />
+        <Footer />
       </div>
     </>;
 };
+
 export default Blog;
