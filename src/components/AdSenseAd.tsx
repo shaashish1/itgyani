@@ -33,17 +33,31 @@ const AdSenseAd: React.FC<AdSenseAdProps> = ({
   style = {}
 }) => {
   const config = getAdSenseConfig();
+  const adRef = React.useRef<HTMLDivElement>(null);
+  const [adLoaded, setAdLoaded] = React.useState(false);
 
   useEffect(() => {
+    // Prevent duplicate initialization
+    if (adLoaded || !config.enabled || config.testMode) {
+      return;
+    }
+
     try {
-      // Only load ads if AdSense is enabled
-      if (config.enabled && window.adsbygoogle) {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      // Ensure container has proper dimensions before loading ad
+      if (adRef.current) {
+        const rect = adRef.current.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          // Only load ads if AdSense is enabled and container is visible
+          if (window.adsbygoogle) {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+            setAdLoaded(true);
+          }
+        }
       }
     } catch (error) {
       console.error('AdSense error:', error);
     }
-  }, [config.enabled]);
+  }, [config.enabled, config.testMode, adLoaded]);
 
   // Don't render if AdSense is disabled
   if (!config.enabled) {
@@ -93,27 +107,44 @@ const AdSenseAd: React.FC<AdSenseAdProps> = ({
 
   // Production mode - render real AdSense ad
   return (
-    <div className={`adsense-ad ${className}`} style={{
-      ...style,
-      margin: '20px 0',
-      textAlign: 'center',
-      minHeight: '250px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }}>
-      <ins
-        className="adsbygoogle"
+    <div 
+      ref={adRef}
+      className={`adsense-ad ${className}`} 
+      style={{
+        ...style,
+        margin: '20px auto',
+        maxWidth: '100%',
+        width: '100%',
+        minHeight: '250px',
+        display: 'block'
+      }}
+    >
+      <div 
         style={{
-          display: 'block',
-          textAlign: 'center'
+          minWidth: '300px',
+          minHeight: '250px',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
-        data-ad-client={config.publisherId}
-        data-ad-slot={adSlot}
-        data-ad-format={responsive ? 'auto' : format}
-        data-full-width-responsive={responsive ? 'true' : 'false'}
-        aria-label="Advertisement"
-      />
+      >
+        <ins
+          className="adsbygoogle"
+          style={{
+            display: 'block',
+            minWidth: '300px',
+            minHeight: '250px',
+            width: '100%',
+            maxWidth: '100%'
+          }}
+          data-ad-client={config.publisherId}
+          data-ad-slot={adSlot}
+          data-ad-format={responsive ? 'auto' : format}
+          data-full-width-responsive={responsive ? 'true' : 'false'}
+          aria-label="Advertisement"
+        />
+      </div>
     </div>
   );
 };

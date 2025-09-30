@@ -145,6 +145,18 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Optimize image loading */
+  img {
+    content-visibility: auto;
+  }
+
+  /* Improve mobile performance */
+  @media (max-width: 768px) {
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+  }
 }
 
 @layer components {

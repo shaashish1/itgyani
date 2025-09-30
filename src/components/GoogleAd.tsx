@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ADSENSE_CONFIG } from "@/config/adsense";
 
 interface GoogleAdProps {
@@ -27,18 +27,32 @@ const GoogleAd = ({
   position = "auto"
 }: GoogleAdProps) => {
   const adRef = useRef<HTMLDivElement>(null);
+  const [adLoaded, setAdLoaded] = useState(false);
   
   // Get the appropriate ad slot based on position or use provided adSlot
   const actualAdSlot = adSlot || ADSENSE_CONFIG.adSlots[position];
 
   /** Initialize AdSense ads when component mounts */
   useEffect(() => {
+    // Prevent duplicate initialization
+    if (adLoaded) return;
+
     const initializeAd = () => {
       try {
+        // Ensure container has dimensions before loading
+        if (adRef.current) {
+          const rect = adRef.current.getBoundingClientRect();
+          if (rect.width === 0) {
+            // Container not ready, retry
+            setTimeout(initializeAd, 300);
+            return;
+          }
+        }
+
         // Wait for AdSense script to load
         if (typeof window !== 'undefined' && window.adsbygoogle) {
-          // Push empty object to trigger ad loading
           (window.adsbygoogle = window.adsbygoogle || []).push({});
+          setAdLoaded(true);
           console.log('AdSense ad initialized for slot:', actualAdSlot, 'at position:', position);
         } else {
           // Retry after a short delay if script isn't loaded yet
@@ -52,17 +66,18 @@ const GoogleAd = ({
     // Small delay to ensure DOM is ready
     const timer = setTimeout(initializeAd, 100);
     return () => clearTimeout(timer);
-  }, [actualAdSlot, position]);
+  }, [actualAdSlot, position, adLoaded]);
 
   return (
     <div className={className}>
-      <div className="max-w-5xl mx-auto px-4">
-        {/* Professional Ad Placeholder */}
+      <div className="w-full max-w-5xl mx-auto px-4">
+        {/* Professional Ad Placeholder with proper mobile sizing */}
         <div 
           ref={adRef}
           className="relative w-full rounded-lg border border-border bg-muted/30 overflow-hidden"
+          style={{ minWidth: '300px', minHeight: '250px' }}
         >
-          <div className="flex items-center justify-center py-16 px-6">
+          <div className="flex items-center justify-center py-16 px-6 min-h-[250px]">
             <div className="text-center space-y-2">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-3">
                 <svg 
@@ -88,12 +103,12 @@ const GoogleAd = ({
           
           {/* Hidden actual ad element for when ads are enabled */}
           <ins
-            className="adsbygoogle hidden"
+            className="adsbygoogle"
             style={{
-              display: 'inline-block',
-              width: '468px',
-              height: '60px',
-              maxWidth: '100%',
+              display: 'none',
+              width: '100%',
+              minWidth: '300px',
+              minHeight: '250px'
             }}
             data-ad-client={ADSENSE_CONFIG.publisherId}
             data-ad-slot={actualAdSlot !== 'auto' ? actualAdSlot : undefined}

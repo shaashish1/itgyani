@@ -358,7 +358,7 @@ const ResourceDetail = () => {
     <div className="min-h-screen bg-background">
       <FutureFlowHeader />
       
-      <main className="container mx-auto px-4 py-12 max-w-5xl">
+      <main className="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
         <Button variant="ghost" className="mb-8" asChild>
           <Link to="/resources">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -366,10 +366,10 @@ const ResourceDetail = () => {
           </Link>
         </Button>
 
-        <div className="mb-8">
+        <div className="mb-6 md:mb-8">
           <Badge className="mb-4">{resource.category}</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{resource.title}</h1>
-          <p className="text-xl text-muted-foreground mb-6">{resource.description}</p>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">{resource.title}</h1>
+          <p className="text-lg md:text-xl text-muted-foreground mb-6">{resource.description}</p>
           
           <div className="flex flex-wrap gap-4 items-center text-sm text-muted-foreground mb-6">
             <div className="flex items-center gap-2">
@@ -392,14 +392,14 @@ const ResourceDetail = () => {
             ))}
           </div>
 
-          <div className="flex gap-4">
-            <Button size="lg" asChild>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <Button size="lg" className="w-full sm:w-auto" asChild>
               <Link to="/contact">
                 <Download className="mr-2 h-4 w-4" />
                 Request Full Resource
               </Link>
             </Button>
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="outline" className="w-full sm:w-auto">
               <Share2 className="mr-2 h-4 w-4" />
               Share
             </Button>
@@ -411,6 +411,8 @@ const ResourceDetail = () => {
             src={resource.image} 
             alt={resource.title}
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </div>
 
@@ -463,16 +465,16 @@ const ResourceDetail = () => {
           </CardContent>
         </Card>
 
-        <div className="mt-12 p-8 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg text-center">
-          <h2 className="text-2xl font-bold mb-4">Ready to Implement This?</h2>
-          <p className="text-muted-foreground mb-6">
+        <div className="mt-8 md:mt-12 p-6 md:p-8 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg text-center">
+          <h2 className="text-xl md:text-2xl font-bold mb-4">Ready to Implement This?</h2>
+          <p className="text-sm md:text-base text-muted-foreground mb-6">
             Get personalized guidance and support for implementing these strategies in your business.
           </p>
-          <div className="flex gap-4 justify-center">
-            <Button size="lg" asChild>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <Button size="lg" className="w-full sm:w-auto" asChild>
               <Link to="/contact">Schedule Consultation</Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
+            <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
               <Link to="/services">View Services</Link>
             </Button>
           </div>
