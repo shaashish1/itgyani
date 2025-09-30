@@ -105,13 +105,13 @@ export function BlogSidebar({ posts }: BlogSidebarProps) {
   };
 
   return (
-    <Sidebar className="border-l border-border/50 bg-card/30">
-      <SidebarContent className="bg-gradient-to-b from-card/50 to-background/50">
+    <Sidebar className="border-l border-white/10 bg-black" collapsible="icon">
+      <SidebarContent className="bg-black text-white">
         
         {/* Featured Posts Section */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-base font-semibold flex items-center gap-2 text-primary">
-            <Star className="h-4 w-4" />
+          <SidebarGroupLabel className="text-base font-semibold flex items-center gap-2 text-white">
+            <Star className="h-4 w-4 text-primary" />
             Featured Posts
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -120,12 +120,12 @@ export function BlogSidebar({ posts }: BlogSidebarProps) {
                 <Link
                   key={post.id}
                   to={`/blog/${post.slug}`}
-                  className="block p-2 rounded-md bg-card/50 hover:bg-primary/10 border border-border/30 hover:border-primary/40 transition-all group"
+                  className="block p-2 rounded-md bg-white/5 hover:bg-primary/20 border border-white/10 hover:border-primary transition-all group"
                 >
-                  <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                  <p className="text-sm font-medium text-white group-hover:text-primary transition-colors line-clamp-2">
                     {post.title}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-white/60 mt-1">
                     {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                   </p>
                 </Link>
@@ -136,8 +136,8 @@ export function BlogSidebar({ posts }: BlogSidebarProps) {
 
         {/* Categories Filter */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-base font-semibold flex items-center gap-2 text-primary">
-            <TrendingUp className="h-4 w-4" />
+          <SidebarGroupLabel className="text-base font-semibold flex items-center gap-2 text-white">
+            <TrendingUp className="h-4 w-4 text-primary" />
             Categories
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -148,7 +148,10 @@ export function BlogSidebar({ posts }: BlogSidebarProps) {
                   variant={selectedCategory === category ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
-                  className="text-xs h-7 hover:bg-primary/90 hover:text-primary-foreground transition-colors"
+                  className={selectedCategory === category 
+                    ? "text-xs h-7 bg-primary hover:bg-primary/90 text-white font-medium"
+                    : "text-xs h-7 bg-white/5 border-white/20 text-white hover:bg-primary/20 hover:border-primary hover:text-white transition-colors"
+                  }
                 >
                   {category}
                 </Button>
@@ -160,7 +163,7 @@ export function BlogSidebar({ posts }: BlogSidebarProps) {
         {/* Tags */}
         {allTags.length > 0 && (
           <SidebarGroup>
-            <SidebarGroupLabel className="text-base font-semibold text-primary">
+            <SidebarGroupLabel className="text-base font-semibold text-white">
               Popular Tags
             </SidebarGroupLabel>
             <SidebarGroupContent>
@@ -169,7 +172,7 @@ export function BlogSidebar({ posts }: BlogSidebarProps) {
                   <Badge
                     key={tag}
                     variant="secondary"
-                    className="text-xs cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                    className="text-xs cursor-pointer bg-white/10 text-white border-white/20 hover:bg-primary hover:text-white hover:border-primary transition-colors"
                   >
                     {tag}
                   </Badge>
@@ -181,8 +184,8 @@ export function BlogSidebar({ posts }: BlogSidebarProps) {
 
         {/* Archives by Month */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-base font-semibold flex items-center gap-2 text-primary">
-            <Calendar className="h-4 w-4" />
+          <SidebarGroupLabel className="text-base font-semibold flex items-center gap-2 text-white">
+            <Calendar className="h-4 w-4 text-primary" />
             Archives
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -196,31 +199,31 @@ export function BlogSidebar({ posts }: BlogSidebarProps) {
                     <SidebarMenuButton asChild>
                       <div 
                         onClick={() => toggleGroup(key)}
-                        className="flex items-center justify-between w-full cursor-pointer hover:bg-primary/10 rounded-md p-2 transition-colors border border-transparent hover:border-primary/30"
+                        className="flex items-center justify-between w-full cursor-pointer hover:bg-primary/20 rounded-md p-2 transition-colors border border-white/10 hover:border-primary"
                       >
                         <div className="flex items-center gap-2">
                           {isExpanded ? (
                             <ChevronDown className="h-4 w-4 text-primary" />
                           ) : (
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            <ChevronRight className="h-4 w-4 text-white/60" />
                           )}
-                          <span className="font-medium text-foreground">
+                          <span className="font-medium text-white">
                             {group.month} {group.year}
                           </span>
                         </div>
-                        <Badge variant="secondary" className="text-xs bg-primary/20 text-primary hover:bg-primary hover:text-primary-foreground">
+                        <Badge variant="secondary" className="text-xs bg-primary/30 text-white border-primary/50 hover:bg-primary hover:text-white">
                           {group.count}
                         </Badge>
                       </div>
                     </SidebarMenuButton>
                     
                     {isExpanded && (
-                      <div className="ml-6 mt-2 space-y-1 pb-2">
+                      <div className="ml-6 mt-2 space-y-1 pb-2 animate-accordion-down">
                         {group.posts.map((post) => (
                           <Link
                             key={post.id}
                             to={`/blog/${post.slug}`}
-                            className="block text-sm text-muted-foreground hover:text-primary hover:bg-primary/5 transition-colors py-1.5 px-2 rounded line-clamp-2 border-l-2 border-transparent hover:border-primary"
+                            className="block text-sm text-white/70 hover:text-white hover:bg-primary/20 transition-colors py-1.5 px-2 rounded line-clamp-2 border-l-2 border-white/10 hover:border-primary"
                           >
                             {post.title}
                           </Link>

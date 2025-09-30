@@ -166,10 +166,9 @@ const Blog = () => {
       <div className="min-h-screen bg-background">
         <Header />
         
-        <SidebarProvider>
-          <div className="flex w-full">
-            <div className="flex-1 min-w-0">
-              <main>
+        <SidebarProvider defaultOpen={true}>
+          <div className="flex w-full min-h-screen">
+            <main className="flex-1 min-w-0">
           {/* Hero Section */}
           <section className="relative overflow-hidden">
             <PageHeader type="blog" className="w-full" />
@@ -180,6 +179,7 @@ const Blog = () => {
                   <ArrowLeft className="h-4 w-4" />
                   Back to Home
                 </Link>
+                <SidebarTrigger className="ml-auto p-2 hover:bg-primary/20 rounded-md transition-colors border border-border/50" />
               </div>
               
               <div className="max-w-4xl mx-auto text-center">
@@ -477,11 +477,7 @@ const Blog = () => {
               </div>
             </div>
           </section>
-              </main>
-
-              <Footer />
-              <PopupManager page="blog" />
-            </div>
+        </main>
             
             <BlogSidebar posts={blogPosts.map(post => ({
               id: post.id,
@@ -493,6 +489,9 @@ const Blog = () => {
             }))} />
           </div>
         </SidebarProvider>
+
+        <Footer />
+        <PopupManager page="blog" />
       </div>
     </>;
 };
