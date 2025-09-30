@@ -45,6 +45,8 @@ import { Link } from "react-router-dom";
 const Resources = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedWorkflowPackage, setSelectedWorkflowPackage] = useState<any>(null);
+  const [isBrowseModalOpen, setIsBrowseModalOpen] = useState(false);
 
   const categories = [
     "All",
@@ -1653,7 +1655,8 @@ const Resources = () => {
                           <Button 
                             className="flex-1"
                             onClick={() => {
-                              window.open('https://github.com/Zie619/n8n-workflows', '_blank');
+                              setSelectedWorkflowPackage(workflow);
+                              setIsBrowseModalOpen(true);
                             }}
                           >
                             <Workflow className="w-4 h-4 mr-2" />
@@ -1665,7 +1668,12 @@ const Resources = () => {
                               className="flex-1"
                               onClick={() => {
                                 // Download the first workflow as example
-                                window.open(workflow.downloadableWorkflows[0].downloadUrl, '_blank');
+                                const link = document.createElement('a');
+                                link.href = workflow.downloadableWorkflows[0].downloadUrl;
+                                link.download = workflow.downloadableWorkflows[0].filename;
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
                               }}
                             >
                               <Download className="w-4 h-4 mr-2" />
@@ -1932,6 +1940,77 @@ const Resources = () => {
           </div>
         </div>
       </section>
+
+      {/* Browse Workflows Modal */}
+      <Dialog open={isBrowseModalOpen} onOpenChange={setIsBrowseModalOpen}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedWorkflowPackage?.title || 'Available Workflows'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {selectedWorkflowPackage?.downloadableWorkflows?.map((workflow: any, index: number) => (
+              <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <Workflow className="w-8 h-8 text-primary" />
+                    <Badge variant="secondary" className="text-xs">
+                      Premium
+                    </Badge>
+                  </div>
+                  <CardTitle className="text-lg mt-2">{workflow.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {workflow.description}
+                  </p>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <FileText className="w-3 h-3" />
+                      <span>{workflow.filename}</span>
+                    </div>
+                  </div>
+
+                  <Button 
+                    className="w-full"
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = workflow.downloadUrl;
+                      link.download = workflow.filename;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Workflow
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {selectedWorkflowPackage?.useCases && (
+            <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+              <h4 className="font-semibold mb-3 flex items-center gap-2">
+                <Lightbulb className="w-4 h-4" />
+                Use Cases
+              </h4>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                {selectedWorkflowPackage.useCases.map((useCase: string, index: number) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <CheckCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>{useCase}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <Footer />
       <PopupManager page="resources" />
