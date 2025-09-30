@@ -7,106 +7,106 @@ import { Card } from '@/components/ui/card';
 const CaseStudyReport = () => {
   const { id } = useParams();
   
-  // Same case studies data from CaseStudyDetail
-  const caseStudies = {
-    "techflow": {
-      title: "TechFlow SaaS Platform",
-      company: "TechFlow Inc.",
-      industry: "Technology",
-      overview: "TechFlow needed to automate their customer onboarding process and integrate multiple tools to reduce manual work.",
-      challenge: "Manual data entry across 5 different platforms was causing delays and errors in customer onboarding.",
-      solution: "Implemented automated workflows using n8n to connect CRM, email marketing, billing, and support systems.",
+  // Case studies data matching CaseStudyDetail.tsx
+  const caseStudies: Record<string, any> = {
+    "techflow-ecommerce": {
+      title: "TechFlow E-commerce: 127% Revenue Increase Through Complete AI Automation",
+      company: "TechFlow Electronics",
+      industry: "E-commerce",
+      timeline: "6 months implementation",
+      overview: "TechFlow Electronics faced multiple operational bottlenecks that were severely limiting their growth potential and market competitiveness. Cart abandonment, manual inventory management, and overwhelmed customer support were costing them millions annually.",
+      challenge: "TechFlow faced critical business challenges including 68% cart abandonment rate causing $1.2M monthly revenue loss, manual inventory management resulting in frequent stockouts, overwhelmed customer support team with 1,200+ monthly tickets, lack of personalized customer experience, inefficient order processing causing 3.5-day delays, and no real-time business intelligence capabilities.",
+      solution: "We implemented a phased AI automation strategy addressing every aspect of operations: Phase 1 focused on cart recovery with AI-powered email sequences and dynamic discounts. Phase 2 deployed NLP chatbot handling 80% of inquiries with intelligent routing. Phase 3 introduced ML-powered demand forecasting and dynamic pricing. Phase 4 implemented advanced personalization and real-time business intelligence.",
       results: [
-        { metric: "Time Saved", value: "85%", description: "Reduction in onboarding time" },
-        { metric: "Error Rate", value: "95%", description: "Decrease in data entry errors" },
-        { metric: "Customer Satisfaction", value: "40%", description: "Increase in CSAT scores" },
-        { metric: "Cost Savings", value: "$120K", description: "Annual operational savings" },
-        { metric: "Processing Speed", value: "10x", description: "Faster workflow execution" },
-        { metric: "Integration Points", value: "12", description: "Systems connected" },
-        { metric: "Conversion Rate", value: "32%", description: "Improvement in trial-to-paid" },
-        { metric: "Customer Lifetime Value", value: "45%", description: "Increase in LTV" }
+        { metric: "Revenue Growth", value: "127%", description: "Monthly revenue increased from $2.1M to $4.8M" },
+        { metric: "Cart Recovery", value: "66%", description: "Cart abandonment reduced from 68% to 23%" },
+        { metric: "Support Efficiency", value: "94%", description: "Response time improved from 72h to 4h" },
+        { metric: "Order Processing", value: "77%", description: "Processing time reduced from 3.5 days to 8 hours" },
+        { metric: "Conversion Rate", value: "150%", description: "Improved from 1.8% to 4.5%" },
+        { metric: "Customer Lifetime Value", value: "162%", description: "Increased from $340 to $890" },
+        { metric: "Customer Satisfaction", value: "24%", description: "Improved from 76% to 94%" },
+        { metric: "ROI", value: "340%", description: "Overall return on investment" }
       ],
-      technologies: ["n8n", "Salesforce", "HubSpot", "Stripe", "Zendesk", "Slack"],
-      timeline: "8 weeks",
+      technologies: ["n8n", "OpenAI GPT-4", "TensorFlow", "Redis", "PostgreSQL", "React"],
       testimonial: {
-        quote: "The automation solution transformed our operations. We've seen remarkable improvements in efficiency and customer satisfaction.",
-        author: "Sarah Johnson",
-        position: "CTO, TechFlow Inc."
+        quote: "The AI automation transformation exceeded every expectation. We not only solved our operational challenges but achieved growth we never thought possible. The ROI was evident within the first month.",
+        author: "Sarah Mitchell",
+        position: "CEO, TechFlow Electronics"
       }
     },
-    "healthplus": {
-      title: "HealthPlus Clinic",
-      company: "HealthPlus Medical",
+    "healthplus-automation": {
+      title: "HealthPlus Clinic: 85% Administrative Cost Reduction with Healthcare AI",
+      company: "HealthPlus Medical Group",
       industry: "Healthcare",
-      overview: "Healthcare provider needed to streamline patient appointment scheduling and automated reminders.",
-      challenge: "High no-show rates and manual scheduling processes were impacting clinic efficiency and revenue.",
-      solution: "Deployed automated appointment management system with SMS/email reminders and calendar integration.",
+      timeline: "8 months implementation",
+      overview: "HealthPlus Medical Group faced overwhelming administrative burden that was impacting patient care quality and operational efficiency, with manual processes consuming staff time and creating poor patient experiences.",
+      challenge: "HealthPlus struggled with manual appointment scheduling consuming 40% of staff time, patient document processing taking 5+ days, insurance verification requiring 3-4 phone calls per patient, billing errors resulting in 15% payment delays, scattered patient records across multiple systems, and compliance documentation requiring 20+ hours weekly.",
+      solution: "Implemented comprehensive healthcare automation suite in four phases: Phase 1 automated appointment scheduling with AI conflict resolution and patient reminders. Phase 2 digitized documents with OCR and automated insurance verification. Phase 3 streamlined billing with automated insurance claims and compliance reporting. Phase 4 deployed analytics for patient flow optimization and predictive scheduling.",
       results: [
-        { metric: "No-Show Rate", value: "60%", description: "Reduction in missed appointments" },
-        { metric: "Booking Time", value: "75%", description: "Decrease in scheduling time" },
-        { metric: "Patient Engagement", value: "50%", description: "Increase in appointment confirmations" },
-        { metric: "Revenue Impact", value: "$200K", description: "Additional annual revenue" },
-        { metric: "Staff Hours", value: "30", description: "Hours saved per week" },
-        { metric: "Patient Satisfaction", value: "88%", description: "Overall satisfaction score" },
-        { metric: "Staff Productivity", value: "45%", description: "Improvement in efficiency" },
-        { metric: "Billing Accuracy", value: "98%", description: "Automated billing accuracy" }
+        { metric: "Cost Reduction", value: "85%", description: "Administrative costs reduced from $2.4M to $360K" },
+        { metric: "Wait Time", value: "73%", description: "Patient wait time reduced from 45 min to 12 min" },
+        { metric: "Scheduling", value: "98%", description: "Appointment scheduling now 98% automated" },
+        { metric: "Document Processing", value: "95%", description: "Processing time reduced from 5 days to 2 hours" },
+        { metric: "Patient Satisfaction", value: "33%", description: "Improved from 72% to 96%" },
+        { metric: "Staff Productivity", value: "98%", description: "Increased from 45% to 89%" },
+        { metric: "Billing Accuracy", value: "17%", description: "Improved from 85% to 99.8%" },
+        { metric: "ROI", value: "420%", description: "Overall return on investment" }
       ],
-      technologies: ["n8n", "Google Calendar", "Twilio", "Square", "EHR System"],
-      timeline: "6 weeks",
+      technologies: ["Microsoft Healthcare Bot", "Azure Healthcare APIs", "Tesseract OCR", "Power BI", "Logic Apps", "Azure SQL"],
       testimonial: {
-        quote: "Patient satisfaction has soared since implementing the automated system. It's been a game-changer for our practice.",
-        author: "Dr. Michael Chen",
-        position: "Medical Director, HealthPlus"
+        quote: "The healthcare automation suite has revolutionized our practice. We're providing better patient care while dramatically reducing operational costs. Staff can now focus on what matters most - our patients.",
+        author: "Dr. Jennifer Williams",
+        position: "Chief Medical Officer, HealthPlus Medical Group"
       }
     },
-    "securebank": {
-      title: "SecureBank Financial",
-      company: "SecureBank Corp",
-      industry: "Finance",
-      overview: "Financial institution required secure automation for compliance reporting and data processing.",
-      challenge: "Manual compliance reporting was time-consuming and prone to errors, risking regulatory issues.",
-      solution: "Built automated compliance workflow with data validation, encryption, and audit trails.",
+    "fintech-security": {
+      title: "SecureBank: 99.9% Fraud Detection with AI-Powered Financial Security",
+      company: "SecureBank Financial",
+      industry: "Financial Services",
+      timeline: "12 months implementation",
+      overview: "SecureBank Financial faced escalating fraud threats and compliance pressures while needing to maintain excellent customer experience. Traditional security measures were insufficient for modern threats.",
+      challenge: "SecureBank struggled with fraud detection rate of only 78% with rising sophisticated attacks, high false positive rate (12%) causing customer frustration, manual investigation process taking 48+ hours per case, compliance reporting requiring weeks of manual effort, customer onboarding delays due to security checks, and risk assessment inconsistencies across departments.",
+      solution: "Deployed advanced AI security and compliance platform in four phases: Phase 1 implemented real-time fraud detection with ML models analyzing 200+ variables and behavioral biometrics. Phase 2 automated investigation workflows with AI-powered evidence collection. Phase 3 automated AML/KYC compliance and regulatory reporting. Phase 4 added predictive fraud modeling and advanced threat intelligence.",
       results: [
-        { metric: "Report Generation", value: "90%", description: "Faster compliance reporting" },
-        { metric: "Accuracy", value: "99.9%", description: "Data accuracy improvement" },
-        { metric: "Compliance Risk", value: "80%", description: "Reduction in compliance violations" },
-        { metric: "Audit Time", value: "70%", description: "Decrease in audit preparation time" },
-        { metric: "Processing Volume", value: "5x", description: "Increase in data processing" },
-        { metric: "Transaction Speed", value: "3x", description: "Faster transaction processing" },
-        { metric: "Compliance Score", value: "100%", description: "Regulatory compliance rate" },
-        { metric: "Operational Costs", value: "$180K", description: "Annual cost reduction" }
+        { metric: "Fraud Detection", value: "99.9%", description: "Improved from 78% to 99.9% detection rate" },
+        { metric: "False Positives", value: "97%", description: "Reduced from 12% to 0.3%" },
+        { metric: "Investigation Speed", value: "99%", description: "Investigation time reduced from 48h to 5 minutes" },
+        { metric: "Customer Satisfaction", value: "31%", description: "Satisfaction increased from 73% to 96%" },
+        { metric: "Transaction Speed", value: "88%", description: "Processing improved from 3.2s to 0.4s" },
+        { metric: "Compliance Score", value: "22%", description: "Improved from 82% to 99.7%" },
+        { metric: "Cost Reduction", value: "77%", description: "Operational costs reduced from $3.8M to $890K" },
+        { metric: "ROI", value: "580%", description: "Overall return on investment" }
       ],
-      technologies: ["n8n", "PostgreSQL", "AWS", "Compliance APIs", "Encryption Services"],
-      timeline: "12 weeks",
+      technologies: ["Apache Kafka", "TensorFlow", "Elasticsearch", "AWS FinTech", "Oracle Database", "Tableau"],
       testimonial: {
-        quote: "The automated compliance system has given us peace of mind and freed up our team to focus on strategic initiatives.",
-        author: "Robert Martinez",
-        position: "Chief Compliance Officer, SecureBank"
+        quote: "The AI security platform has transformed our risk management capabilities. We now detect fraud with unprecedented accuracy while providing a seamless experience for our legitimate customers. It's a game-changer for our industry.",
+        author: "Robert Chen",
+        position: "Chief Risk Officer, SecureBank Financial"
       }
     },
-    "saasflow": {
-      title: "SaaSFlow Marketing",
-      company: "SaaSFlow Ltd",
-      industry: "Marketing",
-      overview: "Marketing agency needed to automate client reporting and social media management.",
-      challenge: "Creating custom reports for 50+ clients was consuming 40 hours per week of team time.",
-      solution: "Implemented automated reporting system pulling data from multiple marketing platforms.",
+    "cloudscale-saas": {
+      title: "CloudScale SaaS: 500% User Growth Through AI-Powered Platform Automation",
+      company: "CloudScale Solutions",
+      industry: "SaaS",
+      timeline: "9 months implementation",
+      overview: "CloudScale Solutions faced critical challenges preventing scalable growth and threatening their position in the competitive SaaS market. Manual onboarding, high churn, and scaling bottlenecks were limiting their potential.",
+      challenge: "CloudScale struggled with manual user onboarding taking 14+ days causing 35% abandonment, customer support overwhelmed with 2,500+ monthly tickets for basic setup, high churn rate of 18% due to poor user experience, feature discovery issues with only 15% utilizing advanced features, scaling bottlenecks preventing growth beyond 50K users, and manual billing consuming 60+ hours weekly.",
+      solution: "Built intelligent SaaS automation ecosystem in four phases: Phase 1 deployed smart user onboarding with AI profiling and automated setup. Phase 2 implemented proactive user success with churn prediction and automated engagement. Phase 3 created intelligent support with advanced chatbot and self-service portal. Phase 4 optimized growth with lifecycle automation and AI-powered upselling.",
       results: [
-        { metric: "Time Saved", value: "92%", description: "Reduction in reporting time" },
-        { metric: "Client Reports", value: "50+", description: "Automated monthly reports" },
-        { metric: "Client Retention", value: "35%", description: "Improvement in retention rate" },
-        { metric: "Team Capacity", value: "200%", description: "Increase in client capacity" },
-        { metric: "Report Accuracy", value: "100%", description: "Error-free reporting" },
-        { metric: "Monthly Recurring Revenue", value: "$85K", description: "Additional MRR from capacity" },
-        { metric: "Customer Activation", value: "68%", description: "30-day activation rate" },
-        { metric: "Net Promoter Score", value: "72", description: "Client satisfaction score" }
+        { metric: "User Growth", value: "500%", description: "User base grew from 50K to 300K users" },
+        { metric: "Churn Reduction", value: "82%", description: "Monthly churn reduced from 18% to 3.2%" },
+        { metric: "Support Efficiency", value: "84%", description: "Support tickets reduced from 2,500 to 400/month" },
+        { metric: "Time to Value", value: "99%", description: "Onboarding reduced from 14 days to 2 hours" },
+        { metric: "MRR Growth", value: "567%", description: "Monthly recurring revenue grew from $420K to $2.8M" },
+        { metric: "Customer Activation", value: "178%", description: "Activation improved from 32% to 89%" },
+        { metric: "Net Promoter Score", value: "171%", description: "NPS increased from 28 to 76" },
+        { metric: "ROI", value: "650%", description: "Overall return on investment" }
       ],
-      technologies: ["n8n", "Google Analytics", "Facebook Ads", "LinkedIn Ads", "Google Sheets"],
-      timeline: "10 weeks",
+      technologies: ["Segment CDP", "Intercom", "Mixpanel", "Zapier", "Stripe", "AWS Lambda"],
       testimonial: {
-        quote: "Automation has allowed us to scale our client base without increasing headcount. It's been incredible.",
-        author: "Emily Rodriguez",
-        position: "CEO, SaaSFlow Ltd"
+        quote: "The AI automation platform didn't just solve our scaling problems - it completely transformed our user experience. We went from struggling to onboard users to having them achieve value in hours instead of weeks. Our growth trajectory completely changed.",
+        author: "Sarah Rodriguez",
+        position: "CEO & Founder, CloudScale Solutions"
       }
     }
   };
