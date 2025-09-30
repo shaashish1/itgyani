@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Calendar, Clock, CheckCircle, User, Mail, Building } from "lucide-react";
+import { Calendar, Clock, CheckCircle, User, Mail, Building, Check, Phone } from "lucide-react";
 
 interface ConsultationModalProps {
   isOpen: boolean;
@@ -17,6 +17,8 @@ interface ConsultationModalProps {
 
 const ConsultationModal = ({ isOpen, onClose, serviceType }: ConsultationModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [emailValid, setEmailValid] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,11 +30,32 @@ const ConsultationModal = ({ isOpen, onClose, serviceType }: ConsultationModalPr
     goals: ""
   });
 
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return email.length > 0 && emailRegex.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    return phone.length > 0 && phoneRegex.test(phone.replace(/\s/g, ''));
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
+
+    // Validate email in real-time
+    if (name === "email") {
+      setEmailValid(validateEmail(value));
+    }
+
+    // Validate phone in real-time
+    if (name === "phone") {
+      setPhoneValid(validatePhone(value));
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -132,9 +155,14 @@ const ConsultationModal = ({ isOpen, onClose, serviceType }: ConsultationModalPr
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="john@company.com"
-                    className="pl-10 bg-input/50 border-border/50 focus:border-primary"
+                    className="pl-10 pr-10 bg-input/50 border-border/50 focus:border-primary"
                     required
                   />
+                  {emailValid && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <Check className="h-5 w-5 text-green-500" />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -157,14 +185,22 @@ const ConsultationModal = ({ isOpen, onClose, serviceType }: ConsultationModalPr
 
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder="+1 (555) 123-4567"
-                  className="bg-input/50 border-border/50 focus:border-primary"
-                />
+                <div className="relative">
+                  <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="+1 (555) 123-4567"
+                    className="pl-10 pr-10 bg-input/50 border-border/50 focus:border-primary"
+                  />
+                  {phoneValid && (
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                      <Check className="h-5 w-5 text-green-500" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

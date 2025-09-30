@@ -48,16 +48,23 @@ function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
   const [emailValid, setEmailValid] = useState(false);
+  const [phoneValid, setPhoneValid] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     company: "",
+    phone: "",
     message: ""
   });
 
   const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return email.length > 0 && emailRegex.test(email);
+  };
+
+  const validatePhone = (phone: string) => {
+    const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    return phone.length > 0 && phoneRegex.test(phone.replace(/\s/g, ''));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -71,7 +78,9 @@ function Contact() {
       });
       if (res.ok) {
         toast.success("✅ Thank you! We'll get back to you within 24 hours.");
-        setFormData({ name: "", email: "", company: "", message: "" });
+        setFormData({ name: "", email: "", company: "", phone: "", message: "" });
+        setEmailValid(false);
+        setPhoneValid(false);
       } else {
         const data = await res.json();
         toast.error(`❌ Error: ${data.error || 'Failed to send message.'}`);
@@ -92,6 +101,11 @@ function Contact() {
     // Validate email in real-time
     if (name === "email") {
       setEmailValid(validateEmail(value));
+    }
+    
+    // Validate phone in real-time
+    if (name === "phone") {
+      setPhoneValid(validatePhone(value));
     }
   };
 // ...existing code...
@@ -184,6 +198,26 @@ function Contact() {
                           </div>
                         )}
                       </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Phone Number
+                    </label>
+                    <div className="relative">
+                      <Input
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="+91 9545550083"
+                        className="bg-input/50 border-border/50 focus:border-primary pr-10"
+                      />
+                      {phoneValid && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <Check className="h-5 w-5 text-green-500" />
+                        </div>
+                      )}
                     </div>
                   </div>
 
