@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,8 +17,10 @@ import {
   Bot
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import ProcessModal from "@/components/modals/ProcessModal";
 
 const About = () => {
+  const [isProcessModalOpen, setIsProcessModalOpen] = useState(false);
   const stats = [
     { metric: "500+", label: "Businesses Automated", icon: <Users className="h-6 w-6" /> },
     { metric: "$100M+", label: "Cost Savings Generated", icon: <TrendingUp className="h-6 w-6" /> },
@@ -70,7 +73,7 @@ const About = () => {
               ))}
             </div>
 
-            <Button className="btn-hero">
+            <Button className="btn-hero" onClick={() => setIsProcessModalOpen(true)}>
               Learn Our Process
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -127,6 +130,11 @@ const About = () => {
           </div>
         </div>
       </div>
+
+      <ProcessModal 
+        isOpen={isProcessModalOpen} 
+        onClose={() => setIsProcessModalOpen(false)} 
+      />
     </section>
   );
 };
