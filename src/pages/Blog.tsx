@@ -277,8 +277,10 @@ const Blog = () => {
                                 {tag}
                               </Badge>)}
                           </div>
-                          <Link to={`/blog/${post.slug}`}>
-                            <ReadMeButton variant="primary" text="readMore" className="ml-auto" />
+                          <Link to={`/blog/${post.slug}`} className="inline-block ml-auto">
+                            <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
+                              Read More <ArrowRight className="ml-2 h-4 w-4" />
+                            </Button>
                           </Link>
                         </div>
                       </CardContent>
@@ -364,7 +366,7 @@ const Blog = () => {
                                 </Badge>)}
                             </div>
                             <Link to={`/blog/${post.slug}`}>
-                              <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:underline hover:scale-105 transition-all p-0">
+                              <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
                                 Read More <ArrowRight className="ml-1 h-3 w-3" />
                               </Button>
                             </Link>
@@ -481,7 +483,14 @@ const Blog = () => {
               <PopupManager page="blog" />
             </div>
             
-            <BlogSidebar posts={blogPosts} />
+            <BlogSidebar posts={blogPosts.map(post => ({
+              id: post.id,
+              title: post.title,
+              slug: post.slug,
+              publishedAt: post.publishedAt,
+              category: post.category,
+              tags: post.tags
+            }))} />
           </div>
         </SidebarProvider>
       </div>
