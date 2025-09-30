@@ -39,7 +39,7 @@ serve(async (req) => {
     } = body;
 
     // Verify admin password
-    const ADMIN_PASSWORD = 'itgyani2024admin';
+    const ADMIN_PASSWORD = 'itgyani2025admin';
     if (adminPassword !== ADMIN_PASSWORD) {
       console.error('Invalid admin password provided');
       return new Response(JSON.stringify({ error: 'Unauthorized: Invalid admin password' }), {
