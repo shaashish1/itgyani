@@ -214,4 +214,90 @@
     @apply bg-primary/10 border-primary/40;
     box-shadow: 0 0 20px hsl(262 83% 58% / 0.2);
   }
+
+  /* Blog Content Styling - Human-readable, magazine-style */
+  .blog-content {
+    @apply text-foreground/90;
+    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    line-height: 1.8;
+  }
+
+  .blog-content h1,
+  .blog-content h2,
+  .blog-content h3,
+  .blog-content h4 {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    @apply text-foreground;
+    scroll-margin-top: 100px;
+  }
+
+  .blog-content h2 {
+    @apply border-l-4 border-primary pl-6 py-2;
+    background: linear-gradient(90deg, hsl(262 83% 58% / 0.05) 0%, transparent 100%);
+  }
+
+  .blog-content h3 {
+    @apply text-primary;
+  }
+
+  .blog-content ul li::marker {
+    @apply text-primary;
+    font-size: 1.2em;
+  }
+
+  .blog-content ol li::marker {
+    @apply text-primary font-bold;
+  }
+
+  .blog-content a {
+    @apply relative;
+    text-decoration: none;
+    background-image: linear-gradient(to right, hsl(262 83% 58%), hsl(180 100% 50%));
+    background-size: 0% 2px;
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s ease;
+  }
+
+  .blog-content a:hover {
+    background-size: 100% 2px;
+  }
+
+  .blog-content blockquote {
+    @apply relative;
+  }
+
+  .blog-content blockquote::before {
+    content: '"';
+    @apply absolute -left-4 -top-2 text-6xl text-primary/30;
+    font-family: Georgia, serif;
+  }
+
+  .blog-content code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  }
+
+  .blog-content strong {
+    @apply text-primary;
+  }
+
+  .blog-content img {
+    @apply rounded-xl shadow-lg my-8;
+  }
+
+  .blog-content table {
+    @apply w-full border-collapse my-8;
+  }
+
+  .blog-content th {
+    @apply bg-primary/10 font-semibold p-3 text-left border border-border;
+  }
+
+  .blog-content td {
+    @apply p-3 border border-border;
+  }
+
+  .blog-content hr {
+    @apply border-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent my-12;
+  }
 }

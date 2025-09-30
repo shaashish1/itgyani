@@ -7,6 +7,7 @@ import PopupManager from "@/components/PopupManager";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { 
   ArrowLeft, 
   Calendar, 
@@ -15,11 +16,15 @@ import {
   Share2, 
   Bookmark,
   ThumbsUp,
-  MessageCircle,
+  Facebook,
+  Twitter,
+  Linkedin,
   ArrowRight
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ReadMeButton } from "@/components/ImageComponents";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface BlogPost {
   id: string;
@@ -554,9 +559,99 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
           {/* Article Content */}
           <section className="py-16">
             <div className="container mx-auto px-6">
-              <div className="max-w-4xl mx-auto">
-                <div className="prose prose-lg dark:prose-invert max-w-none">
-                  <div dangerouslySetInnerHTML={{ __html: blogPost.content.replace(/\n/g, '<br>') }} />
+              <div className="max-w-3xl mx-auto">
+                {/* Featured Image */}
+                <div className="mb-12 rounded-2xl overflow-hidden shadow-xl">
+                  <img 
+                    src={blogDefaultImage} 
+                    alt={blogPost.title}
+                    className="w-full h-[400px] object-cover"
+                  />
+                </div>
+
+                {/* Author Info */}
+                <div className="flex items-center gap-4 mb-12 p-6 bg-accent/5 rounded-xl border border-border/50">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xl">
+                    IG
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg">ITGYANI Team</h3>
+                    <p className="text-sm text-foreground/70">AI & Automation Experts</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="icon" className="h-9 w-9">
+                      <Twitter className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-9 w-9">
+                      <Linkedin className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Article Content with Custom Styling */}
+                <article className="blog-content">
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      h1: ({node, ...props}) => <h1 className="text-4xl font-bold mt-12 mb-6 leading-tight" {...props} />,
+                      h2: ({node, ...props}) => <h2 className="text-3xl font-bold mt-10 mb-5 leading-tight" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-2xl font-semibold mt-8 mb-4" {...props} />,
+                      h4: ({node, ...props}) => <h4 className="text-xl font-semibold mt-6 mb-3" {...props} />,
+                      p: ({node, ...props}) => <p className="text-lg leading-relaxed mb-6 text-foreground/90" {...props} />,
+                      ul: ({node, ...props}) => <ul className="space-y-3 mb-6 ml-6" {...props} />,
+                      ol: ({node, ...props}) => <ol className="space-y-3 mb-6 ml-6 list-decimal" {...props} />,
+                      li: ({node, ...props}) => <li className="text-lg leading-relaxed text-foreground/90 pl-2" {...props} />,
+                      blockquote: ({node, ...props}) => (
+                        <blockquote className="border-l-4 border-primary pl-6 py-4 my-8 italic bg-accent/5 rounded-r-lg" {...props} />
+                      ),
+                      code: ({node, inline, ...props}: any) => 
+                        inline ? (
+                          <code className="bg-accent/30 px-2 py-1 rounded text-sm font-mono" {...props} />
+                        ) : (
+                          <code className="block bg-accent/20 p-4 rounded-lg my-6 overflow-x-auto font-mono text-sm" {...props} />
+                        ),
+                      strong: ({node, ...props}) => <strong className="font-bold text-foreground" {...props} />,
+                      a: ({node, ...props}) => <a className="text-primary hover:underline font-medium" {...props} />,
+                      hr: ({node, ...props}) => <Separator className="my-10" {...props} />,
+                    }}
+                  >
+                    {blogPost.content}
+                  </ReactMarkdown>
+                </article>
+
+                {/* Share Section */}
+                <div className="mt-16 pt-8 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-semibold">Share this article</h3>
+                    <div className="flex gap-3">
+                      <Button variant="outline" size="icon">
+                        <Facebook className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <Twitter className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <Linkedin className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon">
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Newsletter CTA */}
+                <div className="mt-12 p-8 bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 rounded-2xl border border-border/50">
+                  <h3 className="text-2xl font-bold mb-3">Stay Updated</h3>
+                  <p className="text-foreground/80 mb-6">Get the latest insights on AI automation delivered to your inbox.</p>
+                  <div className="flex gap-3">
+                    <input 
+                      type="email" 
+                      placeholder="Enter your email" 
+                      className="flex-1 px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <Button>Subscribe</Button>
+                  </div>
                 </div>
               </div>
             </div>
