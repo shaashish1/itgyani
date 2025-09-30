@@ -294,6 +294,18 @@ const Blog = () => {
             </div>
           </section>
 
+          {/* AdSense - Mid Content Banner */}
+          <section className="py-4">
+            <div className="container mx-auto px-6">
+              <AdSenseAd 
+                slot="mid-banner" 
+                format="horizontal"
+                responsive={true}
+                className="my-4"
+              />
+            </div>
+          </section>
+
           {/* All Articles */}
           <section className="py-16">
             <div className="container mx-auto px-6">
@@ -305,55 +317,121 @@ const Blog = () => {
                   <BookOpen className="h-16 w-16 text-foreground/30 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold mb-2">No articles found</h3>
                   <p className="text-foreground/70">Try adjusting your search or filter criteria.</p>
-                </div> : <div className="grid lg:grid-cols-3 gap-8">
-                  {filteredPosts.map(post => <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
-                      <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
-                        {post.featured_image_url && (
-                          <img 
-                            src={post.featured_image_url} 
-                            alt={post.title}
-                            className="absolute inset-0 w-full h-full object-cover"
-                          />
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                        <Badge variant="secondary" className="absolute top-4 left-4">
-                          {post.category}
-                        </Badge>
-                      </div>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
-                          {post.title}
-                        </CardTitle>
-                        <CardDescription className="line-clamp-3 text-foreground/70">
-                          {post.excerpt}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="flex items-center justify-between text-xs text-foreground/60 mb-4">
-                          <span className="flex items-center gap-1">
-                            <User className="h-3 w-3" />
-                            ITGYANI AI
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {post.readingTime} min read
-                          </span>
+                </div> : <>
+                  <div className="grid lg:grid-cols-3 gap-8">
+                    {filteredPosts.slice(0, 6).map(post => <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
+                        <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
+                          {post.featured_image_url && (
+                            <img 
+                              src={post.featured_image_url} 
+                              alt={post.title}
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                          <Badge variant="secondary" className="absolute top-4 left-4">
+                            {post.category}
+                          </Badge>
                         </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex flex-wrap gap-1">
-                            {post.tags.slice(0, 2).map((tag, idx) => <Badge key={idx} variant="outline" className="text-xs">
-                                {tag}
-                              </Badge>)}
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                            {post.title}
+                          </CardTitle>
+                          <CardDescription className="line-clamp-3 text-foreground/70">
+                            {post.excerpt}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="flex items-center justify-between text-xs text-foreground/60 mb-4">
+                            <span className="flex items-center gap-1">
+                              <User className="h-3 w-3" />
+                              ITGYANI AI
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {post.readingTime} min read
+                            </span>
                           </div>
-                          <Link to={`/blog/${post.slug}`}>
-                            <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 p-0">
-                              Read More <ArrowRight className="ml-1 h-3 w-3" />
-                            </Button>
-                          </Link>
-                        </div>
-                      </CardContent>
-                    </Card>)}
-                </div>}
+                          <div className="flex items-center justify-between">
+                            <div className="flex flex-wrap gap-1">
+                              {post.tags.slice(0, 2).map((tag, idx) => <Badge key={idx} variant="outline" className="text-xs">
+                                  {tag}
+                                </Badge>)}
+                            </div>
+                            <Link to={`/blog/${post.slug}`}>
+                              <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:underline hover:scale-105 transition-all p-0">
+                                Read More <ArrowRight className="ml-1 h-3 w-3" />
+                              </Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>)}
+                  </div>
+
+                  {/* AdSense - Mid Articles */}
+                  {filteredPosts.length > 6 && (
+                    <div className="my-8">
+                      <AdSenseAd 
+                        slot="mid-articles" 
+                        format="rectangle"
+                        responsive={true}
+                        className="my-6"
+                      />
+                    </div>
+                  )}
+
+                  {filteredPosts.length > 6 && (
+                    <div className="grid lg:grid-cols-3 gap-8 mt-8">
+                      {filteredPosts.slice(6).map(post => <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
+                          <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
+                            {post.featured_image_url && (
+                              <img 
+                                src={post.featured_image_url} 
+                                alt={post.title}
+                                className="absolute inset-0 w-full h-full object-cover"
+                              />
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                            <Badge variant="secondary" className="absolute top-4 left-4">
+                              {post.category}
+                            </Badge>
+                          </div>
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
+                              {post.title}
+                            </CardTitle>
+                            <CardDescription className="line-clamp-3 text-foreground/70">
+                              {post.excerpt}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <div className="flex items-center justify-between text-xs text-foreground/60 mb-4">
+                              <span className="flex items-center gap-1">
+                                <User className="h-3 w-3" />
+                                ITGYANI AI
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {post.readingTime} min read
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div className="flex flex-wrap gap-1">
+                                {post.tags.slice(0, 2).map((tag, idx) => <Badge key={idx} variant="outline" className="text-xs">
+                                    {tag}
+                                  </Badge>)}
+                              </div>
+                              <Link to={`/blog/${post.slug}`}>
+                                <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:underline hover:scale-105 transition-all p-0">
+                                  Read More <ArrowRight className="ml-1 h-3 w-3" />
+                                </Button>
+                              </Link>
+                            </div>
+                          </CardContent>
+                        </Card>)}
+                    </div>
+                  )}
+                </>}
             </div>
           </section>
 
