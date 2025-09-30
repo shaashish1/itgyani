@@ -815,28 +815,28 @@ const Resources = () => {
       tags: ["Telegram", "Chatbot", "Messaging", "Notifications"],
       downloadableWorkflows: [
         {
-          name: "Telegram Message Webhook Trigger",
-          filename: "0010_Telegram_Send_Webhook.json",
-          description: "Respond to Telegram messages with automated replies",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0010_Telegram_Send_Webhook.json"
+          name: "Telegram Schedule Automation",
+          filename: "0001_Telegram_Schedule_Automation_Scheduled.json",
+          description: "Schedule automated Telegram messages and notifications",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0001_Telegram_Schedule_Automation_Scheduled.json"
         },
         {
-          name: "Telegram RSS Feed Bot",
-          filename: "0090_Telegram_RssFeedRead_Send_Scheduled.json",
-          description: "Send RSS feed updates to Telegram channels automatically",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0090_Telegram_RssFeedRead_Send_Scheduled.json"
+          name: "Telegram Webhook Automation",
+          filename: "0140_Telegram_Webhook_Automation_Webhook.json",
+          description: "Respond to Telegram messages with automated webhook triggers",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0140_Telegram_Webhook_Automation_Webhook.json"
         },
         {
-          name: "Telegram GitHub Notifications",
-          filename: "0271_Telegram_GitHub_Send_Triggered.json",
-          description: "Get GitHub repository updates in Telegram",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0271_Telegram_GitHub_Send_Triggered.json"
+          name: "Telegram NASA Daily Updates",
+          filename: "0231_Telegram_Nasa_Send_Scheduled.json",
+          description: "Send daily NASA astronomy pictures to Telegram",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0231_Telegram_Nasa_Send_Scheduled.json"
         },
         {
-          name: "Telegram AI Chat Bot",
-          filename: "0943_Telegram_OpenAI_Send_Webhook.json",
-          description: "Create an AI-powered Telegram chatbot using OpenAI",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0943_Telegram_OpenAI_Send_Webhook.json"
+          name: "Telegram Wait Automation",
+          filename: "0170_Telegram_Wait_Automation_Scheduled.json",
+          description: "Create timed Telegram workflows with wait conditions",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Telegram/0170_Telegram_Wait_Automation_Scheduled.json"
         }
       ],
       useCases: [
@@ -905,28 +905,16 @@ const Resources = () => {
       tags: ["Discord", "Community Management", "Bots", "Notifications"],
       downloadableWorkflows: [
         {
-          name: "Discord Message Webhook Bot",
-          filename: "0033_Discord_Send_Webhook.json",
-          description: "Send automated messages to Discord channels via webhooks",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/0033_Discord_Send_Webhook.json"
+          name: "Discord Cron Automation",
+          filename: "0360_Discord_Cron_Automation_Scheduled.json",
+          description: "Schedule automated messages to Discord channels on cron",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/0360_Discord_Cron_Automation_Scheduled.json"
         },
         {
-          name: "Discord GitHub Integration",
-          filename: "0138_Discord_GitHub_Send_Triggered.json",
-          description: "Post GitHub updates to Discord channels automatically",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/0138_Discord_GitHub_Send_Triggered.json"
-        },
-        {
-          name: "Discord RSS Feed Bot",
-          filename: "0282_Discord_RssFeedRead_Send_Scheduled.json",
-          description: "Share RSS feed content in Discord channels on schedule",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/0282_Discord_RssFeedRead_Send_Scheduled.json"
-        },
-        {
-          name: "Discord AI Moderation Bot",
-          filename: "1069_Discord_OpenAI_Send_Webhook.json",
-          description: "AI-powered Discord moderation and response bot",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/1069_Discord_OpenAI_Send_Webhook.json"
+          name: "Discord Hunter Integration",
+          filename: "2028_Discord_Hunter_Automate_Triggered.json",
+          description: "Automate Discord notifications with Hunter email finder",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Discord/2028_Discord_Hunter_Automate_Triggered.json"
         }
       ],
       useCases: [
@@ -1114,47 +1102,41 @@ const Resources = () => {
     },
     {
       id: 13,
-      title: "GitHub Development Workflow Automation",
-      description: "Automate GitHub operations including issue tracking, PR management, and CI/CD integration.",
+      title: "Airtable Database Automation",
+      description: "Automate Airtable database operations including record creation, updates, and data syncing.",
       category: "n8n Workflows",
       type: "JSON Workflows",
-      workflowCount: "15+",
-      integrations: ["GitHub", "Slack", "Discord", "Telegram", "Jira", "Linear"],
-      complexity: "Medium to High",
-      tags: ["GitHub", "DevOps", "CI/CD", "Development"],
+      workflowCount: "10+",
+      integrations: ["Airtable", "Slack", "Gmail", "Google Sheets", "Webhooks"],
+      complexity: "Medium",
+      tags: ["Airtable", "Database", "Data Management", "Automation"],
       downloadableWorkflows: [
         {
-          name: "GitHub Issue Creation Webhook",
-          filename: "0016_GitHub_Webhook.json",
-          description: "Trigger workflows when GitHub issues are created",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/GitHub/0016_GitHub_Webhook.json"
+          name: "Airtable Record Webhook Trigger",
+          filename: "0005_Airtable_Create_Webhook.json",
+          description: "Trigger workflows when new Airtable records are created",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Airtable/0005_Airtable_Create_Webhook.json"
         },
         {
-          name: "GitHub + Slack Integration",
-          filename: "0064_GitHub_Slack_Send_Webhook.json",
-          description: "Send GitHub notifications to Slack channels",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/GitHub/0064_GitHub_Slack_Send_Webhook.json"
+          name: "Airtable Slack Integration",
+          filename: "0022_Airtable_Slack_Send_Triggered.json",
+          description: "Send Airtable updates to Slack channels automatically",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Airtable/0022_Airtable_Slack_Send_Triggered.json"
         },
         {
-          name: "GitHub PR Review Automation",
-          filename: "0312_GitHub_Discord_Send_Webhook.json",
-          description: "Notify team on Discord when PRs need review",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/GitHub/0312_GitHub_Discord_Send_Webhook.json"
-        },
-        {
-          name: "GitHub CI/CD Status Monitor",
-          filename: "0687_GitHub_Telegram_Send_Webhook.json",
-          description: "Monitor GitHub Actions and deployment status",
-          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/GitHub/0687_GitHub_Telegram_Send_Webhook.json"
+          name: "Airtable Email Notification",
+          filename: "0196_Airtable_Gmail_Send_Triggered.json",
+          description: "Send Gmail notifications when Airtable records change",
+          downloadUrl: "https://raw.githubusercontent.com/Zie619/n8n-workflows/main/workflows/Airtable/0196_Airtable_Gmail_Send_Triggered.json"
         }
       ],
       useCases: [
-        "Automated code review notifications",
-        "Issue tracking and assignment",
-        "Pull request management",
-        "CI/CD pipeline monitoring",
-        "Release automation",
-        "Team collaboration alerts"
+        "Automated database record creation",
+        "Real-time data synchronization",
+        "Team notification workflows",
+        "Data validation and quality checks",
+        "Cross-platform data integration",
+        "Automated reporting and analytics"
       ]
     },
     {
