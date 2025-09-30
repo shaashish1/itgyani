@@ -138,6 +138,47 @@ export type Database = {
           },
         ]
       }
+      blog_topics: {
+        Row: {
+          category_id: string | null
+          created_at: string | null
+          error_message: string | null
+          id: string
+          keywords: string[] | null
+          processed_at: string | null
+          status: string | null
+          topic: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          keywords?: string[] | null
+          processed_at?: string | null
+          status?: string | null
+          topic: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          keywords?: string[] | null
+          processed_at?: string | null
+          status?: string | null
+          topic?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_topics_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           color: string | null
