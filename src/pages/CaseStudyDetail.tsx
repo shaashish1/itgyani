@@ -57,6 +57,9 @@ const CaseStudyDetail = () => {
         cartAbandonment: { before: "68%", after: "23%", improvement: "66%" },
         customerSupport: { before: "72h", after: "4h", improvement: "94%" },
         orderProcessing: { before: "3.5 days", after: "8 hours", improvement: "77%" },
+        conversionRate: { before: "1.8%", after: "4.5%", improvement: "150%" },
+        customerLifetimeValue: { before: "$340", after: "$890", increase: "162%" },
+        customerSatisfaction: { before: "76%", after: "94%", improvement: "24%" },
         roi: "340%"
       },
 
@@ -205,6 +208,9 @@ const CaseStudyDetail = () => {
         patientWaitTime: { before: "45 min", after: "12 min", improvement: "73%" },
         appointmentScheduling: { before: "Manual", after: "98% Automated", improvement: "98%" },
         documentProcessing: { before: "5 days", after: "2 hours", improvement: "95%" },
+        patientSatisfaction: { before: "72%", after: "96%", improvement: "33%" },
+        staffProductivity: { before: "45%", after: "89%", improvement: "98%" },
+        billingAccuracy: { before: "85%", after: "99.8%", improvement: "17%" },
         roi: "420%"
       },
 
@@ -347,6 +353,9 @@ const CaseStudyDetail = () => {
         falsePositives: { before: "12%", after: "0.3%", reduction: "97%" },
         investigationTime: { before: "48 hours", after: "5 minutes", improvement: "99%" },
         customerSatisfaction: { before: "73%", after: "96%", improvement: "31%" },
+        transactionSpeed: { before: "3.2 sec", after: "0.4 sec", improvement: "88%" },
+        complianceScore: { before: "82%", after: "99.7%", improvement: "22%" },
+        operationalCosts: { before: "$3.8M", after: "$890K", reduction: "77%" },
         roi: "580%"
       },
 
@@ -489,6 +498,9 @@ const CaseStudyDetail = () => {
         churnReduction: { before: "18%", after: "3.2%", improvement: "82%" },
         supportTickets: { before: "2,500/month", after: "400/month", reduction: "84%" },
         timeToValue: { before: "14 days", after: "2 hours", improvement: "99%" },
+        monthlyRecurringRevenue: { before: "$420K", after: "$2.8M", increase: "567%" },
+        customerActivation: { before: "32%", after: "89%", improvement: "178%" },
+        netPromoterScore: { before: "28", after: "76", improvement: "171%" },
         roi: "650%"
       },
 
