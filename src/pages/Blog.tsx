@@ -168,7 +168,7 @@ const Blog = () => {
         
         <SidebarProvider defaultOpen={true}>
           <div className="flex w-full min-h-screen">
-            <main className="flex-1 min-w-0">
+            <main className="flex-1 min-w-0 overflow-x-hidden">
           {/* Hero Section */}
           <section className="relative overflow-hidden">
             <PageHeader type="blog" className="w-full" />
@@ -179,7 +179,10 @@ const Blog = () => {
                   <ArrowLeft className="h-4 w-4" />
                   Back to Home
                 </Link>
-                <SidebarTrigger className="ml-auto p-2 hover:bg-primary/20 rounded-md transition-colors border border-border/50" />
+                <div className="ml-auto flex items-center gap-2">
+                  <span className="text-sm text-foreground/60">Toggle Archives</span>
+                  <SidebarTrigger className="p-2 hover:bg-primary/20 rounded-md transition-colors border border-border/50" />
+                </div>
               </div>
               
               <div className="max-w-4xl mx-auto text-center">
