@@ -131,12 +131,12 @@ function Contact() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Contact Form */}
-          <div>
-            <Card className="glass-card">
-              <CardContent className="p-8">
+          <div className="h-full">
+            <Card className="glass-card h-full flex flex-col">
+              <CardContent className="p-8 flex-1 flex flex-col">
                 <h3 className="text-2xl font-bold mb-6">Send us a Message</h3>
                 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6 flex-1 flex flex-col">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium mb-2">
@@ -180,7 +180,7 @@ function Contact() {
                     />
                   </div>
 
-                  <div>
+                  <div className="flex-1 flex flex-col">
                     <label className="block text-sm font-medium mb-2">
                       Tell us about your automation needs *
                     </label>
@@ -189,9 +189,8 @@ function Contact() {
                       value={formData.message}
                       onChange={handleInputChange}
                       placeholder="Describe the processes you'd like to automate, current challenges, and your goals..."
-                      rows={5}
                       required
-                      className="bg-input/50 border-border/50 focus:border-primary resize-none"
+                      className="bg-input/50 border-border/50 focus:border-primary resize-none flex-1"
                     />
                   </div>
 
