@@ -53,22 +53,40 @@ const AdSenseAd: React.FC<AdSenseAdProps> = ({
   // Get the ad slot ID
   const adSlot = config.adSlots[slot] || config.adSlots.auto;
 
-  // Test mode warning
+  // Test mode - professional placeholder
   if (config.testMode) {
     return (
-      <div className={`ad-test-mode ${className}`} style={{
-        ...style,
-        border: '2px dashed #ff6b6b',
-        padding: '20px',
-        textAlign: 'center',
-        backgroundColor: '#fff5f5',
-        color: '#666',
-        borderRadius: '8px',
-        margin: '20px 0'
-      }}>
-        <p><strong>TEST MODE</strong></p>
-        <p>AdSense Test Ad - Slot: {slot}</p>
-        <p>ID: {adSlot}</p>
+      <div 
+        className={`ad-placeholder ${className}`} 
+        style={{
+          ...style,
+          margin: '20px 0'
+        }}
+      >
+        <div className="relative w-full rounded-lg border border-border bg-muted/30 overflow-hidden">
+          <div className="flex items-center justify-center py-12 px-6">
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 mb-3">
+                <svg 
+                  className="w-6 h-6 text-primary" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="2"/>
+                  <path d="M9 9h6v6H9z" strokeWidth="2"/>
+                </svg>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground">Advertisement Space</p>
+              <p className="text-xs text-muted-foreground/60">Sponsored Content</p>
+            </div>
+          </div>
+          <div className="absolute top-2 right-2">
+            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-background/80 text-muted-foreground border border-border">
+              Ad
+            </span>
+          </div>
+        </div>
       </div>
     );
   }
