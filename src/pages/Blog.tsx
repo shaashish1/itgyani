@@ -104,7 +104,8 @@ const Blog = () => {
     updatedAt: new Date("2024-01-15"),
     status: "published",
     metaDescription: "Complete guide to AI automation in 2024 with practical implementation strategies and ROI calculation methods.",
-    readingTime: 12
+    readingTime: 12,
+    featured_image_url: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop"
   }, {
     id: "demo-2",
     title: "Building Intelligent Business Workflows with n8n and AI",
@@ -118,7 +119,8 @@ const Blog = () => {
     updatedAt: new Date("2024-01-12"),
     status: "published",
     metaDescription: "Master n8n workflow automation with AI integration for intelligent business processes.",
-    readingTime: 9
+    readingTime: 9,
+    featured_image_url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop"
   }, {
     id: "demo-3",
     title: "Digital Transformation Success Stories: Real ROI from AI Implementation",
@@ -132,7 +134,8 @@ const Blog = () => {
     updatedAt: new Date("2024-01-10"),
     status: "published",
     metaDescription: "Real case studies of digital transformation success with AI implementation and measurable ROI.",
-    readingTime: 11
+    readingTime: 11,
+    featured_image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop"
   }];
   const categories = ["All", "Technology", "Business", "Automation", "Industry", "AI Studio"];
 
@@ -256,7 +259,9 @@ const Blog = () => {
                                 {tag}
                               </Badge>)}
                           </div>
-                          <ReadMeButton variant="primary" text="readMore" className="ml-auto" />
+                          <Link to={`/blog/${post.slug}`}>
+                            <ReadMeButton variant="primary" text="readMore" className="ml-auto" />
+                          </Link>
                         </div>
                       </CardContent>
                     </Card>)}
