@@ -15,6 +15,8 @@ import DataIntegration from "./pages/services/DataIntegration";
 import EcommerceAutomation from "./pages/services/EcommerceAutomation";
 import MarketingAutomation from "./pages/services/MarketingAutomation";
 import SchedulingManagement from "./pages/services/SchedulingManagement";
+import N8nWorkflow from "./pages/services/N8nWorkflow";
+import AIStrategyConsulting from "./pages/services/AIStrategyConsulting";
 import AutomationDetail from "./pages/automations/AutomationDetail";
 import CaseStudies from "./pages/CaseStudies";
 import CaseStudyDetail from "./pages/CaseStudyDetail";
@@ -64,6 +66,8 @@ const App = () => (
             <Route path="/services/ecommerce-automation" element={<EcommerceAutomation />} />
             <Route path="/services/marketing-automation" element={<MarketingAutomation />} />
             <Route path="/services/scheduling-management" element={<SchedulingManagement />} />
+            <Route path="/services/n8n-workflow" element={<N8nWorkflow />} />
+            <Route path="/services/ai-strategy-consulting" element={<AIStrategyConsulting />} />
             <Route path="/automation/:toolName" element={<AutomationDetail />} />
             <Route path="/case-studies" element={<CaseStudies />} />
             <Route path="/case-studies/:id" element={<CaseStudyDetail />} />

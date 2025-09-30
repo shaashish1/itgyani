@@ -80,7 +80,15 @@ const ServicesPage = () => {
                         ))}
                       </div>
                       <div className="font-semibold text-primary mb-4">{service.price}</div>
-                      <Button variant="outline" className="w-full">Learn More</Button>
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link to={
+                          service.title === "AI Business Automation" ? "/services/business-automation" :
+                          service.title === "n8n Workflow Design" ? "/services/n8n-workflow" :
+                          "/services/ai-strategy-consulting"
+                        }>
+                          Learn More
+                        </Link>
+                      </Button>
                     </CardContent>
                   </Card>
                 );
