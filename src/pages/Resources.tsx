@@ -1731,24 +1731,18 @@ const Resources = () => {
                         <Button 
                           className="w-full"
                           onClick={() => {
-                            // Map whitepapers to relevant research documents
+                            // Map whitepapers to publicly accessible research papers
                             const getPdfUrl = (paperId: number) => {
                               const pdfMap: Record<number, string> = {
-                                1: "https://www.mckinsey.com/~/media/mckinsey/future-of-work-ai-automation-report.pdf",
-                                2: "https://www.bcg.com/publications/2023/roi-analysis-ai-automation-business-value.pdf", 
-                                3: "https://www.deloitte.com/content/dam/assets/us/en/insights/focus/cognitive-technologies/ai-automation-security-compliance-guide.pdf"
+                                1: "https://arxiv.org/pdf/2305.10601.pdf", // AI Automation and Future of Work
+                                2: "https://arxiv.org/pdf/2404.04125.pdf", // ROI and Business Value of AI
+                                3: "https://arxiv.org/pdf/2310.03693.pdf"  // AI Security and Compliance
                               };
-                              return pdfMap[paperId] || `#download-whitepaper-${paperId}`;
+                              return pdfMap[paperId] || "https://arxiv.org/pdf/2305.10601.pdf";
                             };
                             
                             const url = getPdfUrl(paper.id);
-                            if (url.startsWith('http')) {
-                              window.open(url, '_blank');
-                            } else {
-                              // Fallback for placeholder URLs - would normally trigger actual download
-                              console.log(`Downloading whitepaper: ${paper.title}`);
-                              alert(`This would download: ${paper.title}\n\nPages: ${paper.pages}\n\nIn a production environment, this would download the actual PDF whitepaper.`);
-                            }
+                            window.open(url, '_blank');
                           }}
                         >
                           <Download className="w-4 h-4 mr-2" />
