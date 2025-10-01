@@ -1953,13 +1953,34 @@ const Resources = () => {
 
                   <Button 
                     className="w-full"
-                    onClick={() => {
-                      const link = document.createElement('a');
-                      link.href = workflow.downloadUrl;
-                      link.download = workflow.filename;
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
+                    onClick={async () => {
+                      try {
+                        // Fetch the JSON file from the URL
+                        const response = await fetch(workflow.downloadUrl);
+                        if (!response.ok) throw new Error('Failed to fetch workflow');
+                        
+                        const jsonData = await response.json();
+                        
+                        // Create a blob from the JSON data
+                        const blob = new Blob([JSON.stringify(jsonData, null, 2)], { 
+                          type: 'application/json' 
+                        });
+                        
+                        // Create a download link
+                        const url = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = workflow.filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        
+                        // Cleanup
+                        document.body.removeChild(link);
+                        window.URL.revokeObjectURL(url);
+                      } catch (error) {
+                        console.error('Error downloading workflow:', error);
+                        alert('Failed to download workflow. Please try again.');
+                      }
                     }}
                   >
                     <Download className="w-4 h-4 mr-2" />
