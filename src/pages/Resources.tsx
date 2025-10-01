@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import resourcesHeroImage from "@/assets/resources-hero.jpg";
 import resourceN8nGuide from "@/assets/resource-n8n-guide.jpg";
 import resourceTemplates from "@/assets/resource-templates.jpg";
@@ -43,6 +44,7 @@ import {
 import { Link } from "react-router-dom";
 
 const Resources = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedWorkflowPackage, setSelectedWorkflowPackage] = useState<any>(null);
@@ -1730,23 +1732,10 @@ const Resources = () => {
 
                         <Button 
                           className="w-full"
-                          onClick={() => {
-                            // Map whitepapers to publicly accessible research papers
-                            const getPdfUrl = (paperId: number) => {
-                              const pdfMap: Record<number, string> = {
-                                1: "https://arxiv.org/pdf/2305.10601.pdf", // AI Automation and Future of Work
-                                2: "https://arxiv.org/pdf/2404.04125.pdf", // ROI and Business Value of AI
-                                3: "https://arxiv.org/pdf/2310.03693.pdf"  // AI Security and Compliance
-                              };
-                              return pdfMap[paperId] || "https://arxiv.org/pdf/2305.10601.pdf";
-                            };
-                            
-                            const url = getPdfUrl(paper.id);
-                            window.open(url, '_blank');
-                          }}
+                          onClick={() => navigate(`/whitepapers/${paper.id}`)}
                         >
-                          <Download className="w-4 h-4 mr-2" />
-                          Download PDF
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          Read Whitepaper
                         </Button>
                       </div>
                     </CardContent>
