@@ -416,9 +416,9 @@ const ResourceDetail = () => {
           />
         </div>
 
-        <Card>
-          <CardContent className="p-8 md:p-12">
-            <div className="space-y-8">
+        <Card className="border-none shadow-lg">
+          <CardContent className="p-0">
+            <div className="prose prose-lg max-w-none">
               {resource.content.split('\n\n').map((section, index) => {
                 const trimmedSection = section.trim();
                 if (!trimmedSection) return null;
@@ -427,8 +427,8 @@ const ResourceDetail = () => {
                 if (trimmedSection.startsWith('**') && trimmedSection.includes(':**')) {
                   const headingText = trimmedSection.replace(/\*\*/g, '').replace(':', '');
                   return (
-                    <div key={index} className="space-y-4">
-                      <h2 className="text-2xl font-bold text-foreground border-b border-border pb-3">
+                    <div key={index} className="bg-gradient-to-r from-primary/5 to-transparent border-l-4 border-primary pl-6 md:pl-8 pr-6 md:pr-8 py-6 mb-6">
+                      <h2 className="text-xl md:text-2xl font-bold text-foreground m-0">
                         {headingText}
                       </h2>
                     </div>
@@ -439,24 +439,27 @@ const ResourceDetail = () => {
                 if (trimmedSection.includes('\n- ')) {
                   const lines = trimmedSection.split('\n');
                   return (
-                    <ul key={index} className="space-y-3 ml-6">
-                      {lines.map((line, lineIndex) => {
-                        if (line.trim().startsWith('- ')) {
-                          return (
-                            <li key={lineIndex} className="text-muted-foreground leading-relaxed list-disc">
-                              {line.replace('- ', '')}
-                            </li>
-                          );
-                        }
-                        return null;
-                      })}
-                    </ul>
+                    <div key={index} className="px-6 md:px-8 py-4">
+                      <ul className="space-y-4">
+                        {lines.map((line, lineIndex) => {
+                          if (line.trim().startsWith('- ')) {
+                            return (
+                              <li key={lineIndex} className="flex items-start gap-3 text-muted-foreground leading-relaxed">
+                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
+                                <span className="flex-1">{line.replace('- ', '')}</span>
+                              </li>
+                            );
+                          }
+                          return null;
+                        })}
+                      </ul>
+                    </div>
                   );
                 }
 
                 // Regular paragraph
                 return (
-                  <p key={index} className="text-muted-foreground leading-relaxed">
+                  <p key={index} className="px-6 md:px-8 py-3 text-muted-foreground leading-relaxed text-base md:text-lg">
                     {trimmedSection}
                   </p>
                 );
