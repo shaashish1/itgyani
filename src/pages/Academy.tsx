@@ -766,9 +766,11 @@ const Academy = () => {
                       <div className="text-xs text-muted-foreground">Certified Professionals</div>
                     </div>
                     
-                    <Button className="w-full">
-                      Start Certification
-                    </Button>
+                    <Link to="/contact">
+                      <Button className="w-full">
+                        Start Certification
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
@@ -788,13 +790,17 @@ const Academy = () => {
             Start with our free introductory course or explore our full certification programs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="px-8">
-              Start Free Course
-            </Button>
-            <Button variant="outline" size="lg" className="px-8">
-              <Download className="w-4 h-4 mr-2" />
-              Download Curriculum
-            </Button>
+            <Link to="/course/1">
+              <Button size="lg" className="px-8">
+                Start Free Course
+              </Button>
+            </Link>
+            <Link to="/academy">
+              <Button variant="outline" size="lg" className="px-8">
+                <BookOpen className="w-4 h-4 mr-2" />
+                Browse All Courses
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

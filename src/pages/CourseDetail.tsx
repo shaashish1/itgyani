@@ -1,403 +1,377 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { 
-  ArrowLeft,
+import {
   Clock,
   Users,
   Star,
+  ArrowLeft,
   BookOpen,
   CheckCircle,
-  FileText,
-  Video,
+  PlayCircle,
   Download,
-  ChevronRight,
-  ChevronLeft
+  Share2,
+  Video,
+  Laptop,
+  Target
 } from "lucide-react";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const CourseDetail = () => {
-  const { courseId } = useParams();
-  const [currentLesson, setCurrentLesson] = useState(0);
-  const [completedLessons, setCompletedLessons] = useState<number[]>([]);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  // Course data - in real implementation, fetch from API
-  const courseData = {
-    1: {
+  const courses = [
+    {
+      id: 1,
       title: "Introduction to n8n Automation",
       description: "Learn the fundamentals of workflow automation using n8n platform",
       duration: "2 hours",
       difficulty: "Beginner",
       students: "12.3K",
       rating: 4.8,
-      instructor: "AI Automation Expert",
-      totalLessons: 8,
-      lessons: [
-        {
-          id: 1,
-          title: "What is n8n and Workflow Automation?",
-          duration: "15 min",
-          type: "video",
-          content: "Introduction to automation concepts and n8n platform overview",
-          videoUrl: "https://www.youtube.com/embed/4cQWJViybAQ"
-        },
-        {
-          id: 2,
-          title: "Setting Up Your First Workflow",
-          duration: "18 min",
-          type: "hands-on",
-          content: "Step-by-step guide to creating your first automation workflow",
-          videoUrl: "https://www.youtube.com/embed/0WhxkC7C-ds"
-        },
-        {
-          id: 3,
-          title: "Understanding Nodes and Connections",
-          duration: "20 min",
-          type: "video",
-          content: "Deep dive into n8n nodes and how to connect them effectively",
-          videoUrl: "https://www.youtube.com/embed/Rmi-ckbMOQE"
-        },
-        {
-          id: 4,
-          title: "Data Transformation Techniques",
-          duration: "22 min",
-          type: "hands-on",
-          content: "Learn to manipulate and transform data between workflow steps",
-          videoUrl: "https://www.youtube.com/embed/bxVaMS8d75M"
-        },
-        {
-          id: 5,
-          title: "Error Handling and Debugging",
-          duration: "16 min", 
-          type: "video",
-          content: "Best practices for handling errors and debugging workflows",
-          videoUrl: "https://www.youtube.com/embed/XEUVl3bbMhI"
-        },
-        {
-          id: 6,
-          title: "Practical Exercise: Email Automation",
-          duration: "25 min",
-          type: "project",
-          content: "Build a complete email automation workflow from scratch",
-          videoUrl: "https://www.youtube.com/embed/XyVSq8d4hxE"
-        },
-        {
-          id: 7,
-          title: "Scheduling and Triggers",
-          duration: "18 min",
-          type: "video",
-          content: "Understanding different trigger types and scheduling options",
-          videoUrl: "https://www.youtube.com/embed/5XFDynXUo0E"
-        },
-        {
-          id: 8,
-          title: "Final Project and Next Steps",
-          duration: "26 min",
-          type: "project",
-          content: "Complete capstone project and guidance for continued learning",
-          videoUrl: "https://www.youtube.com/embed/RRIgP3Msgqs"
-        }
+      track: "beginner",
+      type: "video",
+      content: "Master the basics of n8n automation platform with hands-on examples. Learn to create your first workflows, understand node connections, and implement basic automation patterns. Covers workflow design principles, debugging techniques, and best practices for maintainable automation.",
+      modules: [
+        "Introduction to n8n Platform",
+        "Setting Up Your First Workflow",
+        "Understanding Nodes and Connections",
+        "Data Flow and Transformations",
+        "Debugging and Error Handling",
+        "Best Practices and Patterns"
+      ]
+    },
+    {
+      id: 2,
+      title: "Advanced Data Processing with Python and AI",
+      description: "Learn to process large datasets using Python functions within n8n workflows",
+      duration: "45 minutes",
+      difficulty: "Advanced",
+      students: "8.7K",
+      rating: 4.9,
+      track: "expert",
+      type: "hands-on",
+      content: "Build sophisticated data processing workflows combining Python scripting with AI models for advanced analytics. Learn data ingestion, Python-based cleaning and transformation, AI-powered analysis, pattern recognition, and automated reporting systems.",
+      modules: [
+        "Python Integration in n8n",
+        "Data Ingestion and Validation",
+        "Advanced Data Transformations",
+        "AI Model Integration",
+        "Pattern Recognition Techniques",
+        "Automated Reporting Systems"
+      ]
+    },
+    {
+      id: 3,
+      title: "API Integration Masterclass",
+      description: "Comprehensive guide to integrating various APIs and services",
+      duration: "3 hours",
+      difficulty: "Intermediate",
+      students: "9.2K",
+      rating: 4.7,
+      track: "intermediate",
+      type: "video",
+      content: "Master API integrations with comprehensive coverage of REST APIs, webhooks, authentication methods, error handling, and rate limiting. Build robust integrations with popular services like Salesforce, HubSpot, and custom APIs.",
+      modules: [
+        "REST API Fundamentals",
+        "Authentication Methods (OAuth, API Keys, JWT)",
+        "Webhook Implementation",
+        "Error Handling and Retry Logic",
+        "Rate Limiting Strategies",
+        "Real-World Integration Examples"
+      ]
+    },
+    {
+      id: 4,
+      title: "Building AI Customer Support Systems",
+      description: "Create intelligent customer support workflows with OpenAI integration",
+      duration: "90 minutes",
+      difficulty: "Advanced",
+      students: "6.1K",
+      rating: 4.9,
+      track: "expert",
+      type: "project",
+      content: "Build end-to-end AI customer support systems using OpenAI API, natural language processing, automated ticket routing, sentiment analysis, and intelligent response generation. Includes real-world case studies and implementation patterns.",
+      modules: [
+        "OpenAI API Integration",
+        "Natural Language Processing",
+        "Automated Ticket Routing",
+        "Sentiment Analysis Implementation",
+        "Response Generation Strategies",
+        "Case Studies and Best Practices"
+      ]
+    },
+    {
+      id: 5,
+      title: "E-commerce Automation Strategies",
+      description: "Automate order processing, inventory management, and customer communications",
+      duration: "2.5 hours",
+      difficulty: "Intermediate",
+      students: "7.8K",
+      rating: 4.6,
+      track: "business",
+      type: "hands-on",
+      content: "Comprehensive e-commerce automation covering order processing, inventory management, customer communications, automated marketing campaigns, and integration with major e-commerce platforms like Shopify and WooCommerce.",
+      modules: [
+        "Order Processing Automation",
+        "Inventory Management Systems",
+        "Customer Communication Workflows",
+        "Marketing Campaign Automation",
+        "Shopify Integration",
+        "WooCommerce Integration"
       ]
     }
-    // Add more courses as needed
-  };
+  ];
 
-  const course = courseData[parseInt(courseId || '1') as keyof typeof courseData];
+  const course = courses.find(c => c.id === parseInt(id || "0"));
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+      <div className="min-h-screen bg-background">
         <Header />
-        <div className="container mx-auto px-4 py-20">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Course Not Found</h1>
-            <Link to="/academy">
-              <Button>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Academy
-              </Button>
-            </Link>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+          <h1 className="text-4xl font-bold mb-4">Course Not Found</h1>
+          <p className="text-muted-foreground mb-8">The course you're looking for doesn't exist.</p>
+          <Button onClick={() => navigate("/academy")}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Academy
+          </Button>
         </div>
         <Footer />
       </div>
     );
   }
 
-  const currentLessonData = course.lessons[currentLesson];
-  const progress = (completedLessons.length / course.totalLessons) * 100;
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty.toLowerCase()) {
+      case "beginner": return "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800";
+      case "intermediate": return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800";
+      case "advanced": return "bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800";
+      default: return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
 
-  const markLessonComplete = (lessonId: number) => {
-    if (!completedLessons.includes(lessonId)) {
-      setCompletedLessons([...completedLessons, lessonId]);
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case "video": return <Video className="w-4 h-4" />;
+      case "hands-on": return <Laptop className="w-4 h-4" />;
+      case "project": return <Target className="w-4 h-4" />;
+      default: return <BookOpen className="w-4 h-4" />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
+    <div className="min-h-screen bg-background">
       <Header />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Course Header */}
-        <div className="mb-8">
-          <Link to="/academy" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-4">
+
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/academy")}
+            className="mb-6"
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Academy
-          </Link>
-          
-          <div className="grid lg:grid-cols-3 gap-8">
+          </Button>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <div className="mb-6">
-                <Badge className="mb-2">{course.difficulty}</Badge>
-                <h1 className="text-3xl font-bold mb-2">{course.title}</h1>
-                <p className="text-muted-foreground mb-4">{course.description}</p>
-                
-                <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {course.duration}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
-                    {course.students} students
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    {course.rating}
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <BookOpen className="w-4 h-4" />
-                    {course.totalLessons} lessons
-                  </div>
+              <div className="flex items-center gap-3 mb-4">
+                <Badge className={getDifficultyColor(course.difficulty)} variant="outline">
+                  {course.difficulty}
+                </Badge>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  {getTypeIcon(course.type)}
+                  <span className="text-sm capitalize">{course.type}</span>
                 </div>
               </div>
 
-              {/* Progress */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium">Course Progress</span>
-                  <span className="text-sm text-muted-foreground">{Math.round(progress)}% Complete</span>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                {course.title}
+              </h1>
+
+              <p className="text-xl text-muted-foreground mb-6">
+                {course.description}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground mb-8">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  {course.duration}
                 </div>
-                <Progress value={progress} className="h-2" />
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  {course.students} students
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  {course.rating} rating
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <Link to="/contact">
+                  <Button size="lg">
+                    <PlayCircle className="w-5 h-5 mr-2" />
+                    Start Learning
+                  </Button>
+                </Link>
+                <Link to="/contact">
+                  <Button variant="outline" size="lg">
+                    <Download className="w-5 h-5 mr-2" />
+                    Download Materials
+                  </Button>
+                </Link>
+                <Button variant="outline" size="lg">
+                  <Share2 className="w-5 h-5 mr-2" />
+                  Share Course
+                </Button>
               </div>
             </div>
 
-            {/* Course Sidebar */}
             <div className="lg:col-span-1">
-              <Card className="glass-card">
+              <Card className="glass-card sticky top-20">
                 <CardHeader>
-                  <CardTitle className="text-lg">Course Content</CardTitle>
+                  <CardTitle>Course Progress</CardTitle>
+                  <CardDescription>Track your learning journey</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  {course.lessons.map((lesson, index) => (
-                    <div
-                      key={lesson.id}
-                      className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                        currentLesson === index 
-                          ? 'bg-primary/10 border-primary/20' 
-                          : 'border-border hover:bg-muted/50'
-                      }`}
-                      onClick={() => setCurrentLesson(index)}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          {completedLessons.includes(lesson.id) ? (
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                          ) : (
-                            <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30" />
-                          )}
-                          <span className="font-medium text-sm">{lesson.title}</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground">{lesson.duration}</span>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-2">
+                        <span>Overall Progress</span>
+                        <span className="font-semibold">0%</span>
+                      </div>
+                      <Progress value={0} className="h-2" />
+                    </div>
+
+                    <div className="space-y-2 pt-4 border-t">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Modules</span>
+                        <span className="font-semibold">{course.modules.length}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Completed</span>
+                        <span className="font-semibold">0</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Remaining</span>
+                        <span className="font-semibold">{course.modules.length}</span>
                       </div>
                     </div>
-                  ))}
+
+                    <Link to="/contact">
+                      <Button className="w-full mt-4" variant="outline">
+                        <BookOpen className="w-4 h-4 mr-2" />
+                        Get Access
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Main Content */}
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            {/* Video Player */}
-            <Card className="glass-card mb-6">
-              <CardContent className="p-0">
-                <div className="relative bg-black rounded-t-lg aspect-video">
-                  {/* YouTube Embed */}
-                  <iframe
-                    className="w-full h-full rounded-t-lg"
-                    src={currentLessonData.videoUrl}
-                    title={currentLessonData.title}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                  
-                  {/* Video Info Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 pointer-events-none">
-                    <h3 className="text-white font-medium text-lg">{currentLessonData.title}</h3>
-                    <p className="text-white/80 text-sm">{currentLessonData.duration}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-8">
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle>About This Course</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {course.content}
+                  </p>
+                </CardContent>
+              </Card>
 
-            {/* Lesson Content */}
-            <Tabs defaultValue="overview" className="mb-6">
-              <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="resources">Resources</TabsTrigger>
-                <TabsTrigger value="discussion">Discussion</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="overview" className="mt-4">
-                <Card className="glass-card">
-                  <CardHeader>
-                    <CardTitle>Lesson {currentLesson + 1}: {currentLessonData.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">{currentLessonData.content}</p>
-                    
-                    <div className="flex items-center gap-4">
-                      <Button
-                        onClick={() => markLessonComplete(currentLessonData.id)}
-                        disabled={completedLessons.includes(currentLessonData.id)}
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle>Course Curriculum</CardTitle>
+                  <CardDescription>
+                    {course.modules.length} modules to master {course.title}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {course.modules.map((module, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-muted/50 transition-colors cursor-pointer"
                       >
-                        {completedLessons.includes(currentLessonData.id) ? (
-                          <>
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Completed
-                          </>
-                        ) : (
-                          'Mark as Complete'
-                        )}
-                      </Button>
-                      
-                      {currentLesson > 0 && (
-                        <Button
-                          variant="outline"
-                          onClick={() => setCurrentLesson(currentLesson - 1)}
-                        >
-                          <ChevronLeft className="w-4 h-4 mr-2" />
-                          Previous Lesson
-                        </Button>
-                      )}
-                      
-                      {currentLesson < course.lessons.length - 1 && (
-                        <Button
-                          variant="outline"
-                          onClick={() => setCurrentLesson(currentLesson + 1)}
-                        >
-                          Next Lesson
-                          <ChevronRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="resources" className="mt-4">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium">{module}</h4>
+                        </div>
+                        <CheckCircle className="w-5 h-5 text-muted-foreground" />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card">
+                <CardHeader>
+                  <CardTitle>What You'll Learn</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {course.modules.map((module, index) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                        <span className="text-sm text-muted-foreground">{module}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="lg:col-span-1">
+              <div className="space-y-6">
                 <Card className="glass-card">
                   <CardHeader>
-                    <CardTitle>Course Resources</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <FileText className="w-5 h-5 text-primary" />
-                        <div>
-                          <p className="font-medium">Course Slides</p>
-                          <p className="text-sm text-muted-foreground">PDF presentation materials</p>
-                        </div>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        <Download className="w-4 h-4 mr-2" />
-                        Download
-                      </Button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-3 border border-border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <Video className="w-5 h-5 text-primary" />
-                        <div>
-                          <p className="font-medium">Practice Files</p>
-                          <p className="text-sm text-muted-foreground">Sample workflows and templates</p>
-                        </div>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        <Download className="w-4 h-4 mr-2" />
-                        Download
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              <TabsContent value="discussion" className="mt-4">
-                <Card className="glass-card">
-                  <CardHeader>
-                    <CardTitle>Discussion & Q&A</CardTitle>
+                    <CardTitle>Related Courses</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">Discussion forum coming soon. Ask questions and share insights with other students.</p>
+                    <p className="text-sm text-muted-foreground">
+                      Explore more courses in the {course.track} track to expand your skills.
+                    </p>
+                    <Link to="/academy">
+                      <Button variant="outline" className="w-full mt-4">
+                        Browse All Courses
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
 
-          {/* Instructor Info */}
-          <div className="lg:col-span-1">
-            <Card className="glass-card mb-6">
-              <CardHeader>
-                <CardTitle className="text-lg">Instructor</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">AI</span>
-                  </div>
-                  <h3 className="font-semibold">{course.instructor}</h3>
-                  <p className="text-sm text-muted-foreground">Automation Specialist</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Course Stats */}
-            <Card className="glass-card">
-              <CardHeader>
-                <CardTitle className="text-lg">Course Statistics</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Completion Rate</span>
-                  <span className="font-medium">87%</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Average Rating</span>
-                  <span className="font-medium">{course.rating}/5</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Students</span>
-                  <span className="font-medium">{course.students}</span>
-                </div>
-              </CardContent>
-            </Card>
+                <Card className="glass-card">
+                  <CardHeader>
+                    <CardTitle>Your Instructor</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">
+                      Learn from industry experts with years of experience in AI automation and workflow optimization.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      
+      </section>
+
       <Footer />
     </div>
   );
