@@ -423,45 +423,47 @@ const ResourceDetail = () => {
                 const trimmedSection = section.trim();
                 if (!trimmedSection) return null;
 
-                // Check if it's a heading (starts with **)
-                if (trimmedSection.startsWith('**') && trimmedSection.includes(':**')) {
-                  const headingText = trimmedSection.replace(/\*\*/g, '').replace(':', '');
-                  return (
-                    <div key={index} className="bg-gradient-to-r from-primary/5 to-transparent border-l-4 border-primary pl-6 md:pl-8 pr-6 md:pr-8 py-6 mb-6">
-                      <h2 className="text-xl md:text-2xl font-bold text-foreground m-0">
-                        {headingText}
-                      </h2>
-                    </div>
-                  );
+                const lines = trimmedSection.split('\n').filter((l) => l.trim().length > 0);
+
+                // Detect optional heading in the first line like **Heading** or **Heading:**
+                let heading: string | null = null;
+                if (lines[0] && /^\*\*.*\*\*:?$/.test(lines[0].trim())) {
+                  heading = lines[0].trim().replace(/\*\*/g, '').replace(/:$/, '');
+                  lines.shift();
                 }
 
-                // Check if it's a list section (contains bullet points)
-                if (trimmedSection.includes('\n- ')) {
-                  const lines = trimmedSection.split('\n');
-                  return (
-                    <div key={index} className="px-6 md:px-8 py-4">
-                      <ul className="space-y-4">
-                        {lines.map((line, lineIndex) => {
-                          if (line.trim().startsWith('- ')) {
-                            return (
-                              <li key={lineIndex} className="flex items-start gap-3 text-muted-foreground leading-relaxed">
-                                <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
-                                <span className="flex-1">{line.replace('- ', '')}</span>
-                              </li>
-                            );
-                          }
-                          return null;
-                        })}
-                      </ul>
-                    </div>
-                  );
-                }
+                const bulletLines = lines.filter((l) => l.trim().startsWith('- '));
+                const paragraphLines = lines.filter((l) => !l.trim().startsWith('- '));
 
-                // Regular paragraph
                 return (
-                  <p key={index} className="px-6 md:px-8 py-3 text-muted-foreground leading-relaxed text-base md:text-lg">
-                    {trimmedSection}
-                  </p>
+                  <div key={index} className="py-4">
+                    {heading && (
+                      <div className="bg-gradient-to-r from-primary/5 to-transparent border-l-4 border-primary pl-6 md:pl-8 pr-6 md:pr-8 py-6 mb-3">
+                        <h2 className="text-xl md:text-2xl font-bold text-foreground m-0">{heading}</h2>
+                      </div>
+                    )}
+
+                    {bulletLines.length > 0 && (
+                      <ul className="px-6 md:px-8 space-y-4">
+                        {bulletLines.map((line, lineIndex) => (
+                          <li key={lineIndex} className="flex items-start gap-3 text-muted-foreground leading-relaxed">
+                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mt-2.5 flex-shrink-0" />
+                            <span className="flex-1">{line.replace(/^- /, '')}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {paragraphLines.length > 0 && (
+                      <div className="px-6 md:px-8 space-y-3">
+                        {paragraphLines.map((p, pIdx) => (
+                          <p key={pIdx} className="text-muted-foreground leading-relaxed text-base md:text-lg">
+                            {p}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
