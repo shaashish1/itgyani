@@ -35,6 +35,7 @@ import AboutPage from "./pages/About";
 import ContactPage from "./pages/Contact";
 import AdminBlogPage from "./pages/AdminBlogPage";
 import CourseDetail from "./pages/CourseDetail";
+import LearningTrackDetail from "./pages/LearningTrackDetail";
 import ImageShowcase from "./pages/ImageShowcase";
 import NotFound from "./pages/NotFound";
 
@@ -79,6 +80,7 @@ const App = () => (
             <Route path="/whitepapers/:id" element={<WhitepaperDetail />} />
             <Route path="/academy" element={<Academy />} />
             <Route path="/course/:id" element={<CourseDetail />} />
+            <Route path="/learning-track/:trackId" element={<LearningTrackDetail />} />
             <Route path="/industries" element={<Industries />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/blog" element={<Blog />} />

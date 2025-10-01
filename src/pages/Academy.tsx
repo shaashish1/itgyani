@@ -572,14 +572,15 @@ const Academy = () => {
                       <span className="text-muted-foreground">Students</span>
                       <span className="font-semibold">{track.students.toLocaleString()}</span>
                     </div>
-                    <Button 
-                      className="w-full mt-4"
-                      variant="outline"
-                      onClick={() => setSelectedTrack(track.id)}
-                    >
-                      Start Learning
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
+                    <Link to={`/learning-track/${track.id}`}>
+                      <Button 
+                        className="w-full mt-4"
+                        variant="outline"
+                      >
+                        Start Learning
+                        <ArrowRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
