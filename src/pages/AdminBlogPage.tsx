@@ -10,6 +10,10 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Shield, 
   Settings, 
@@ -18,7 +22,9 @@ import {
   CheckCircle,
   Lock,
   Eye,
-  EyeOff
+  EyeOff,
+  Key,
+  Save
 } from 'lucide-react';
 
 import BlogManager from '@/components/BlogManager';
@@ -31,6 +37,10 @@ const AdminBlogPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [authError, setAuthError] = useState('');
+  const [geminiApiKey, setGeminiApiKey] = useState('');
+  const [isUpdatingKey, setIsUpdatingKey] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
+  const { toast } = useToast();
 
   // Simple admin authentication (in production, use proper auth)
   const ADMIN_PASSWORD = 'itgyani2025admin';
@@ -41,6 +51,41 @@ const AdminBlogPage: React.FC = () => {
       setAuthError('');
     } else {
       setAuthError('Invalid admin password');
+    }
+  };
+
+  const handleUpdateApiKey = async () => {
+    if (!geminiApiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid API key",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUpdatingKey(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('update-gemini-key', {
+        body: { apiKey: geminiApiKey }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Gemini API key updated successfully"
+      });
+      setGeminiApiKey('');
+    } catch (error) {
+      console.error('Error updating API key:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update API key",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUpdatingKey(false);
     }
   };
 
@@ -174,17 +219,77 @@ const AdminBlogPage: React.FC = () => {
                   Configure AI models, API settings, and system preferences
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
+                {/* API Key Management */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Key className="h-5 w-5 text-primary" />
+                    <h4 className="font-medium text-lg">AI API Key Management</h4>
+                  </div>
+                  
+                  <div className="p-6 border rounded-lg bg-muted/50 space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="gemini-key" className="text-sm font-medium">
+                        Gemini API Key
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Update your Google Gemini API key for blog generation
+                      </p>
+                      <div className="flex gap-2">
+                        <div className="relative flex-1">
+                          <Input
+                            id="gemini-key"
+                            type={showApiKey ? "text" : "password"}
+                            value={geminiApiKey}
+                            onChange={(e) => setGeminiApiKey(e.target.value)}
+                            placeholder="Enter new Gemini API key..."
+                            className="pr-10"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3"
+                            onClick={() => setShowApiKey(!showApiKey)}
+                          >
+                            {showApiKey ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </div>
+                        <Button
+                          onClick={handleUpdateApiKey}
+                          disabled={isUpdatingKey || !geminiApiKey.trim()}
+                          className="btn-hero"
+                        >
+                          <Save className="h-4 w-4 mr-2" />
+                          {isUpdatingKey ? 'Updating...' : 'Update Key'}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <Alert>
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertTitle>Security Notice</AlertTitle>
+                      <AlertDescription>
+                        API keys are stored securely as encrypted secrets. Never share your API keys publicly.
+                      </AlertDescription>
+                    </Alert>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <h4 className="font-medium">OpenRouter API</h4>
+                    <h4 className="font-medium">Gemini API</h4>
                     <div className="p-4 border rounded-lg bg-muted/50">
                       <p className="text-sm text-muted-foreground mb-2">API Status</p>
                       <Badge variant="default">Connected</Badge>
                     </div>
                     <div className="p-4 border rounded-lg bg-muted/50">
-                      <p className="text-sm text-muted-foreground mb-2">Monthly Usage</p>
-                      <p className="text-lg font-semibold">$12.45 / $100.00</p>
+                      <p className="text-sm text-muted-foreground mb-2">Model</p>
+                      <p className="text-sm font-semibold">gemini-1.5-flash</p>
                     </div>
                   </div>
 
