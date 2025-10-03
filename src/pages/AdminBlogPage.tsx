@@ -32,9 +32,13 @@ import AIBlogGenerator from '@/components/admin/AIBlogGenerator';
 import { BatchBlogGenerator } from '@/components/admin/BatchBlogGenerator';
 import { TopicProcessor } from '@/components/admin/TopicProcessor';
 import { DailyBlogAutomation } from '@/components/admin/DailyBlogAutomation';
+import { BlogPostManager } from '@/components/admin/BlogPostManager';
 
 const AdminBlogPage: React.FC = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    // Check localStorage for existing session
+    return localStorage.getItem('adminAuthenticated') === 'true';
+  });
   const [adminPassword, setAdminPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [geminiApiKey, setGeminiApiKey] = useState('');
@@ -51,10 +55,16 @@ const AdminBlogPage: React.FC = () => {
   const handleAdminLogin = () => {
     if (adminPassword === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
+      localStorage.setItem('adminAuthenticated', 'true');
       setAuthError('');
     } else {
       setAuthError('Invalid admin password');
     }
+  };
+
+  const handleSignOut = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('adminAuthenticated');
   };
 
   const handleUpdateGeminiKey = async () => {
@@ -203,7 +213,7 @@ const AdminBlogPage: React.FC = () => {
               
               <Button 
                 variant="outline" 
-                onClick={() => setIsAuthenticated(false)}
+                onClick={handleSignOut}
                 className="flex items-center gap-2"
               >
                 <EyeOff className="h-4 w-4" />
@@ -225,9 +235,10 @@ const AdminBlogPage: React.FC = () => {
 
         {/* Main Content */}
         <Tabs defaultValue="daily-automation" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="daily-automation">Daily Automation</TabsTrigger>
-            <TabsTrigger value="blog-manager">Blog Management</TabsTrigger>
+            <TabsTrigger value="all-blogs">All Blogs</TabsTrigger>
+            <TabsTrigger value="blog-manager">Blog Manager</TabsTrigger>
             <TabsTrigger value="batch-generator">Batch Generator</TabsTrigger>
             <TabsTrigger value="system-settings">System Settings</TabsTrigger>
             <TabsTrigger value="security-logs">Security Logs</TabsTrigger>
@@ -235,6 +246,10 @@ const AdminBlogPage: React.FC = () => {
 
           <TabsContent value="daily-automation">
             <DailyBlogAutomation />
+          </TabsContent>
+
+          <TabsContent value="all-blogs">
+            <BlogPostManager />
           </TabsContent>
 
           <TabsContent value="blog-manager">

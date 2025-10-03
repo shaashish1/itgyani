@@ -256,7 +256,7 @@ Return ONLY this JSON, no extra text:
           continue;
         }
 
-        // Insert blog post as published
+        // Insert blog post as draft
         const { data: newPost, error: insertError } = await supabaseClient
           .from('blog_posts')
           .insert({
@@ -270,8 +270,8 @@ Return ONLY this JSON, no extra text:
             keywords: parsedBlog.keywords,
             tags: parsedBlog.tags,
             reading_time: parsedBlog.readingTime,
-            status: 'published',
-            published_at: new Date().toISOString(),
+            status: 'draft',
+            published_at: null,
             is_premium: false
           })
           .select()
@@ -302,7 +302,7 @@ Return ONLY this JSON, no extra text:
           category: category.name
         });
 
-        console.log(`✓ Published: ${parsedBlog.title}`);
+        console.log(`✓ Created as draft: ${parsedBlog.title}`);
 
         // Delay between blogs to avoid rate limits
         if (i < trendingTopics.length - 1) {
@@ -317,7 +317,7 @@ Return ONLY this JSON, no extra text:
       }
     }
 
-    const summary = `Daily news blog generation complete: ${results.successful} published, ${results.failed} failed`;
+    const summary = `Daily news blog generation complete: ${results.successful} created as drafts, ${results.failed} failed`;
     console.log(summary);
 
     return new Response(JSON.stringify({
