@@ -26,12 +26,12 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+    if (!GEMINI_API_KEY) {
+      throw new Error('GEMINI_API_KEY is not configured');
     }
 
-    // Get trending AI/automation topics using Lovable AI
+    // Get trending AI/automation topics using Gemini API
     console.log('Fetching trending AI topics...');
     const trendingPrompt = `You are a tech news analyst. List 10 trending and newsworthy topics in AI, automation, and future technology from the past 24-48 hours. For each topic:
 
@@ -57,21 +57,26 @@ Focus on:
 
 Make titles engaging and newsworthy. Ensure variety across categories.`;
 
-    const trendingResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: 'You are a tech news analyst focused on AI and automation trends. Always return valid JSON only.' },
-          { role: 'user', content: trendingPrompt }
-        ],
-        temperature: 0.8
-      }),
-    });
+    const trendingResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: `You are a tech news analyst focused on AI and automation trends. Always return valid JSON only.\n\n${trendingPrompt}`
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 2000,
+          }
+        }),
+      }
+    );
 
     if (!trendingResponse.ok) {
       const errorText = await trendingResponse.text();
@@ -79,7 +84,7 @@ Make titles engaging and newsworthy. Ensure variety across categories.`;
     }
 
     const trendingData = await trendingResponse.json();
-    const trendingContent = trendingData.choices?.[0]?.message?.content;
+    const trendingContent = trendingData.candidates?.[0]?.content?.parts?.[0]?.text;
     
     let trendingTopics: NewsSource[];
     try {
@@ -157,21 +162,26 @@ Return ONLY valid JSON:
   "readingTime": estimated_minutes
 }`;
 
-        const blogResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
-            messages: [
-              { role: 'system', content: 'You are an expert tech journalist for FutureFlow AI. Write engaging, SEO-optimized news articles. Always return valid JSON only.' },
-              { role: 'user', content: blogPrompt }
-            ],
-            temperature: 0.7
-          }),
-        });
+        const blogResponse = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: `You are an expert tech journalist for FutureFlow AI. Write engaging, SEO-optimized news articles. Always return valid JSON only.\n\n${blogPrompt}`
+                }]
+              }],
+              generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 4000,
+              }
+            }),
+          }
+        );
 
         if (!blogResponse.ok) {
           const errorText = await blogResponse.text();
@@ -184,7 +194,7 @@ Return ONLY valid JSON:
         }
 
         const blogData = await blogResponse.json();
-        const blogContent = blogData.choices?.[0]?.message?.content;
+        const blogContent = blogData.candidates?.[0]?.content?.parts?.[0]?.text;
 
         let parsedBlog;
         try {
@@ -234,7 +244,7 @@ Return ONLY valid JSON:
           .insert({
             blog_post_id: newPost.id,
             prompt: topic.title,
-            model_used: 'google/gemini-2.5-flash',
+            model_used: 'gemini-2.0-flash-exp',
             tokens_used: blogData.usage?.total_tokens || 0,
             status: 'success'
           });
