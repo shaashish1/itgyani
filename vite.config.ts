@@ -20,6 +20,22 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    chunkSizeWarningLimit: 1500, // Suppress warning for chunks up to 1.5MB
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
+          'chart-vendor': ['recharts'],
+        },
+      },
+    },
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
   },
 }));

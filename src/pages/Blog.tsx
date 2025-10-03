@@ -4,6 +4,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
 import AdSenseAd from "@/components/AdSenseAd";
+import SEO from "@/components/SEO";
+import OptimizedImage from "@/components/OptimizedImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -254,13 +256,38 @@ const Blog = () => {
       day: 'numeric'
     });
   };
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "ITGYANI AI Automation Blog",
+    "description": "Expert insights on AI automation, training, and business transformation",
+    "url": "https://itgyani.com/blog",
+    "publisher": {
+      "@type": "Organization",
+      "name": "ITGYANI",
+      "url": "https://itgyani.com"
+    },
+    "blogPost": filteredPosts.slice(0, 10).map(post => ({
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.excerpt,
+      "datePublished": post.publishedAt.toISOString(),
+      "dateModified": post.updatedAt.toISOString(),
+      "author": {
+        "@type": "Organization",
+        "name": "ITGYANI"
+      }
+    }))
+  };
+
   return <>
-      {/* SEO Meta Tags */}
-      <title>AI Automation Blog - Expert Insights & Best Practices | ITGYANI</title>
-      <meta name="description" content="Stay ahead with the latest AI automation trends, best practices, and implementation guides. Expert insights on AI training, workflow automation, and business transformation strategies." />
-      <meta name="keywords" content="AI automation blog, AI training guides, workflow automation tips, business automation insights, artificial intelligence articles, n8n tutorials, automation best practices" />
-      <meta property="og:title" content="AI Automation Blog - Expert Insights & Strategies" />
-      <meta property="og:description" content="Expert insights on AI automation, training, and business transformation. Learn from real case studies and implementation guides." />
+      <SEO
+        title="AI Automation Blog - Expert Insights & Best Practices"
+        description="Stay ahead with the latest AI automation trends, best practices, and implementation guides. Expert insights on AI training, workflow automation, and business transformation strategies."
+        keywords="AI automation blog, AI training guides, workflow automation tips, business automation insights, artificial intelligence articles, n8n tutorials, automation best practices"
+        canonicalUrl="https://itgyani.com/blog"
+        structuredData={structuredData}
+      />
       
       <div className="min-h-screen bg-background">
         <Header />
@@ -327,10 +354,11 @@ const Blog = () => {
                 <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
                   <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
                     {post.featured_image_url && (
-                      <img 
+                      <OptimizedImage 
                         src={post.featured_image_url} 
-                        alt={post.title}
+                        alt={`${post.title} - AI automation guide and insights`}
                         className="absolute inset-0 w-full h-full object-cover"
+                        priority={false}
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />

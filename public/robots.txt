@@ -12,3 +12,21 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /*.json$
+
+# Sitemap location
+Sitemap: https://itgyani.com/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Google-specific
+User-agent: Googlebot
+Allow: /
+
+# Bing-specific  
+User-agent: Bingbot
+Allow: /
+

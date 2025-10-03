@@ -3,41 +3,51 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import FutureFlowIndex from "./pages/FutureFlowIndex";
-import ServicesPage from "./pages/Services";
-import AIStudio from "./pages/AIStudio";
-import AuthPage from "./components/auth/AuthPage";
-import BusinessAutomation from "./pages/services/BusinessAutomation";
-import AICustomerSupport from "./pages/services/AICustomerSupport";
-import DataIntegration from "./pages/services/DataIntegration";
-import EcommerceAutomation from "./pages/services/EcommerceAutomation";
-import MarketingAutomation from "./pages/services/MarketingAutomation";
-import SchedulingManagement from "./pages/services/SchedulingManagement";
-import N8nWorkflow from "./pages/services/N8nWorkflow";
-import AIStrategyConsulting from "./pages/services/AIStrategyConsulting";
-import AutomationDetail from "./pages/automations/AutomationDetail";
-import CaseStudies from "./pages/CaseStudies";
-import CaseStudyDetail from "./pages/CaseStudyDetail";
-import CaseStudyReport from "./pages/CaseStudyReport";
-import Resources from "./pages/Resources";
-import ResourceDetail from "./pages/ResourceDetail";
-import WhitepaperDetail from "./pages/WhitepaperDetail";
-import Academy from "./pages/Academy";
-import Industries from "./pages/Industries";
-import Careers from "./pages/Careers";
-import Blog from "./pages/Blog";
-import BlogDetail from "./pages/BlogDetail";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import AboutPage from "./pages/About";
-import ContactPage from "./pages/Contact";
-import AdminBlogPage from "./pages/AdminBlogPage";
-import CourseDetail from "./pages/CourseDetail";
-import LearningTrackDetail from "./pages/LearningTrackDetail";
-import ImageShowcase from "./pages/ImageShowcase";
-import NotFound from "./pages/NotFound";
+import { HelmetProvider } from 'react-helmet-async';
+
+// Lazy load pages for better performance
+const FutureFlowIndex = lazy(() => import("./pages/FutureFlowIndex"));
+const ServicesPage = lazy(() => import("./pages/Services"));
+const AIStudio = lazy(() => import("./pages/AIStudio"));
+const AuthPage = lazy(() => import("./components/auth/AuthPage"));
+const BusinessAutomation = lazy(() => import("./pages/services/BusinessAutomation"));
+const AICustomerSupport = lazy(() => import("./pages/services/AICustomerSupport"));
+const DataIntegration = lazy(() => import("./pages/services/DataIntegration"));
+const EcommerceAutomation = lazy(() => import("./pages/services/EcommerceAutomation"));
+const MarketingAutomation = lazy(() => import("./pages/services/MarketingAutomation"));
+const SchedulingManagement = lazy(() => import("./pages/services/SchedulingManagement"));
+const N8nWorkflow = lazy(() => import("./pages/services/N8nWorkflow"));
+const AIStrategyConsulting = lazy(() => import("./pages/services/AIStrategyConsulting"));
+const AutomationDetail = lazy(() => import("./pages/automations/AutomationDetail"));
+const CaseStudies = lazy(() => import("./pages/CaseStudies"));
+const CaseStudyDetail = lazy(() => import("./pages/CaseStudyDetail"));
+const CaseStudyReport = lazy(() => import("./pages/CaseStudyReport"));
+const Resources = lazy(() => import("./pages/Resources"));
+const ResourceDetail = lazy(() => import("./pages/ResourceDetail"));
+const WhitepaperDetail = lazy(() => import("./pages/WhitepaperDetail"));
+const Academy = lazy(() => import("./pages/Academy"));
+const Industries = lazy(() => import("./pages/Industries"));
+const Careers = lazy(() => import("./pages/Careers"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogDetail = lazy(() => import("./pages/BlogDetail"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const AboutPage = lazy(() => import("./pages/About"));
+const ContactPage = lazy(() => import("./pages/Contact"));
+const AdminBlogPage = lazy(() => import("./pages/AdminBlogPage"));
+const CourseDetail = lazy(() => import("./pages/CourseDetail"));
+const LearningTrackDetail = lazy(() => import("./pages/LearningTrackDetail"));
+const ImageShowcase = lazy(() => import("./pages/ImageShowcase"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Loading component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  </div>
+);
 
 const queryClient = new QueryClient();
 
@@ -52,14 +62,16 @@ const ScrollToTop = () => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
             <Route path="/" element={<FutureFlowIndex />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/ai-studio" element={<AIStudio />} />
@@ -92,13 +104,15 @@ const App = () => (
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/admin/blog" element={<AdminBlogPage />} />
             <Route path="/images" element={<ImageShowcase />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;

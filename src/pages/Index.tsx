@@ -8,10 +8,34 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
 import AdSenseAd from "@/components/AdSenseAd";
+import SEO from "@/components/SEO";
 import { ReadMeButton, PageHeader } from "@/components/ImageComponents";
 
 const Index = () => {
   const [consultationModalOpen, setConsultationModalOpen] = useState(false);
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "ITGYANI",
+    "url": "https://itgyani.com",
+    "logo": "https://itgyani.com/favicon.ico",
+    "description": "Transform your business with AI-powered automation. Expert n8n workflow automation, AI training, and intelligent business solutions.",
+    "sameAs": [
+      "https://twitter.com/itgyani",
+      "https://linkedin.com/company/itgyani"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Sales",
+      "email": "contact@itgyani.com"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "500"
+    }
+  };
 
   const impactStats = [
     {
@@ -84,7 +108,16 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <>
+      <SEO
+        title="AI-Powered Workflow Automation & n8n Solutions"
+        description="Transform your business with AI-powered automation. ITGYANI helps companies scale operations, reduce costs by 45%, and automate workflows using cutting-edge n8n technology and intelligent AI solutions."
+        keywords="AI automation, n8n workflows, business automation, artificial intelligence, process automation, workflow optimization, AI training, intelligent automation"
+        canonicalUrl="https://itgyani.com"
+        structuredData={structuredData}
+      />
+      
+      <div className="min-h-screen">
       <Header />
       
       {/* Floating Background Elements */}
@@ -617,7 +650,8 @@ const Index = () => {
         isOpen={consultationModalOpen}
         onClose={() => setConsultationModalOpen(false)}
       />
-    </div>
+      </div>
+    </>
   );
 };
 
