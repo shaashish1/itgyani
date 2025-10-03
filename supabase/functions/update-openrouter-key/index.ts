@@ -40,7 +40,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Test the API key with a simple request
+    // Test the API key with a simple request using a paid model
     console.log('Testing OpenRouter API key...');
     const testResponse = await fetch(
       'https://openrouter.ai/api/v1/chat/completions',
@@ -53,11 +53,11 @@ serve(async (req) => {
           'X-Title': 'IT Gyani Blog Generator'
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.0-flash-exp:free',
+          model: 'anthropic/claude-3-5-haiku-20241022',
           messages: [
-            { role: 'user', content: 'Say "API key is valid" if you can read this.' }
+            { role: 'user', content: 'Respond with OK' }
           ],
-          max_tokens: 50
+          max_tokens: 10
         }),
       }
     );
