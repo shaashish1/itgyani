@@ -147,6 +147,84 @@ Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, e
 
     console.log(`Found ${trendingTopics.length} trending topics`);
 
+    // Get existing blog posts to check for duplicates
+    console.log('Fetching existing blog posts for duplicate checking...');
+    const { data: existingBlogs } = await supabaseClient
+      .from('blog_posts')
+      .select('title, slug, keywords, tags');
+
+    const existingTitles = new Set(existingBlogs?.map(b => b.title.toLowerCase()) || []);
+    const existingSlugs = new Set(existingBlogs?.map(b => b.slug.toLowerCase()) || []);
+    const existingKeywords = new Set(
+      existingBlogs?.flatMap(b => b.keywords || []).map(k => k.toLowerCase()) || []
+    );
+
+    // Filter out duplicate topics
+    const uniqueTopics = trendingTopics.filter(topic => {
+      const titleLower = topic.title.toLowerCase();
+      const slugifiedTitle = titleLower.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      
+      // Check if title already exists
+      if (existingTitles.has(titleLower)) {
+        console.log(`⚠ Skipping duplicate title: ${topic.title}`);
+        return false;
+      }
+      
+      // Check if slug already exists
+      if (existingSlugs.has(slugifiedTitle)) {
+        console.log(`⚠ Skipping duplicate slug: ${slugifiedTitle}`);
+        return false;
+      }
+      
+      // Check if any keywords overlap significantly (3+ matching keywords = duplicate)
+      const topicKeywords = topic.keywords.map(k => k.toLowerCase());
+      const matchingKeywords = topicKeywords.filter(k => existingKeywords.has(k));
+      if (matchingKeywords.length >= 3) {
+        console.log(`⚠ Skipping similar topic (${matchingKeywords.length} matching keywords): ${topic.title}`);
+        return false;
+      }
+      
+      return true;
+    });
+
+    console.log(`After duplicate check: ${uniqueTopics.length} unique topics (filtered ${trendingTopics.length - uniqueTopics.length} duplicates)`);
+
+    // If we filtered out too many, request more topics
+    if (uniqueTopics.length < requestedCount / 2) {
+      console.log('Too many duplicates found, requesting additional topics...');
+      const additionalNeeded = requestedCount - uniqueTopics.length;
+      const additionalPrompt = `List ${additionalNeeded} MORE trending topics in AI/automation. Return ONLY this JSON array, nothing else:
+[{"title":"Topic Title","category":"ai-machine-learning","keywords":["key1","key2","key3"]}]
+
+Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, edge-ai, future-tech
+
+Avoid these topics: ${uniqueTopics.map(t => t.title).join(', ')}`;
+
+      let additionalContent = await callGemini(additionalPrompt, 1500);
+      
+      try {
+        additionalContent = additionalContent.trim()
+          .replace(/^```(?:json)?\s*\n?/i, '')
+          .replace(/\n?```\s*$/i, '')
+          .replace(/^[^[{]*/, '')
+          .replace(/[^}\]]*$/, '');
+        
+        const additionalTopics: NewsSource[] = JSON.parse(additionalContent);
+        
+        // Filter additional topics for duplicates too
+        const filteredAdditional = additionalTopics.filter(topic => {
+          const titleLower = topic.title.toLowerCase();
+          const slugifiedTitle = titleLower.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+          return !existingTitles.has(titleLower) && !existingSlugs.has(slugifiedTitle);
+        });
+        
+        uniqueTopics.push(...filteredAdditional);
+        console.log(`Added ${filteredAdditional.length} additional unique topics`);
+      } catch (parseError) {
+        console.error('Failed to parse additional topics:', parseError);
+      }
+    }
+
     // Get category mappings
     const { data: categories } = await supabaseClient
       .from('categories')
@@ -172,20 +250,21 @@ Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, e
 
     const runId = runRecord?.id;
 
-    // Generate blogs for each topic
+    // Generate blogs for each unique topic
     const results = {
       successful: 0,
       failed: 0,
-      total: trendingTopics.length,
+      total: uniqueTopics.length,
+      duplicatesSkipped: trendingTopics.length - uniqueTopics.length,
       errors: [] as string[],
       posts: [] as any[]
     };
 
-    for (let i = 0; i < trendingTopics.length; i++) {
-      const topic = trendingTopics[i];
+    for (let i = 0; i < uniqueTopics.length; i++) {
+      const topic = uniqueTopics[i];
       
       try {
-        console.log(`Processing ${i + 1}/${trendingTopics.length}: ${topic.title}`);
+        console.log(`Processing ${i + 1}/${uniqueTopics.length}: ${topic.title}`);
 
         const category = categoryMap.get(topic.category);
         if (!category) {
@@ -376,7 +455,7 @@ Required JSON format:
         }
 
         // Shorter delay between blogs
-        if (i < trendingTopics.length - 1) {
+        if (i < uniqueTopics.length - 1) {
           console.log('Waiting 3 seconds before next blog...');
           await new Promise(resolve => setTimeout(resolve, 3000));
         }
@@ -413,7 +492,7 @@ Required JSON format:
         .eq('id', runId);
     }
 
-    console.log(`Generation complete: ${results.successful} published, ${results.failed} failed`);
+    console.log(`Generation complete: ${results.successful} published, ${results.failed} failed, ${results.duplicatesSkipped} duplicates skipped`);
     
     return results;
     })();
