@@ -43,7 +43,7 @@ serve(async (req) => {
     // Test the API key with a simple request
     console.log('Testing Gemini API key...');
     const testResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: {
