@@ -19,6 +19,7 @@ import {
 
 export const DailyBlogAutomation: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isUpdatingImages, setIsUpdatingImages] = useState(false);
   const [recentRuns, setRecentRuns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -101,6 +102,41 @@ export const DailyBlogAutomation: React.FC = () => {
     }
   };
 
+  const handleUpdateImages = async () => {
+    setIsUpdatingImages(true);
+    
+    try {
+      toast({
+        title: "Updating Blog Images",
+        description: "Generating AI images for all blogs without images...",
+      });
+
+      const { data, error } = await supabase.functions.invoke('update-blog-images');
+
+      if (error) throw error;
+
+      const result = data;
+      
+      toast({
+        title: "Images Updated!",
+        description: `Successfully updated ${result.results?.successful || 0} blogs with AI-generated images.`,
+      });
+
+      // Reload recent runs to show updated data
+      loadRecentRuns();
+
+    } catch (error: any) {
+      console.error('Image update error:', error);
+      toast({
+        title: "Image Update Failed",
+        description: error.message || "Failed to update blog images",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUpdatingImages(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Automation Status Card */}
@@ -167,30 +203,58 @@ export const DailyBlogAutomation: React.FC = () => {
           </div>
 
           {/* Manual Trigger */}
-          <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-primary/5 to-primary/10">
-            <div>
-              <h4 className="font-medium mb-1">Generate & Publish 10 Blogs</h4>
-              <p className="text-sm text-muted-foreground">
-                Generate 10 trending AI news blogs. Each blog is published immediately after generation.
-              </p>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-primary/5 to-primary/10">
+              <div>
+                <h4 className="font-medium mb-1">Generate & Publish 10 Blogs</h4>
+                <p className="text-sm text-muted-foreground">
+                  Generate 10 trending AI news blogs. Each blog is published immediately after generation.
+                </p>
+              </div>
+              <Button 
+                onClick={triggerManualGeneration}
+                disabled={isGenerating}
+                className="btn-hero"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Play className="mr-2 h-4 w-4" />
+                    Generate 10 Blogs
+                  </>
+                )}
+              </Button>
             </div>
-            <Button 
-              onClick={triggerManualGeneration}
-              disabled={isGenerating}
-              className="btn-hero"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <Play className="mr-2 h-4 w-4" />
-                  Generate 10 Blogs
-                </>
-              )}
-            </Button>
+
+            <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-secondary/5 to-secondary/10">
+              <div>
+                <h4 className="font-medium mb-1">Update Existing Blog Images</h4>
+                <p className="text-sm text-muted-foreground">
+                  Generate AI images for all existing blogs that don't have featured images.
+                </p>
+              </div>
+              <Button 
+                onClick={handleUpdateImages}
+                disabled={isUpdatingImages}
+                variant="secondary"
+              >
+                {isUpdatingImages ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="mr-2 h-4 w-4" />
+                    Update Images
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
