@@ -230,6 +230,32 @@ export const DailyBlogAutomation: React.FC = () => {
               </Button>
             </div>
 
+            <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-orange-500/5 to-orange-500/10">
+              <div>
+                <h4 className="font-medium mb-1">Generate Images for Existing Blogs</h4>
+                <p className="text-sm text-muted-foreground">
+                  One-time backfill: Generate AI images for all existing blogs without images.
+                </p>
+              </div>
+              <Button 
+                onClick={handleUpdateImages}
+                disabled={isUpdatingImages}
+                variant="outline"
+              >
+                {isUpdatingImages ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Play className="mr-2 h-4 w-4" />
+                    Update Images
+                  </>
+                )}
+              </Button>
+            </div>
+
           </div>
         </CardContent>
       </Card>
