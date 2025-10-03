@@ -44,17 +44,17 @@ export const DailyBlogAutomation: React.FC = () => {
     }
   };
 
-  const triggerManualGeneration = async () => {
+  const triggerManualGeneration = async (count: number = 3) => {
     setIsGenerating(true);
     
     try {
       toast({
         title: "Generating Daily Blogs",
-        description: "Fetching trending topics and generating 10 AI-powered blog posts...",
+        description: `Fetching trending topics and generating ${count} AI-powered blog posts...`,
       });
 
       const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {
-        body: { manual: true }
+        body: { count }
       });
 
       if (error) throw error;
@@ -152,13 +152,13 @@ export const DailyBlogAutomation: React.FC = () => {
           {/* Manual Trigger */}
           <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-primary/5 to-primary/10">
             <div>
-              <h4 className="font-medium mb-1">Manual Generation</h4>
+              <h4 className="font-medium mb-1">Test Generation (3 Blogs)</h4>
               <p className="text-sm text-muted-foreground">
-                Generate 10 trending blogs right now without waiting for scheduled run
+                Generate 3 trending AI news blogs to test the system
               </p>
             </div>
             <Button 
-              onClick={triggerManualGeneration}
+              onClick={() => triggerManualGeneration(3)}
               disabled={isGenerating}
               className="btn-hero"
             >
@@ -170,7 +170,7 @@ export const DailyBlogAutomation: React.FC = () => {
               ) : (
                 <>
                   <Play className="mr-2 h-4 w-4" />
-                  Generate Now
+                  Generate 3 Blogs
                 </>
               )}
             </Button>
