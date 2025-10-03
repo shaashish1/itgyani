@@ -19,49 +19,79 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Starting daily news blog generation...');
+    // Parse incoming request for optional count
+    let requestedCount = 10;
+    try {
+      const body = await req.json();
+      if (typeof body?.count === 'number' && body.count > 0 && body.count <= 20) {
+        requestedCount = body.count;
+      }
+    } catch (_) {
+      // No body provided or invalid JSON
+    }
+
+    console.log(`Starting daily news blog generation (count=${requestedCount})...`);
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY'); // legacy, not used directly
     const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY');
     
-    if (!GEMINI_API_KEY && !OPENROUTER_API_KEY) {
-      throw new Error('No AI API keys configured. Please add either GEMINI_API_KEY or OPENROUTER_API_KEY.');
+    if (!LOVABLE_API_KEY && !OPENROUTER_API_KEY) {
+      throw new Error('No AI access configured. Lovable AI is required or provide OPENROUTER_API_KEY.');
     }
 
-    const useGemini = !!GEMINI_API_KEY;
+    // Prefer Lovable AI (Gemini 2.5 Flash). Fallback to OpenRouter if provided.
+    const useGemini = !!LOVABLE_API_KEY; 
     const useOpenRouter = !useGemini && !!OPENROUTER_API_KEY;
     
-    console.log(`Using AI provider: ${useGemini ? 'Gemini' : 'OpenRouter'}`);
+    console.log(`Using AI provider: ${useGemini ? 'Lovable Gemini' : 'OpenRouter'}`);
 
-    // Helper function for Gemini API
+    // Track the model actually used for logging
+    let lastModelUsed = '';
+
+    // Helper function for Gemini API via Lovable AI Gateway
     async function callGemini(prompt: string, maxTokens = 2000) {
+      if (!LOVABLE_API_KEY) {
+        throw new Error('LOVABLE_API_KEY is not configured');
+      }
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+        'https://ai.gateway.lovable.dev/v1/chat/completions',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: maxTokens,
-            }
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              { role: 'system', content: 'You are a helpful AI assistant for news blog generation. Keep answers concise and return JSON only when asked.' },
+              { role: 'user', content: prompt }
+            ],
+            max_tokens: maxTokens,
           }),
         }
       );
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+        if (response.status === 429) {
+          throw new Error('429: Rate limits exceeded by Lovable AI');
+        }
+        if (response.status === 402) {
+          throw new Error('402: Payment required for Lovable AI');
+        }
+        throw new Error(`Lovable AI error: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      return data.candidates?.[0]?.content?.parts?.[0]?.text;
+      lastModelUsed = 'google/gemini-2.5-flash';
+      return data.choices?.[0]?.message?.content || '';
     }
 
     // Helper function for OpenRouter API
