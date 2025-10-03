@@ -60,17 +60,14 @@ export const DailyBlogAutomation: React.FC = () => {
       if (error) throw error;
 
       toast({
-        title: "Success!",
-        description: `Generated ${data.results?.successful || 0} blogs successfully`,
+        title: "Processing Started!",
+        description: "Blogs are being generated in the background. Check the 'All Blogs' tab in a few minutes to see new drafts.",
       });
 
-      // Reload runs
-      await loadRecentRuns();
-      
-      // Refresh the page after a short delay to show new blogs
+      // Reload runs after a delay
       setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+        loadRecentRuns();
+      }, 3000);
 
     } catch (error: any) {
       console.error('Generation error:', error);

@@ -38,6 +38,34 @@ serve(async (req) => {
     );
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY is required');
+    }
+
+    console.log('Using Lovable AI (Gemini 2.5 Flash)');
+
+    // Start background processing
+    const processingPromise = (async () => {
+    // Parse incoming request for optional count
+    let requestedCount = 10;
+    try {
+      const body = await req.json();
+      if (typeof body?.count === 'number' && body.count > 0 && body.count <= 20) {
+        requestedCount = body.count;
+      }
+    } catch (_) {
+      // No body provided or invalid JSON
+    }
+
+    console.log(`Starting daily news blog generation (count=${requestedCount})...`);
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY'); // legacy, not used directly
     const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY');
     
@@ -55,10 +83,7 @@ serve(async (req) => {
     let lastModelUsed = '';
 
     // Helper function for Gemini API via Lovable AI Gateway
-    async function callGemini(prompt: string, maxTokens = 2000) {
-      if (!LOVABLE_API_KEY) {
-        throw new Error('LOVABLE_API_KEY is not configured');
-      }
+    async function callGemini(prompt: string, maxTokens = 3000) {
       const response = await fetch(
         'https://ai.gateway.lovable.dev/v1/chat/completions',
         {
@@ -70,7 +95,7 @@ serve(async (req) => {
           body: JSON.stringify({
             model: 'google/gemini-2.5-flash',
             messages: [
-              { role: 'system', content: 'You are a helpful AI assistant for news blog generation. Keep answers concise and return JSON only when asked.' },
+              { role: 'system', content: 'You are a helpful AI assistant for news blog generation. ALWAYS return valid, complete JSON. Never truncate responses.' },
               { role: 'user', content: prompt }
             ],
             max_tokens: maxTokens,
@@ -90,67 +115,7 @@ serve(async (req) => {
       }
 
       const data = await response.json();
-      lastModelUsed = 'google/gemini-2.5-flash';
       return data.choices?.[0]?.message?.content || '';
-    }
-
-    // Helper function for OpenRouter API
-    async function callOpenRouter(prompt: string, maxTokens = 2000) {
-      const response = await fetch(
-        'https://openrouter.ai/api/v1/chat/completions',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://itgyani.com',
-            'X-Title': 'IT Gyani Blog Generator'
-          },
-          body: JSON.stringify({
-            model: 'anthropic/claude-3.5-sonnet',
-            messages: [{ role: 'user', content: prompt }],
-            max_tokens: maxTokens
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      return data.choices?.[0]?.message?.content;
-    }
-
-    // AI call wrapper with fallback
-    async function callAI(prompt: string, maxTokens = 2000, attemptFallback = true): Promise<string> {
-      try {
-        if (useGemini) {
-          return await callGemini(prompt, maxTokens);
-        } else {
-          return await callOpenRouter(prompt, maxTokens);
-        }
-      } catch (error) {
-        console.error(`Primary AI provider failed:`, error);
-        
-        // Try fallback if available and not already attempted
-        if (attemptFallback && GEMINI_API_KEY && OPENROUTER_API_KEY) {
-          console.log('Attempting fallback to alternate provider...');
-          try {
-            if (useGemini) {
-              return await callOpenRouter(prompt, maxTokens);
-            } else {
-              return await callGemini(prompt, maxTokens);
-            }
-          } catch (fallbackError) {
-            console.error('Fallback provider also failed:', fallbackError);
-            throw new Error('All AI providers failed');
-          }
-        }
-        
-        throw error;
-      }
     }
 
     // Get trending AI/automation topics
@@ -160,7 +125,7 @@ serve(async (req) => {
 
 Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, edge-ai, future-tech`;
 
-    let trendingContent = await callAI(trendingPrompt, 1500);
+    let trendingContent = await callGemini(trendingPrompt, 1500);
     
     let trendingTopics: NewsSource[];
     try {
@@ -212,20 +177,20 @@ Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, e
           continue;
         }
 
-        // Generate blog content
-        const blogPrompt = `Write a 1500-word blog about: "${topic.title}"
+        // Generate blog content with higher token limit
+        const blogPrompt = `Write a complete 1200-word blog about: "${topic.title}"
 Category: ${category.name} | Keywords: ${topic.keywords.join(', ')}
 
-Return ONLY this JSON, no extra text:
-{"title":"Title (max 60 chars)","slug":"url-slug","excerpt":"Summary (150 chars)","content":"Full markdown with ## headings","metaTitle":"SEO title","metaDescription":"SEO desc (150 chars)","keywords":["kw1","kw2","kw3","kw4","kw5"],"tags":["tag1","tag2","tag3","tag4"],"readingTime":10}`;
+Return ONLY valid JSON, no markdown, no extra text. Ensure the JSON is complete:
+{"title":"Title (max 60 chars)","slug":"url-slug","excerpt":"Summary (150 chars)","content":"Full markdown with ## headings (complete article)","metaTitle":"SEO title","metaDescription":"SEO desc (150 chars)","keywords":["kw1","kw2","kw3","kw4","kw5"],"tags":["tag1","tag2","tag3","tag4"],"readingTime":8}`;
 
         let blogContent;
         try {
-          blogContent = await callAI(blogPrompt, 4000);
+          blogContent = await callGemini(blogPrompt, 5000);
         } catch (error) {
           if (error.message?.includes('429') || error.message?.includes('rate limit')) {
-            console.log('Rate limit hit, waiting 15 seconds...');
-            await new Promise(resolve => setTimeout(resolve, 15000));
+            console.log('Rate limit hit, waiting 10 seconds...');
+            await new Promise(resolve => setTimeout(resolve, 10000));
             results.errors.push(`Rate limited: ${topic.title}`);
             results.failed++;
             continue;
@@ -238,19 +203,32 @@ Return ONLY this JSON, no extra text:
 
         let parsedBlog;
         try {
-          let cleanBlog = blogContent.trim()
-            .replace(/^```(?:json)?\s*\n?/i, '')
-            .replace(/\n?```\s*$/i, '')
-            .replace(/^[^{]*/, '')
-            .replace(/[^}]*$/, '');
+          // More aggressive JSON extraction
+          let cleanBlog = blogContent.trim();
           
+          // Remove markdown code blocks
+          cleanBlog = cleanBlog.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '');
+          
+          // Find first { and attempt to find matching }
+          const startIdx = cleanBlog.indexOf('{');
+          if (startIdx === -1) {
+            throw new Error('No JSON object found in response');
+          }
+          
+          // Try to parse from first { to end, if it fails, it's truncated
+          cleanBlog = cleanBlog.substring(startIdx);
+          
+          // Try parsing
           parsedBlog = JSON.parse(cleanBlog);
           
           if (!parsedBlog.title || !parsedBlog.content) {
-            throw new Error('Missing required fields');
+            throw new Error('Missing required fields in JSON');
           }
         } catch (parseError) {
-          console.error(`Parse error for "${topic.title}". Raw response:`, blogContent.substring(0, 500));
+          console.error(`Parse error for "${topic.title}". Error: ${parseError.message}`);
+          console.error('Response length:', blogContent.length);
+          console.error('First 200 chars:', blogContent.substring(0, 200));
+          console.error('Last 200 chars:', blogContent.substring(Math.max(0, blogContent.length - 200)));
           results.errors.push(`Parse error: ${topic.title}`);
           results.failed++;
           continue;
@@ -290,8 +268,8 @@ Return ONLY this JSON, no extra text:
           .insert({
             blog_post_id: newPost.id,
             prompt: topic.title,
-            model_used: useGemini ? 'gemini-1.5-flash-latest' : 'anthropic/claude-3.5-sonnet',
-            tokens_used: 0, // Token counting would require parsing from response
+            model_used: 'google/gemini-2.5-flash',
+            tokens_used: 0,
             status: 'success'
           });
 
@@ -304,10 +282,10 @@ Return ONLY this JSON, no extra text:
 
         console.log(`✓ Created as draft: ${parsedBlog.title}`);
 
-        // Delay between blogs to avoid rate limits
+        // Shorter delay between blogs
         if (i < trendingTopics.length - 1) {
-          console.log('Waiting 5 seconds before next blog...');
-          await new Promise(resolve => setTimeout(resolve, 5000));
+          console.log('Waiting 3 seconds before next blog...');
+          await new Promise(resolve => setTimeout(resolve, 3000));
         }
 
       } catch (error) {
@@ -317,13 +295,21 @@ Return ONLY this JSON, no extra text:
       }
     }
 
-    const summary = `Daily news blog generation complete: ${results.successful} created as drafts, ${results.failed} failed`;
-    console.log(summary);
+    return results;
+    })();
 
+    // Use EdgeRuntime.waitUntil to keep function alive
+    // @ts-ignore
+    if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
+      // @ts-ignore
+      EdgeRuntime.waitUntil(processingPromise);
+    }
+
+    // Return immediately with processing status
     return new Response(JSON.stringify({
       success: true,
-      message: summary,
-      results,
+      message: `Started generating ${requestedCount} blog posts. Processing in background...`,
+      processing: true,
       timestamp: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
