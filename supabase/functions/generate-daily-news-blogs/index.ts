@@ -153,48 +153,31 @@ serve(async (req) => {
       }
     }
 
-    // Get trending AI/automation topics using Gemini API
+    // Get trending AI/automation topics
     console.log('Fetching trending AI topics...');
-    const trendingPrompt = `You are a tech news analyst. List 10 trending and newsworthy topics in AI, automation, and future technology from the past 24-48 hours. For each topic:
+    const trendingPrompt = `List ${requestedCount} trending topics in AI/automation. Return ONLY this JSON array, nothing else:
+[{"title":"Topic Title","category":"ai-machine-learning","keywords":["key1","key2","key3"]}]
 
-1. Provide a compelling blog title
-2. Assign to one of these categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, edge-ai, future-tech
-3. Suggest 3-5 relevant SEO keywords
+Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, edge-ai, future-tech`;
 
-Return ONLY valid JSON array in this format:
-[
-  {
-    "title": "Breaking: [Trending Topic Title]",
-    "category": "category-slug",
-    "keywords": ["keyword1", "keyword2", "keyword3"]
-  }
-]
-
-Focus on:
-- Latest AI model releases and updates
-- Automation breakthroughs and tools
-- Industry adoption news
-- Emerging tech trends
-- Practical use cases gaining traction
-
-Make titles engaging and newsworthy. Ensure variety across categories.`;
-
-    const trendingContent = await callAI(
-      `You are a tech news analyst focused on AI and automation trends. Always return valid JSON only.\n\n${trendingPrompt}`,
-      2000
-    );
+    let trendingContent = await callAI(trendingPrompt, 1500);
     
     let trendingTopics: NewsSource[];
     try {
-      // Clean up response
-      let cleanContent = trendingContent.trim();
-      if (cleanContent.startsWith('```')) {
-        cleanContent = cleanContent.replace(/^```(?:json)?\s*\n/, '').replace(/\n```\s*$/, '');
+      trendingContent = trendingContent.trim()
+        .replace(/^```(?:json)?\s*\n?/i, '')
+        .replace(/\n?```\s*$/i, '')
+        .replace(/^[^[{]*/, '')
+        .replace(/[^}\]]*$/, '');
+      
+      trendingTopics = JSON.parse(trendingContent);
+      
+      if (!Array.isArray(trendingTopics) || trendingTopics.length === 0) {
+        throw new Error('No topics returned');
       }
-      trendingTopics = JSON.parse(cleanContent);
     } catch (parseError) {
-      console.error('Failed to parse trending topics:', trendingContent);
-      throw new Error('AI returned invalid JSON for trending topics');
+      console.error('Failed to parse trending topics. Raw response:', trendingContent);
+      throw new Error(`AI returned invalid JSON: ${parseError.message}`);
     }
 
     console.log(`Found ${trendingTopics.length} trending topics`);
@@ -229,62 +212,46 @@ Make titles engaging and newsworthy. Ensure variety across categories.`;
           continue;
         }
 
-        // Generate comprehensive blog content
-        const blogPrompt = `Write a comprehensive, news-focused blog post about: "${topic.title}"
+        // Generate blog content
+        const blogPrompt = `Write a 1500-word blog about: "${topic.title}"
+Category: ${category.name} | Keywords: ${topic.keywords.join(', ')}
 
-Category: ${category.name}
-Keywords: ${topic.keywords.join(', ')}
-
-This is a NEWS article about a TRENDING topic. Requirements:
-1. Start with current news/announcement context
-2. Explain why this matters NOW
-3. Include latest developments and updates
-4. Provide expert analysis and insights
-5. Discuss practical implications
-6. Add actionable takeaways
-7. Professional, informative tone
-8. 1500-2000 words
-9. Use markdown formatting with clear H2/H3 headings
-10. Optimize for SEO
-
-Return ONLY valid JSON:
-{
-  "title": "SEO-optimized title (max 60 chars)",
-  "slug": "url-friendly-slug",
-  "excerpt": "Compelling summary (150-160 chars)",
-  "content": "Full markdown content",
-  "metaTitle": "SEO meta title",
-  "metaDescription": "SEO meta description (150-160 chars)",
-  "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
-  "tags": ["tag1", "tag2", "tag3", "tag4"],
-  "readingTime": estimated_minutes
-}`;
+Return ONLY this JSON, no extra text:
+{"title":"Title (max 60 chars)","slug":"url-slug","excerpt":"Summary (150 chars)","content":"Full markdown with ## headings","metaTitle":"SEO title","metaDescription":"SEO desc (150 chars)","keywords":["kw1","kw2","kw3","kw4","kw5"],"tags":["tag1","tag2","tag3","tag4"],"readingTime":10}`;
 
         let blogContent;
         try {
-          blogContent = await callAI(
-            `You are an expert tech journalist for FutureFlow AI. Write engaging, SEO-optimized news articles. Always return valid JSON only.\n\n${blogPrompt}`,
-            4000
-          );
+          blogContent = await callAI(blogPrompt, 4000);
         } catch (error) {
           if (error.message?.includes('429') || error.message?.includes('rate limit')) {
-            console.log('Rate limit hit, waiting 10 seconds...');
-            await new Promise(resolve => setTimeout(resolve, 10000));
+            console.log('Rate limit hit, waiting 15 seconds...');
+            await new Promise(resolve => setTimeout(resolve, 15000));
+            results.errors.push(`Rate limited: ${topic.title}`);
+            results.failed++;
             continue;
           }
-          throw error;
+          console.error(`AI error for ${topic.title}:`, error);
+          results.errors.push(`AI error: ${topic.title}`);
+          results.failed++;
+          continue;
         }
 
         let parsedBlog;
         try {
-          let cleanBlog = blogContent.trim();
-          if (cleanBlog.startsWith('```')) {
-            cleanBlog = cleanBlog.replace(/^```(?:json)?\s*\n/, '').replace(/\n```\s*$/, '');
-          }
+          let cleanBlog = blogContent.trim()
+            .replace(/^```(?:json)?\s*\n?/i, '')
+            .replace(/\n?```\s*$/i, '')
+            .replace(/^[^{]*/, '')
+            .replace(/[^}]*$/, '');
+          
           parsedBlog = JSON.parse(cleanBlog);
+          
+          if (!parsedBlog.title || !parsedBlog.content) {
+            throw new Error('Missing required fields');
+          }
         } catch (parseError) {
-          console.error('Failed to parse blog content');
-          results.errors.push(`Parse error for: ${topic.title}`);
+          console.error(`Parse error for "${topic.title}". Raw response:`, blogContent.substring(0, 500));
+          results.errors.push(`Parse error: ${topic.title}`);
           results.failed++;
           continue;
         }
@@ -337,9 +304,10 @@ Return ONLY valid JSON:
 
         console.log(`✓ Published: ${parsedBlog.title}`);
 
-        // Rate limiting delay
+        // Delay between blogs to avoid rate limits
         if (i < trendingTopics.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 3000));
+          console.log('Waiting 5 seconds before next blog...');
+          await new Promise(resolve => setTimeout(resolve, 5000));
         }
 
       } catch (error) {
