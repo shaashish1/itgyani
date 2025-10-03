@@ -248,6 +248,36 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_blog_runs: {
+        Row: {
+          blogs_created: number | null
+          blogs_failed: number | null
+          created_at: string | null
+          error_message: string | null
+          id: string
+          run_date: string
+          status: string | null
+        }
+        Insert: {
+          blogs_created?: number | null
+          blogs_failed?: number | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          run_date?: string
+          status?: string | null
+        }
+        Update: {
+          blogs_created?: number | null
+          blogs_failed?: number | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          run_date?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -319,6 +349,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      trigger_daily_blog_generation: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {
