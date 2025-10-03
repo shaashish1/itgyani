@@ -443,8 +443,8 @@ const BlogManager: React.FC<BlogManagerProps> = ({ className = '' }) => {
                   ))}
                 </div>
 
-                <div className="bg-gray-50 p-4 rounded-lg max-h-64 overflow-y-auto">
-                  <pre className="whitespace-pre-wrap text-sm">{generatedBlog.content.substring(0, 500)}...</pre>
+                <div className="bg-muted/50 p-4 rounded-lg max-h-64 overflow-y-auto">
+                  <pre className="whitespace-pre-wrap text-sm text-foreground">{generatedBlog.content.substring(0, 500)}...</pre>
                 </div>
 
                 {generatedBlog.images && generatedBlog.images.length > 0 && (
