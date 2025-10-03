@@ -195,13 +195,28 @@ Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, e
           continue;
         }
 
-        // Generate blog content with much higher token limit to prevent truncation
-        const blogPrompt = `Write a complete 1000-word blog about: "${topic.title}"
-Category: ${category.name} | Keywords: ${topic.keywords.join(', ')}
+        // Generate blog content with explicit JSON-only instruction
+        const blogPrompt = `Write a blog article about: "${topic.title}"
+Category: ${category.name}
+Keywords: ${topic.keywords.join(', ')}
 
-CRITICAL: Return ONLY a valid JSON object. Do NOT wrap in markdown code blocks. Do NOT add any text before or after the JSON.
-The JSON must be complete and valid:
-{"title":"Title (max 60 chars)","slug":"url-slug","excerpt":"Summary (150 chars)","content":"Full markdown with ## headings","metaTitle":"SEO title (max 60 chars)","metaDescription":"SEO desc (150 chars)","keywords":["kw1","kw2","kw3","kw4","kw5"],"tags":["tag1","tag2","tag3","tag4"],"readingTime":7}`;
+Write approximately 800 words with proper ## markdown headings.
+
+YOU MUST RETURN ONLY PURE JSON. NO MARKDOWN BLOCKS. NO EXTRA TEXT.
+Start with { and end with }
+
+Required JSON format:
+{
+  "title": "Engaging title under 60 characters",
+  "slug": "url-friendly-slug",
+  "excerpt": "Compelling summary under 150 characters",
+  "content": "Full article in markdown with ## headings. Make it engaging and informative.",
+  "metaTitle": "SEO title under 60 characters",
+  "metaDescription": "SEO description under 150 characters",
+  "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
+  "tags": ["tag1", "tag2", "tag3", "tag4"],
+  "readingTime": 6
+}`;
 
         let blogContent;
         let retryCount = 0;
@@ -209,7 +224,7 @@ The JSON must be complete and valid:
         
         while (retryCount <= maxRetries) {
           try {
-            blogContent = await callGemini(blogPrompt, 8000);
+            blogContent = await callGemini(blogPrompt, 10000);
             break; // Success, exit retry loop
           } catch (error) {
             if (error.message?.includes('429') || error.message?.includes('rate limit')) {
@@ -239,41 +254,64 @@ The JSON must be complete and valid:
 
         let parsedBlog;
         try {
-          // Aggressive JSON extraction and cleaning
           let cleanBlog = blogContent.trim();
           
-          // Remove ALL markdown code blocks (including nested ones)
-          cleanBlog = cleanBlog.replace(/```(?:json)?\s*/gi, '');
+          // Step 1: Remove markdown code blocks
+          cleanBlog = cleanBlog.replace(/```json\s*/gi, '').replace(/```\s*/gi, '');
           
-          // Remove any leading/trailing text before first { and after last }
+          // Step 2: Find JSON boundaries
           const firstBrace = cleanBlog.indexOf('{');
           const lastBrace = cleanBlog.lastIndexOf('}');
           
           if (firstBrace === -1 || lastBrace === -1) {
-            throw new Error('No valid JSON object boundaries found');
+            throw new Error('No JSON boundaries found');
           }
           
           cleanBlog = cleanBlog.substring(firstBrace, lastBrace + 1);
           
-          // Try parsing
+          // Step 3: Fix common JSON issues
+          // Replace smart quotes with regular quotes
+          cleanBlog = cleanBlog.replace(/[""]/g, '"').replace(/['']/g, "'");
+          
+          // Step 4: Parse JSON
           parsedBlog = JSON.parse(cleanBlog);
           
-          if (!parsedBlog.title || !parsedBlog.content) {
-            throw new Error('Missing required fields in JSON');
+          // Step 5: Validate required fields
+          const required = ['title', 'slug', 'excerpt', 'content', 'metaTitle', 'metaDescription', 'keywords', 'tags', 'readingTime'];
+          for (const field of required) {
+            if (!parsedBlog[field]) {
+              throw new Error(`Missing required field: ${field}`);
+            }
           }
           
-          // Ensure content is reasonable length
-          if (parsedBlog.content.length < 500) {
-            throw new Error('Content too short - likely truncated');
+          // Validate content length
+          if (parsedBlog.content.length < 300) {
+            throw new Error('Content too short');
           }
+          
+          console.log(`✓ Successfully parsed blog for: ${topic.title}`);
           
         } catch (parseError) {
-          console.error(`Parse error for "${topic.title}". Error: ${parseError.message}`);
+          console.error(`❌ Parse failed for "${topic.title}"`);
+          console.error('Error:', parseError.message);
           console.error('Response length:', blogContent.length);
-          console.error('First 200 chars:', blogContent.substring(0, 200));
-          console.error('Last 200 chars:', blogContent.substring(Math.max(0, blogContent.length - 200)));
-          results.errors.push(`Parse error: ${topic.title} - ${parseError.message}`);
+          console.error('First 300 chars:', blogContent.substring(0, 300));
+          console.error('Last 300 chars:', blogContent.substring(Math.max(0, blogContent.length - 300)));
+          
+          results.errors.push(`Parse error: ${topic.title}`);
           results.failed++;
+          
+          // Update run record with failure
+          if (runId) {
+            await supabaseClient
+              .from('daily_blog_runs')
+              .update({
+                blogs_failed: results.failed,
+                status: 'pending'
+              })
+              .eq('id', runId);
+          }
+          
           continue;
         }
 
