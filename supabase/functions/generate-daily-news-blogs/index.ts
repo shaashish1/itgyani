@@ -195,46 +195,65 @@ Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, e
           continue;
         }
 
-        // Generate blog content with higher token limit
-        const blogPrompt = `Write a complete 1200-word blog about: "${topic.title}"
+        // Generate blog content with much higher token limit to prevent truncation
+        const blogPrompt = `Write a complete 1000-word blog about: "${topic.title}"
 Category: ${category.name} | Keywords: ${topic.keywords.join(', ')}
 
-Return ONLY valid JSON, no markdown, no extra text. Ensure the JSON is complete:
-{"title":"Title (max 60 chars)","slug":"url-slug","excerpt":"Summary (150 chars)","content":"Full markdown with ## headings (complete article)","metaTitle":"SEO title","metaDescription":"SEO desc (150 chars)","keywords":["kw1","kw2","kw3","kw4","kw5"],"tags":["tag1","tag2","tag3","tag4"],"readingTime":8}`;
+CRITICAL: Return ONLY a valid JSON object. Do NOT wrap in markdown code blocks. Do NOT add any text before or after the JSON.
+The JSON must be complete and valid:
+{"title":"Title (max 60 chars)","slug":"url-slug","excerpt":"Summary (150 chars)","content":"Full markdown with ## headings","metaTitle":"SEO title (max 60 chars)","metaDescription":"SEO desc (150 chars)","keywords":["kw1","kw2","kw3","kw4","kw5"],"tags":["tag1","tag2","tag3","tag4"],"readingTime":7}`;
 
         let blogContent;
-        try {
-          blogContent = await callGemini(blogPrompt, 5000);
-        } catch (error) {
-          if (error.message?.includes('429') || error.message?.includes('rate limit')) {
-            console.log('Rate limit hit, waiting 10 seconds...');
-            await new Promise(resolve => setTimeout(resolve, 10000));
-            results.errors.push(`Rate limited: ${topic.title}`);
-            results.failed++;
-            continue;
+        let retryCount = 0;
+        const maxRetries = 2;
+        
+        while (retryCount <= maxRetries) {
+          try {
+            blogContent = await callGemini(blogPrompt, 8000);
+            break; // Success, exit retry loop
+          } catch (error) {
+            if (error.message?.includes('429') || error.message?.includes('rate limit')) {
+              console.log('Rate limit hit, waiting 10 seconds...');
+              await new Promise(resolve => setTimeout(resolve, 10000));
+              results.errors.push(`Rate limited: ${topic.title}`);
+              results.failed++;
+              continue;
+            }
+            
+            retryCount++;
+            if (retryCount > maxRetries) {
+              console.error(`AI error for ${topic.title} after ${maxRetries} retries:`, error);
+              results.errors.push(`AI error: ${topic.title}`);
+              results.failed++;
+              break;
+            }
+            
+            console.log(`Retry ${retryCount}/${maxRetries} for ${topic.title}`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
           }
-          console.error(`AI error for ${topic.title}:`, error);
-          results.errors.push(`AI error: ${topic.title}`);
-          results.failed++;
-          continue;
+        }
+        
+        if (retryCount > maxRetries) {
+          continue; // Skip to next topic
         }
 
         let parsedBlog;
         try {
-          // More aggressive JSON extraction
+          // Aggressive JSON extraction and cleaning
           let cleanBlog = blogContent.trim();
           
-          // Remove markdown code blocks
-          cleanBlog = cleanBlog.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '');
+          // Remove ALL markdown code blocks (including nested ones)
+          cleanBlog = cleanBlog.replace(/```(?:json)?\s*/gi, '');
           
-          // Find first { and attempt to find matching }
-          const startIdx = cleanBlog.indexOf('{');
-          if (startIdx === -1) {
-            throw new Error('No JSON object found in response');
+          // Remove any leading/trailing text before first { and after last }
+          const firstBrace = cleanBlog.indexOf('{');
+          const lastBrace = cleanBlog.lastIndexOf('}');
+          
+          if (firstBrace === -1 || lastBrace === -1) {
+            throw new Error('No valid JSON object boundaries found');
           }
           
-          // Try to parse from first { to end, if it fails, it's truncated
-          cleanBlog = cleanBlog.substring(startIdx);
+          cleanBlog = cleanBlog.substring(firstBrace, lastBrace + 1);
           
           // Try parsing
           parsedBlog = JSON.parse(cleanBlog);
@@ -242,12 +261,18 @@ Return ONLY valid JSON, no markdown, no extra text. Ensure the JSON is complete:
           if (!parsedBlog.title || !parsedBlog.content) {
             throw new Error('Missing required fields in JSON');
           }
+          
+          // Ensure content is reasonable length
+          if (parsedBlog.content.length < 500) {
+            throw new Error('Content too short - likely truncated');
+          }
+          
         } catch (parseError) {
           console.error(`Parse error for "${topic.title}". Error: ${parseError.message}`);
           console.error('Response length:', blogContent.length);
           console.error('First 200 chars:', blogContent.substring(0, 200));
           console.error('Last 200 chars:', blogContent.substring(Math.max(0, blogContent.length - 200)));
-          results.errors.push(`Parse error: ${topic.title}`);
+          results.errors.push(`Parse error: ${topic.title} - ${parseError.message}`);
           results.failed++;
           continue;
         }
