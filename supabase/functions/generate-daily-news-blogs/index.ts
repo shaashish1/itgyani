@@ -27,8 +27,100 @@ serve(async (req) => {
     );
 
     const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-    if (!GEMINI_API_KEY) {
-      throw new Error('GEMINI_API_KEY is not configured');
+    const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY');
+    
+    if (!GEMINI_API_KEY && !OPENROUTER_API_KEY) {
+      throw new Error('No AI API keys configured. Please add either GEMINI_API_KEY or OPENROUTER_API_KEY.');
+    }
+
+    const useGemini = !!GEMINI_API_KEY;
+    const useOpenRouter = !useGemini && !!OPENROUTER_API_KEY;
+    
+    console.log(`Using AI provider: ${useGemini ? 'Gemini' : 'OpenRouter'}`);
+
+    // Helper function for Gemini API
+    async function callGemini(prompt: string, maxTokens = 2000) {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: maxTokens,
+            }
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text;
+    }
+
+    // Helper function for OpenRouter API
+    async function callOpenRouter(prompt: string, maxTokens = 2000) {
+      const response = await fetch(
+        'https://openrouter.ai/api/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://itgyani.com',
+            'X-Title': 'IT Gyani Blog Generator'
+          },
+          body: JSON.stringify({
+            model: 'anthropic/claude-3.5-sonnet',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: maxTokens
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content;
+    }
+
+    // AI call wrapper with fallback
+    async function callAI(prompt: string, maxTokens = 2000, attemptFallback = true): Promise<string> {
+      try {
+        if (useGemini) {
+          return await callGemini(prompt, maxTokens);
+        } else {
+          return await callOpenRouter(prompt, maxTokens);
+        }
+      } catch (error) {
+        console.error(`Primary AI provider failed:`, error);
+        
+        // Try fallback if available and not already attempted
+        if (attemptFallback && GEMINI_API_KEY && OPENROUTER_API_KEY) {
+          console.log('Attempting fallback to alternate provider...');
+          try {
+            if (useGemini) {
+              return await callOpenRouter(prompt, maxTokens);
+            } else {
+              return await callGemini(prompt, maxTokens);
+            }
+          } catch (fallbackError) {
+            console.error('Fallback provider also failed:', fallbackError);
+            throw new Error('All AI providers failed');
+          }
+        }
+        
+        throw error;
+      }
     }
 
     // Get trending AI/automation topics using Gemini API
@@ -57,34 +149,10 @@ Focus on:
 
 Make titles engaging and newsworthy. Ensure variety across categories.`;
 
-    const trendingResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `You are a tech news analyst focused on AI and automation trends. Always return valid JSON only.\n\n${trendingPrompt}`
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.8,
-            maxOutputTokens: 2000,
-          }
-        }),
-      }
+    const trendingContent = await callAI(
+      `You are a tech news analyst focused on AI and automation trends. Always return valid JSON only.\n\n${trendingPrompt}`,
+      2000
     );
-
-    if (!trendingResponse.ok) {
-      const errorText = await trendingResponse.text();
-      throw new Error(`Failed to fetch trending topics: ${trendingResponse.status} - ${errorText}`);
-    }
-
-    const trendingData = await trendingResponse.json();
-    const trendingContent = trendingData.candidates?.[0]?.content?.parts?.[0]?.text;
     
     let trendingTopics: NewsSource[];
     try {
@@ -162,39 +230,20 @@ Return ONLY valid JSON:
   "readingTime": estimated_minutes
 }`;
 
-        const blogResponse = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              contents: [{
-                parts: [{
-                  text: `You are an expert tech journalist for FutureFlow AI. Write engaging, SEO-optimized news articles. Always return valid JSON only.\n\n${blogPrompt}`
-                }]
-              }],
-              generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 4000,
-              }
-            }),
-          }
-        );
-
-        if (!blogResponse.ok) {
-          const errorText = await blogResponse.text();
-          if (blogResponse.status === 429) {
+        let blogContent;
+        try {
+          blogContent = await callAI(
+            `You are an expert tech journalist for FutureFlow AI. Write engaging, SEO-optimized news articles. Always return valid JSON only.\n\n${blogPrompt}`,
+            4000
+          );
+        } catch (error) {
+          if (error.message?.includes('429') || error.message?.includes('rate limit')) {
             console.log('Rate limit hit, waiting 10 seconds...');
             await new Promise(resolve => setTimeout(resolve, 10000));
             continue;
           }
-          throw new Error(`Blog generation failed: ${blogResponse.status} - ${errorText}`);
+          throw error;
         }
-
-        const blogData = await blogResponse.json();
-        const blogContent = blogData.candidates?.[0]?.content?.parts?.[0]?.text;
 
         let parsedBlog;
         try {
@@ -244,8 +293,8 @@ Return ONLY valid JSON:
           .insert({
             blog_post_id: newPost.id,
             prompt: topic.title,
-            model_used: 'gemini-1.5-flash-latest',
-            tokens_used: blogData.usage?.total_tokens || 0,
+            model_used: useGemini ? 'gemini-1.5-flash-latest' : 'anthropic/claude-3.5-sonnet',
+            tokens_used: 0, // Token counting would require parsing from response
             status: 'success'
           });
 

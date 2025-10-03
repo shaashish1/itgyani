@@ -50,3 +50,9 @@ verify_jwt = false
 
 [functions.generate-daily-news-blogs]
 verify_jwt = false
+
+[functions.update-gemini-key]
+verify_jwt = true
+
+[functions.update-openrouter-key]
+verify_jwt = true

@@ -38,8 +38,11 @@ const AdminBlogPage: React.FC = () => {
   const [adminPassword, setAdminPassword] = useState('');
   const [authError, setAuthError] = useState('');
   const [geminiApiKey, setGeminiApiKey] = useState('');
-  const [isUpdatingKey, setIsUpdatingKey] = useState(false);
-  const [showApiKey, setShowApiKey] = useState(false);
+  const [openRouterApiKey, setOpenRouterApiKey] = useState('');
+  const [isUpdatingGemini, setIsUpdatingGemini] = useState(false);
+  const [isUpdatingOpenRouter, setIsUpdatingOpenRouter] = useState(false);
+  const [showGeminiKey, setShowGeminiKey] = useState(false);
+  const [showOpenRouterKey, setShowOpenRouterKey] = useState(false);
   const { toast } = useToast();
 
   // Simple admin authentication (in production, use proper auth)
@@ -54,7 +57,7 @@ const AdminBlogPage: React.FC = () => {
     }
   };
 
-  const handleUpdateApiKey = async () => {
+  const handleUpdateGeminiKey = async () => {
     if (!geminiApiKey.trim()) {
       toast({
         title: "Error",
@@ -64,7 +67,7 @@ const AdminBlogPage: React.FC = () => {
       return;
     }
 
-    setIsUpdatingKey(true);
+    setIsUpdatingGemini(true);
     try {
       const { data, error } = await supabase.functions.invoke('update-gemini-key', {
         body: { apiKey: geminiApiKey }
@@ -78,14 +81,49 @@ const AdminBlogPage: React.FC = () => {
       });
       setGeminiApiKey('');
     } catch (error) {
-      console.error('Error updating API key:', error);
+      console.error('Error updating Gemini key:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to update API key",
+        description: error.message || "Failed to update Gemini API key",
         variant: "destructive"
       });
     } finally {
-      setIsUpdatingKey(false);
+      setIsUpdatingGemini(false);
+    }
+  };
+
+  const handleUpdateOpenRouterKey = async () => {
+    if (!openRouterApiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid API key",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUpdatingOpenRouter(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('update-openrouter-key', {
+        body: { apiKey: openRouterApiKey }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "OpenRouter API key updated successfully"
+      });
+      setOpenRouterApiKey('');
+    } catch (error) {
+      console.error('Error updating OpenRouter key:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update OpenRouter API key",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUpdatingOpenRouter(false);
     }
   };
 
@@ -226,58 +264,148 @@ const AdminBlogPage: React.FC = () => {
                     <Key className="h-5 w-5 text-primary" />
                     <h4 className="font-medium text-lg">AI API Key Management</h4>
                   </div>
-                  
-                  <div className="p-6 border rounded-lg bg-muted/50 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="gemini-key" className="text-sm font-medium">
-                        Gemini API Key
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Update your Google Gemini API key for blog generation
-                      </p>
-                      <div className="flex gap-2">
-                        <div className="relative flex-1">
-                          <Input
-                            id="gemini-key"
-                            type={showApiKey ? "text" : "password"}
-                            value={geminiApiKey}
-                            onChange={(e) => setGeminiApiKey(e.target.value)}
-                            placeholder="Enter new Gemini API key..."
-                            className="pr-10"
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-0 top-0 h-full px-3"
-                            onClick={() => setShowApiKey(!showApiKey)}
-                          >
-                            {showApiKey ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                        <Button
-                          onClick={handleUpdateApiKey}
-                          disabled={isUpdatingKey || !geminiApiKey.trim()}
-                          className="btn-hero"
-                        >
-                          <Save className="h-4 w-4 mr-2" />
-                          {isUpdatingKey ? 'Updating...' : 'Update Key'}
-                        </Button>
-                      </div>
-                    </div>
 
-                    <Alert>
-                      <AlertTriangle className="h-4 w-4" />
-                      <AlertTitle>Security Notice</AlertTitle>
-                      <AlertDescription>
-                        API keys are stored securely as encrypted secrets. Never share your API keys publicly.
-                      </AlertDescription>
-                    </Alert>
-                  </div>
+                  <Tabs defaultValue="gemini" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="gemini">Gemini API</TabsTrigger>
+                      <TabsTrigger value="openrouter">OpenRouter API</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="gemini">
+                      <div className="p-6 border rounded-lg bg-muted/50 space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="gemini-key" className="text-sm font-medium">
+                            Google Gemini API Key
+                          </Label>
+                          <p className="text-sm text-muted-foreground">
+                            Primary AI provider for blog generation. Get your API key from{' '}
+                            <a 
+                              href="https://aistudio.google.com/apikey" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              Google AI Studio
+                            </a>
+                          </p>
+                          <div className="flex gap-2">
+                            <div className="relative flex-1">
+                              <Input
+                                id="gemini-key"
+                                type={showGeminiKey ? "text" : "password"}
+                                value={geminiApiKey}
+                                onChange={(e) => setGeminiApiKey(e.target.value)}
+                                placeholder="Enter Gemini API key (starts with AI...)..."
+                                className="pr-10"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-0 top-0 h-full px-3"
+                                onClick={() => setShowGeminiKey(!showGeminiKey)}
+                              >
+                                {showGeminiKey ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                            <Button
+                              onClick={handleUpdateGeminiKey}
+                              disabled={isUpdatingGemini || !geminiApiKey.trim()}
+                              className="btn-hero"
+                            >
+                              <Save className="h-4 w-4 mr-2" />
+                              {isUpdatingGemini ? 'Updating...' : 'Update'}
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="pt-4 border-t space-y-2">
+                          <h5 className="font-medium text-sm">Model Information</h5>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <p>• Current Model: <span className="font-medium">gemini-1.5-flash-latest</span></p>
+                            <p>• Free tier: 15 requests/minute</p>
+                            <p>• Best for: Fast, cost-effective generation</p>
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="openrouter">
+                      <div className="p-6 border rounded-lg bg-muted/50 space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="openrouter-key" className="text-sm font-medium">
+                            OpenRouter API Key
+                          </Label>
+                          <p className="text-sm text-muted-foreground">
+                            Fallback AI provider with multiple model options. Get your API key from{' '}
+                            <a 
+                              href="https://openrouter.ai/keys" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              OpenRouter
+                            </a>
+                          </p>
+                          <div className="flex gap-2">
+                            <div className="relative flex-1">
+                              <Input
+                                id="openrouter-key"
+                                type={showOpenRouterKey ? "text" : "password"}
+                                value={openRouterApiKey}
+                                onChange={(e) => setOpenRouterApiKey(e.target.value)}
+                                placeholder="Enter OpenRouter API key (sk-or-...)..."
+                                className="pr-10"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-0 top-0 h-full px-3"
+                                onClick={() => setShowOpenRouterKey(!showOpenRouterKey)}
+                              >
+                                {showOpenRouterKey ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                            <Button
+                              onClick={handleUpdateOpenRouterKey}
+                              disabled={isUpdatingOpenRouter || !openRouterApiKey.trim()}
+                              className="btn-hero"
+                            >
+                              <Save className="h-4 w-4 mr-2" />
+                              {isUpdatingOpenRouter ? 'Updating...' : 'Update'}
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="pt-4 border-t space-y-2">
+                          <h5 className="font-medium text-sm">Supported Models</h5>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <p>• Anthropic Claude (Sonnet, Haiku)</p>
+                            <p>• OpenAI GPT models</p>
+                            <p>• Google Gemini Pro</p>
+                            <p>• Pay-per-use pricing</p>
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+
+                  <Alert>
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Security Notice</AlertTitle>
+                    <AlertDescription>
+                      API keys are stored securely as encrypted secrets. The system will automatically use Gemini as primary and fall back to OpenRouter if needed.
+                    </AlertDescription>
+                  </Alert>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
