@@ -125,7 +125,6 @@ const AuthPage = () => {
     setIsResetting(true);
 
     try {
-      // Generate password reset link
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       });
@@ -137,18 +136,6 @@ const AuthPage = () => {
           variant: "destructive",
         });
       } else {
-        // Send email via edge function
-        const { error: emailError } = await supabase.functions.invoke('send-password-reset', {
-          body: {
-            email: resetEmail,
-            resetLink: `${window.location.origin}/auth/reset-password`
-          }
-        });
-
-        if (emailError) {
-          console.error('Email sending error:', emailError);
-        }
-
         toast({
           title: "Password reset email sent",
           description: "Check your email for the password reset link. If you don't see it, check your spam folder.",

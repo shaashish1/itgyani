@@ -448,16 +448,36 @@ Required JSON format:
           continue;
         }
 
-        // Generate blog image
+        // Generate blog image with retry logic
         console.log(`Generating image for: ${parsedBlog.title}`);
-        const featuredImageUrl = await generateBlogImage(
-          parsedBlog.title, 
-          parsedBlog.excerpt, 
-          category.name
-        );
-
-        if (!featuredImageUrl) {
-          console.log(`⚠ Image generation failed for: ${parsedBlog.title}, continuing without image`);
+        let featuredImageUrl = null;
+        let imageRetries = 0;
+        const maxImageRetries = 2;
+        
+        while (!featuredImageUrl && imageRetries <= maxImageRetries) {
+          try {
+            featuredImageUrl = await generateBlogImage(
+              parsedBlog.title, 
+              parsedBlog.excerpt, 
+              category.name
+            );
+            
+            if (!featuredImageUrl && imageRetries < maxImageRetries) {
+              console.log(`⚠ Image generation attempt ${imageRetries + 1} failed, retrying...`);
+              await new Promise(resolve => setTimeout(resolve, 3000));
+              imageRetries++;
+            } else if (featuredImageUrl) {
+              console.log(`✓ Image generated successfully for: ${parsedBlog.title}`);
+            }
+          } catch (imgError) {
+            console.error(`Image generation error (attempt ${imageRetries + 1}):`, imgError);
+            if (imageRetries < maxImageRetries) {
+              await new Promise(resolve => setTimeout(resolve, 3000));
+              imageRetries++;
+            } else {
+              console.log(`⚠ All image generation attempts failed for: ${parsedBlog.title}, continuing without image`);
+            }
+          }
         }
 
         // Insert blog post as PUBLISHED immediately with generated image

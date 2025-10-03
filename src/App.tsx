@@ -40,6 +40,7 @@ const AdminBlogPage = lazy(() => import("./pages/AdminBlogPage"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const LearningTrackDetail = lazy(() => import("./pages/LearningTrackDetail"));
 const ImageShowcase = lazy(() => import("./pages/ImageShowcase"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Loading component
@@ -102,6 +103,7 @@ const App = () => (
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
             <Route path="/admin/blog" element={<AdminBlogPage />} />
             <Route path="/images" element={<ImageShowcase />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
