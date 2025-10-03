@@ -25,6 +25,7 @@ import BlogManager from '@/components/BlogManager';
 import AIBlogGenerator from '@/components/admin/AIBlogGenerator';
 import { BatchBlogGenerator } from '@/components/admin/BatchBlogGenerator';
 import { TopicProcessor } from '@/components/admin/TopicProcessor';
+import { DailyBlogAutomation } from '@/components/admin/DailyBlogAutomation';
 
 const AdminBlogPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -140,13 +141,18 @@ const AdminBlogPage: React.FC = () => {
         </Alert>
 
         {/* Main Content */}
-        <Tabs defaultValue="blog-manager" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="daily-automation" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="daily-automation">Daily Automation</TabsTrigger>
             <TabsTrigger value="blog-manager">Blog Management</TabsTrigger>
             <TabsTrigger value="batch-generator">Batch Generator</TabsTrigger>
             <TabsTrigger value="system-settings">System Settings</TabsTrigger>
             <TabsTrigger value="security-logs">Security Logs</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="daily-automation">
+            <DailyBlogAutomation />
+          </TabsContent>
 
           <TabsContent value="blog-manager">
             <BlogManager className="space-y-6" />
