@@ -235,7 +235,7 @@ const AdminBlogPage: React.FC = () => {
 
         {/* Main Content */}
         <Tabs defaultValue="daily-automation" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 h-auto">
             <TabsTrigger value="daily-automation">Daily Automation</TabsTrigger>
             <TabsTrigger value="all-blogs">All Blogs</TabsTrigger>
             <TabsTrigger value="blog-manager">Blog Manager</TabsTrigger>
