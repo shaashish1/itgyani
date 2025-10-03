@@ -154,6 +154,24 @@ Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, e
 
     const categoryMap = new Map(categories?.map(c => [c.slug, c]) || []);
 
+    // Create initial run record
+    const { data: runRecord, error: runError } = await supabaseClient
+      .from('daily_blog_runs')
+      .insert({
+        run_date: new Date().toISOString(),
+        blogs_created: 0,
+        blogs_failed: 0,
+        status: 'pending'
+      })
+      .select()
+      .single();
+
+    if (runError) {
+      console.error('Failed to create run record:', runError);
+    }
+
+    const runId = runRecord?.id;
+
     // Generate blogs for each topic
     const results = {
       successful: 0,
@@ -234,7 +252,7 @@ Return ONLY valid JSON, no markdown, no extra text. Ensure the JSON is complete:
           continue;
         }
 
-        // Insert blog post as draft
+        // Insert blog post as PUBLISHED immediately
         const { data: newPost, error: insertError } = await supabaseClient
           .from('blog_posts')
           .insert({
@@ -248,8 +266,8 @@ Return ONLY valid JSON, no markdown, no extra text. Ensure the JSON is complete:
             keywords: parsedBlog.keywords,
             tags: parsedBlog.tags,
             reading_time: parsedBlog.readingTime,
-            status: 'draft',
-            published_at: null,
+            status: 'published',
+            published_at: new Date().toISOString(),
             is_premium: false
           })
           .select()
@@ -280,7 +298,19 @@ Return ONLY valid JSON, no markdown, no extra text. Ensure the JSON is complete:
           category: category.name
         });
 
-        console.log(`✓ Created as draft: ${parsedBlog.title}`);
+        console.log(`✓ Published: ${parsedBlog.title}`);
+
+        // Update run record after each successful blog
+        if (runId) {
+          await supabaseClient
+            .from('daily_blog_runs')
+            .update({
+              blogs_created: results.successful,
+              blogs_failed: results.failed,
+              status: 'pending'
+            })
+            .eq('id', runId);
+        }
 
         // Shorter delay between blogs
         if (i < trendingTopics.length - 1) {
@@ -292,9 +322,36 @@ Return ONLY valid JSON, no markdown, no extra text. Ensure the JSON is complete:
         console.error(`Error processing ${topic.title}:`, error);
         results.errors.push(`${topic.title}: ${error.message}`);
         results.failed++;
+        
+        // Update run record after each failure
+        if (runId) {
+          await supabaseClient
+            .from('daily_blog_runs')
+            .update({
+              blogs_created: results.successful,
+              blogs_failed: results.failed,
+              status: 'pending'
+            })
+            .eq('id', runId);
+        }
       }
     }
 
+    // Final update to run record
+    if (runId) {
+      await supabaseClient
+        .from('daily_blog_runs')
+        .update({
+          blogs_created: results.successful,
+          blogs_failed: results.failed,
+          status: results.failed > 0 ? 'partial' : 'success',
+          error_message: results.errors.length > 0 ? results.errors.join('; ') : null
+        })
+        .eq('id', runId);
+    }
+
+    console.log(`Generation complete: ${results.successful} published, ${results.failed} failed`);
+    
     return results;
     })();
 
@@ -308,7 +365,7 @@ Return ONLY valid JSON, no markdown, no extra text. Ensure the JSON is complete:
     // Return immediately with processing status
     return new Response(JSON.stringify({
       success: true,
-      message: `Started generating ${requestedCount} blog posts. Processing in background...`,
+      message: `Started generating ${requestedCount} blog posts. Each will be published immediately after generation.`,
       processing: true,
       timestamp: new Date().toISOString()
     }), {

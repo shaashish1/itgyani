@@ -25,7 +25,19 @@ export const DailyBlogAutomation: React.FC = () => {
 
   useEffect(() => {
     loadRecentRuns();
-  }, []);
+    
+    // Set up auto-refresh every 5 seconds when generating
+    let interval: NodeJS.Timeout;
+    if (isGenerating) {
+      interval = setInterval(() => {
+        loadRecentRuns();
+      }, 5000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isGenerating]);
 
   const loadRecentRuns = async () => {
     try {
@@ -60,14 +72,22 @@ export const DailyBlogAutomation: React.FC = () => {
       if (error) throw error;
 
       toast({
-        title: "Processing Started!",
-        description: "Blogs are being generated in the background. Check the 'All Blogs' tab in a few minutes to see new drafts.",
+        title: "Generation Started!",
+        description: "Blogs are being generated and published one at a time. Watch the Recent Generation Runs section for real-time progress.",
       });
 
-      // Reload runs after a delay
+      // Start auto-refresh
+      // The useEffect will handle refreshing every 5 seconds
+      
+      // Stop auto-refresh after 5 minutes (enough time for 10 blogs)
       setTimeout(() => {
+        setIsGenerating(false);
         loadRecentRuns();
-      }, 3000);
+        toast({
+          title: "Generation Complete",
+          description: "Check the All Blogs tab to see the newly published posts.",
+        });
+      }, 300000); // 5 minutes
 
     } catch (error: any) {
       console.error('Generation error:', error);
@@ -109,7 +129,7 @@ export const DailyBlogAutomation: React.FC = () => {
             <AlertTitle>Automation Schedule</AlertTitle>
             <AlertDescription>
               The system automatically generates 10 news-based blog posts daily at <strong>6:00 AM UTC</strong> (2:00 AM EST).
-              Topics are sourced from trending AI, automation, and technology news.
+              Topics are sourced from trending AI, automation, and technology news. Each blog is published immediately after generation.
             </AlertDescription>
           </Alert>
 
@@ -149,9 +169,9 @@ export const DailyBlogAutomation: React.FC = () => {
           {/* Manual Trigger */}
           <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-primary/5 to-primary/10">
             <div>
-              <h4 className="font-medium mb-1">Generate 10 Blogs with Images</h4>
+              <h4 className="font-medium mb-1">Generate & Publish 10 Blogs</h4>
               <p className="text-sm text-muted-foreground">
-                Generate 10 trending AI news blogs with images and save as drafts
+                Generate 10 trending AI news blogs. Each blog is published immediately after generation.
               </p>
             </div>
             <Button 
@@ -216,12 +236,18 @@ export const DailyBlogAutomation: React.FC = () => {
                         {new Date(run.run_date).toLocaleString()}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {run.blogs_created || 0} created, {run.blogs_failed || 0} failed
+                        {run.blogs_created || 0} published, {run.blogs_failed || 0} failed
+                        {run.status === 'pending' && ' (In Progress...)'}
                       </p>
                     </div>
                   </div>
-                  <Badge variant={run.status === 'success' ? 'default' : 'destructive'}>
-                    {run.status || 'pending'}
+                  <Badge variant={
+                    run.status === 'success' ? 'default' : 
+                    run.status === 'pending' ? 'secondary' :
+                    run.status === 'partial' ? 'secondary' :
+                    'destructive'
+                  }>
+                    {run.status === 'pending' ? 'Generating...' : run.status || 'pending'}
                   </Badge>
                 </div>
               ))}
@@ -265,7 +291,7 @@ export const DailyBlogAutomation: React.FC = () => {
             <div>
               <p className="font-medium">Auto-Publishing</p>
               <p className="text-muted-foreground">
-                Posts are automatically published and made live on your blog
+                Each post is automatically published immediately after generation, one at a time
               </p>
             </div>
           </div>
