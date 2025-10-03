@@ -118,6 +118,60 @@ serve(async (req) => {
       return data.choices?.[0]?.message?.content || '';
     }
 
+    // Helper function to generate images using Nano banana
+    async function generateBlogImage(title: string, excerpt: string, category: string) {
+      try {
+        const imagePrompt = `Create a professional, modern blog header image for an article about: "${title}". 
+Category: ${category}
+Context: ${excerpt}
+
+Style: Clean, tech-focused, professional, high-quality. Use vibrant colors and modern design elements. Make it visually appealing for a tech blog about AI and automation.`;
+
+        console.log(`Generating image for: ${title}`);
+        
+        const response = await fetch(
+          'https://ai.gateway.lovable.dev/v1/chat/completions',
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'google/gemini-2.5-flash-image-preview',
+              messages: [
+                {
+                  role: 'user',
+                  content: imagePrompt
+                }
+              ],
+              modalities: ['image', 'text']
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Image generation failed: ${response.status} - ${errorText}`);
+          return null;
+        }
+
+        const data = await response.json();
+        const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        
+        if (imageUrl) {
+          console.log(`✓ Image generated successfully for: ${title}`);
+          return imageUrl;
+        }
+        
+        console.error('No image URL in response');
+        return null;
+      } catch (error) {
+        console.error(`Image generation error for ${title}:`, error);
+        return null;
+      }
+    }
+
     // Get trending AI/automation topics
     console.log('Fetching trending AI topics...');
     const trendingPrompt = `List ${requestedCount} trending topics in AI/automation. Return ONLY this JSON array, nothing else:
@@ -394,7 +448,19 @@ Required JSON format:
           continue;
         }
 
-        // Insert blog post as PUBLISHED immediately
+        // Generate blog image
+        console.log(`Generating image for: ${parsedBlog.title}`);
+        const featuredImageUrl = await generateBlogImage(
+          parsedBlog.title, 
+          parsedBlog.excerpt, 
+          category.name
+        );
+
+        if (!featuredImageUrl) {
+          console.log(`⚠ Image generation failed for: ${parsedBlog.title}, continuing without image`);
+        }
+
+        // Insert blog post as PUBLISHED immediately with generated image
         const { data: newPost, error: insertError } = await supabaseClient
           .from('blog_posts')
           .insert({
@@ -410,7 +476,8 @@ Required JSON format:
             reading_time: parsedBlog.readingTime,
             status: 'published',
             published_at: new Date().toISOString(),
-            is_premium: false
+            is_premium: false,
+            featured_image_url: featuredImageUrl
           })
           .select()
           .single();
