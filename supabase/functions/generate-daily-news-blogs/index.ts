@@ -45,10 +45,29 @@ serve(async (req) => {
 
     console.log('Using Lovable AI (Gemini 2.5 Flash)');
 
+    // Create initial run record BEFORE background processing
+    const { data: initialRunRecord, error: initialRunError } = await supabaseClient
+      .from('daily_blog_runs')
+      .insert({
+        run_date: new Date().toISOString(),
+        blogs_created: 0,
+        blogs_failed: 0,
+        status: 'pending'
+      })
+      .select()
+      .single();
+
+    if (initialRunError) {
+      console.error('Failed to create run record:', initialRunError);
+    }
+
+    const runId = initialRunRecord?.id;
+    console.log('Created run record with ID:', runId);
+
     // Start background processing
     const processingPromise = (async () => {
-    // Parse incoming request for optional count
-    let requestedCount = 10;
+    // Parse incoming request for optional count (duplicate for closure)
+    const countForProcessing = requestedCount;
     try {
       const body = await req.json();
       if (typeof body?.count === 'number' && body.count > 0 && body.count <= 20) {
@@ -58,29 +77,7 @@ serve(async (req) => {
       // No body provided or invalid JSON
     }
 
-    console.log(`Starting daily news blog generation (count=${requestedCount})...`);
-
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY'); // legacy, not used directly
-    const OPENROUTER_API_KEY = Deno.env.get('OPENROUTER_API_KEY');
-    
-    if (!LOVABLE_API_KEY && !OPENROUTER_API_KEY) {
-      throw new Error('No AI access configured. Lovable AI is required or provide OPENROUTER_API_KEY.');
-    }
-
-    // Prefer Lovable AI (Gemini 2.5 Flash). Fallback to OpenRouter if provided.
-    const useGemini = !!LOVABLE_API_KEY; 
-    const useOpenRouter = !useGemini && !!OPENROUTER_API_KEY;
-    
-    console.log(`Using AI provider: ${useGemini ? 'Lovable Gemini' : 'OpenRouter'}`);
-
-    // Track the model actually used for logging
-    let lastModelUsed = '';
+    console.log(`Starting background blog generation (count=${countForProcessing})...`);
 
     // Helper function for Gemini API via Lovable AI Gateway
     async function callGemini(prompt: string, maxTokens = 3000) {
@@ -174,7 +171,7 @@ Style: Clean, tech-focused, professional, high-quality. Use vibrant colors and m
 
     // Get trending AI/automation topics
     console.log('Fetching trending AI topics...');
-    const trendingPrompt = `List ${requestedCount} trending topics in AI/automation. Return ONLY this JSON array, nothing else:
+    const trendingPrompt = `List ${countForProcessing} trending topics in AI/automation. Return ONLY this JSON array, nothing else:
 [{"title":"Topic Title","category":"ai-machine-learning","keywords":["key1","key2","key3"]}]
 
 Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, edge-ai, future-tech`;
@@ -244,9 +241,9 @@ Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, e
     console.log(`After duplicate check: ${uniqueTopics.length} unique topics (filtered ${trendingTopics.length - uniqueTopics.length} duplicates)`);
 
     // If we filtered out too many, request more topics
-    if (uniqueTopics.length < requestedCount / 2) {
+    if (uniqueTopics.length < countForProcessing / 2) {
       console.log('Too many duplicates found, requesting additional topics...');
-      const additionalNeeded = requestedCount - uniqueTopics.length;
+      const additionalNeeded = countForProcessing - uniqueTopics.length;
       const additionalPrompt = `List ${additionalNeeded} MORE trending topics in AI/automation. Return ONLY this JSON array, nothing else:
 [{"title":"Topic Title","category":"ai-machine-learning","keywords":["key1","key2","key3"]}]
 
@@ -285,24 +282,6 @@ Avoid these topics: ${uniqueTopics.map(t => t.title).join(', ')}`;
       .select('*');
 
     const categoryMap = new Map(categories?.map(c => [c.slug, c]) || []);
-
-    // Create initial run record
-    const { data: runRecord, error: runError } = await supabaseClient
-      .from('daily_blog_runs')
-      .insert({
-        run_date: new Date().toISOString(),
-        blogs_created: 0,
-        blogs_failed: 0,
-        status: 'pending'
-      })
-      .select()
-      .single();
-
-    if (runError) {
-      console.error('Failed to create run record:', runError);
-    }
-
-    const runId = runRecord?.id;
 
     // Generate blogs for each unique topic
     const results = {
