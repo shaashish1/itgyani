@@ -403,18 +403,42 @@ Required JSON format:
           cleanBlog = cleanBlog.substring(firstBrace, lastBrace + 1);
           
           // Step 3: Fix common JSON issues
-          // Replace smart quotes with regular quotes
-          cleanBlog = cleanBlog.replace(/[""]/g, '"').replace(/['']/g, "'");
+          // Normalize smart quotes to standard ASCII to reduce JSON parse errors
+          cleanBlog = cleanBlog
+            .replace(/[\u201C\u201D]/g, '"') // curly double quotes → straight
+            .replace(/[\u2018\u2019]/g, "'"); // curly single quotes → straight
           
           // Step 4: Parse JSON
           parsedBlog = JSON.parse(cleanBlog);
           
-          // Step 5: Validate required fields
-          const required = ['title', 'slug', 'excerpt', 'content', 'metaTitle', 'metaDescription', 'keywords', 'tags', 'readingTime'];
-          for (const field of required) {
+          // Step 5: Validate required fields with sensible fallbacks
+          const coreRequired = ['title', 'slug', 'content'] as const;
+          for (const field of coreRequired) {
             if (!parsedBlog[field]) {
               throw new Error(`Missing required field: ${field}`);
             }
+          }
+
+          // Provide fallbacks for optional SEO fields to avoid hard failures
+          if (!parsedBlog.excerpt) {
+            const plain = String(parsedBlog.content || '').replace(/\s+/g, ' ').trim();
+            parsedBlog.excerpt = plain.slice(0, 150);
+          }
+          if (!parsedBlog.metaTitle) {
+            parsedBlog.metaTitle = String(parsedBlog.title).slice(0, 60);
+          }
+          if (!parsedBlog.metaDescription) {
+            parsedBlog.metaDescription = String(parsedBlog.excerpt || parsedBlog.content).replace(/\s+/g, ' ').slice(0, 150);
+          }
+          if (!Array.isArray(parsedBlog.keywords)) {
+            parsedBlog.keywords = Array.isArray(topic.keywords) ? topic.keywords : [];
+          }
+          if (!Array.isArray(parsedBlog.tags)) {
+            parsedBlog.tags = [category.slug];
+          }
+          if (!parsedBlog.readingTime || typeof parsedBlog.readingTime !== 'number') {
+            const words = String(parsedBlog.content).split(/\s+/).filter(Boolean).length;
+            parsedBlog.readingTime = Math.max(3, Math.round(words / 200));
           }
           
           // Validate content length
@@ -543,8 +567,8 @@ Required JSON format:
 
         // Shorter delay between blogs
         if (i < uniqueTopics.length - 1) {
-          console.log('Waiting 3 seconds before next blog...');
-          await new Promise(resolve => setTimeout(resolve, 3000));
+          console.log('Waiting 8 seconds before next blog...');
+          await new Promise(resolve => setTimeout(resolve, 8000));
         }
 
       } catch (error) {

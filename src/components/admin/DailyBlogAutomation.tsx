@@ -26,19 +26,20 @@ export const DailyBlogAutomation: React.FC = () => {
 
   useEffect(() => {
     loadRecentRuns();
-    
-    // Set up auto-refresh every 5 seconds when generating
-    let interval: NodeJS.Timeout;
-    if (isGenerating) {
+
+    let interval: NodeJS.Timeout | undefined;
+    const hasPending = recentRuns.some((r) => r.status === 'pending');
+
+    if (isGenerating || hasPending) {
       interval = setInterval(() => {
         loadRecentRuns();
       }, 5000);
     }
-    
+
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isGenerating]);
+  }, [isGenerating, recentRuns]);
 
   const loadRecentRuns = async () => {
     try {
@@ -50,6 +51,12 @@ export const DailyBlogAutomation: React.FC = () => {
 
       if (error) throw error;
       setRecentRuns(data || []);
+
+      // If latest run is no longer pending, stop generating state
+      const latest = (data || [])[0];
+      if (isGenerating && latest && latest.status !== 'pending') {
+        setIsGenerating(false);
+      }
     } catch (error) {
       console.error('Error loading recent runs:', error);
     } finally {
@@ -98,7 +105,7 @@ export const DailyBlogAutomation: React.FC = () => {
         variant: "destructive"
       });
     } finally {
-      setIsGenerating(false);
+      // Keep isGenerating true until the run completes or until the timeout handler clears it
     }
   };
 
