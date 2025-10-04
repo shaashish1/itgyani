@@ -43,14 +43,34 @@ const ImageShowcase = lazy(() => import("./pages/ImageShowcase"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-// Loading component
+// Loading component with Skeleton
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  <div className="min-h-screen bg-background">
+    <div className="container mx-auto px-6 py-8 space-y-8">
+      <div className="h-16 bg-muted/30 animate-pulse rounded-lg" />
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3, 4, 5, 6].map((i) => (
+          <div key={i} className="space-y-4">
+            <div className="aspect-video bg-muted/30 animate-pulse rounded-lg" />
+            <div className="h-6 bg-muted/30 animate-pulse rounded" />
+            <div className="h-4 bg-muted/30 animate-pulse rounded w-3/4" />
+          </div>
+        ))}
+      </div>
+    </div>
   </div>
 );
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();

@@ -27,7 +27,12 @@ export default defineConfig(({ mode }) => ({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
           'chart-vendor': ['recharts'],
+          'supabase-vendor': ['@supabase/supabase-js'],
         },
+        // Optimize chunk naming for better caching
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
       },
     },
     minify: mode === 'production' ? 'terser' : false,
@@ -35,7 +40,14 @@ export default defineConfig(({ mode }) => ({
       compress: {
         drop_console: true,
         drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info'],
+        passes: 2,
+      },
+      format: {
+        comments: false,
       },
     } : undefined,
+    cssMinify: true,
+    sourcemap: mode === 'production' ? false : true,
   },
 }));

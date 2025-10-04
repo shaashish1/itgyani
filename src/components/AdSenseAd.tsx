@@ -42,21 +42,34 @@ const AdSenseAd: React.FC<AdSenseAdProps> = ({
       return;
     }
 
-    try {
-      // Ensure container has proper dimensions before loading ad
-      if (adRef.current) {
-        const rect = adRef.current.getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
-          // Only load ads if AdSense is enabled and container is visible
-          if (window.adsbygoogle) {
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-            setAdLoaded(true);
+    // Lazy load ads using Intersection Observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !adLoaded) {
+            try {
+              const rect = entry.target.getBoundingClientRect();
+              if (rect.width > 0 && rect.height > 0) {
+                if (window.adsbygoogle) {
+                  (window.adsbygoogle = window.adsbygoogle || []).push({});
+                  setAdLoaded(true);
+                  observer.disconnect();
+                }
+              }
+            } catch (error) {
+              console.error('AdSense error:', error);
+            }
           }
-        }
-      }
-    } catch (error) {
-      console.error('AdSense error:', error);
+        });
+      },
+      { rootMargin: '200px' } // Load 200px before entering viewport
+    );
+
+    if (adRef.current) {
+      observer.observe(adRef.current);
     }
+
+    return () => observer.disconnect();
   }, [config.enabled, config.testMode, adLoaded]);
 
   // Don't render if AdSense is disabled

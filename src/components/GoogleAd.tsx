@@ -32,40 +32,44 @@ const GoogleAd = ({
   // Get the appropriate ad slot based on position or use provided adSlot
   const actualAdSlot = adSlot || ADSENSE_CONFIG.adSlots[position];
 
-  /** Initialize AdSense ads when component mounts */
+  /** Initialize AdSense ads when in viewport */
   useEffect(() => {
-    // Prevent duplicate initialization
     if (adLoaded) return;
 
-    const initializeAd = () => {
-      try {
-        // Ensure container has dimensions before loading
-        if (adRef.current) {
-          const rect = adRef.current.getBoundingClientRect();
-          if (rect.width === 0) {
-            // Container not ready, retry
-            setTimeout(initializeAd, 300);
-            return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !adLoaded) {
+            const initializeAd = () => {
+              try {
+                const rect = entry.target.getBoundingClientRect();
+                if (rect.width === 0) {
+                  setTimeout(initializeAd, 300);
+                  return;
+                }
+
+                if (typeof window !== 'undefined' && window.adsbygoogle) {
+                  (window.adsbygoogle = window.adsbygoogle || []).push({});
+                  setAdLoaded(true);
+                  observer.disconnect();
+                }
+              } catch (err) {
+                console.error('AdSense initialization error:', err);
+              }
+            };
+
+            setTimeout(initializeAd, 100);
           }
-        }
+        });
+      },
+      { rootMargin: '200px' }
+    );
 
-        // Wait for AdSense script to load
-        if (typeof window !== 'undefined' && window.adsbygoogle) {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-          setAdLoaded(true);
-          console.log('AdSense ad initialized for slot:', actualAdSlot, 'at position:', position);
-        } else {
-          // Retry after a short delay if script isn't loaded yet
-          setTimeout(initializeAd, 500);
-        }
-      } catch (err) {
-        console.error('AdSense initialization error:', err);
-      }
-    };
+    if (adRef.current) {
+      observer.observe(adRef.current);
+    }
 
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(initializeAd, 100);
-    return () => clearTimeout(timer);
+    return () => observer.disconnect();
   }, [actualAdSlot, position, adLoaded]);
 
   return (

@@ -46,10 +46,28 @@ export const lazyLoadImage = (img: HTMLImageElement) => {
 };
 
 // Preload critical resources
-export const preloadResource = (href: string, as: string) => {
+export const preloadResource = (href: string, as: string, crossorigin?: string) => {
+  // Check if already preloaded
+  if (document.querySelector(`link[href="${href}"]`)) {
+    return;
+  }
+  
   const link = document.createElement('link');
   link.rel = 'preload';
   link.as = as;
+  link.href = href;
+  if (crossorigin) link.crossOrigin = crossorigin;
+  document.head.appendChild(link);
+};
+
+// Prefetch resources for next navigation
+export const prefetchResource = (href: string) => {
+  if (document.querySelector(`link[href="${href}"]`)) {
+    return;
+  }
+  
+  const link = document.createElement('link');
+  link.rel = 'prefetch';
   link.href = href;
   document.head.appendChild(link);
 };

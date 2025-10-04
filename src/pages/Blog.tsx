@@ -6,10 +6,12 @@ import PopupManager from "@/components/PopupManager";
 import AdSenseAd from "@/components/AdSenseAd";
 import SEO from "@/components/SEO";
 import OptimizedImage from "@/components/OptimizedImage";
+import { LazyAd } from "@/components/LazyAd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft, Search, Calendar, Clock, User, TrendingUp, Brain, Zap, Target, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -334,23 +336,46 @@ const Blog = () => {
           </div>
         </section>
 
-        {/* AdSense - Top of Content */}
+        {/* AdSense - Top of Content (Lazy Loaded) */}
         <section className="py-6">
           <div className="container mx-auto px-6">
-            <AdSenseAd 
-              slot="content-top" 
-              format="horizontal"
-              responsive={true}
-              className="my-4"
-            />
+            <LazyAd minHeight="250px">
+              <AdSenseAd 
+                slot="content-top" 
+                format="horizontal"
+                responsive={true}
+                className="my-4"
+              />
+            </LazyAd>
           </div>
         </section>
 
         {/* Blog Posts Grid */}
         <section className="py-16">
           <div className="container mx-auto px-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {paginatedPosts.map((post) => (
+            {loading ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <Card key={i} className="overflow-hidden border-border/50">
+                    <Skeleton className="aspect-video w-full" />
+                    <CardHeader className="pb-2">
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-4 w-full mt-2" />
+                      <Skeleton className="h-4 w-2/3 mt-1" />
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center justify-between mb-4">
+                        <Skeleton className="h-3 w-20" />
+                        <Skeleton className="h-3 w-16" />
+                      </div>
+                      <Skeleton className="h-9 w-full" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {paginatedPosts.map((post) => (
                 <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
                   <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
                     {post.featured_image_url && (
@@ -398,9 +423,10 @@ const Blog = () => {
                       </Button>
                     </Link>
                   </CardContent>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
+            )}
             
             {/* Pagination Controls */}
             {totalPages > 1 && (
