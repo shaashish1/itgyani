@@ -1809,10 +1809,12 @@ const Resources = () => {
 
                         <Button 
                           className="w-full"
-                          onClick={() => window.open(video.videoUrl, '_blank')}
+                          asChild
                         >
-                          <Video className="w-4 h-4 mr-2" />
-                          Watch Tutorial
+                          <a href={video.videoUrl} target="_blank" rel="noopener noreferrer">
+                            <Video className="w-4 h-4 mr-2" />
+                            Watch Tutorial
+                          </a>
                         </Button>
                       </div>
                     </CardContent>
