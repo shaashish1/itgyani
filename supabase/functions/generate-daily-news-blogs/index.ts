@@ -333,7 +333,16 @@ Avoid these topics: ${uniqueTopics.map(t => t.title).join(', ')}`;
 Category: ${category.name}
 Keywords: ${topic.keywords.join(', ')}
 
-Write approximately 800 words with proper ## markdown headings.
+CONTENT RULES:
+🚫 No copyrighted/plagiarized material
+🚫 No adult, gambling, drugs, weapons, or other restricted topics
+✅ Follow E-E-A-T (Expertise, Experience, Authoritativeness, Trust)
+✅ Write evergreen content (long-term traffic = long-term ad income)
+✅ Avoid thin content - minimum 800 words required
+
+Write approximately 800-1200 words with proper ## markdown headings.
+Ensure content demonstrates expertise and builds trust with readers.
+Focus on providing actionable, valuable information that remains relevant over time.
 
 YOU MUST RETURN ONLY PURE JSON. NO MARKDOWN BLOCKS. NO EXTRA TEXT.
 Start with { and end with }
@@ -343,7 +352,7 @@ Required JSON format:
   "title": "Engaging title under 60 characters",
   "slug": "url-friendly-slug",
   "excerpt": "Compelling summary under 150 characters",
-  "content": "Full article in markdown with ## headings. Make it engaging and informative.",
+  "content": "Full article in markdown with ## headings. Make it engaging, informative, and demonstrate expertise.",
   "metaTitle": "SEO title under 60 characters",
   "metaDescription": "SEO description under 150 characters",
   "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],

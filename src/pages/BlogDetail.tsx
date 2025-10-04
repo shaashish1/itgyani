@@ -20,12 +20,18 @@ import {
   Facebook,
   Twitter,
   Linkedin,
-  ArrowRight
+  ArrowRight,
+  Volume2,
+  VolumeX,
+  Pause,
+  Play
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ReadMeButton } from "@/components/ImageComponents";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useTextToSpeech } from "@/hooks/useTextToSpeech";
+import { useToast } from "@/hooks/use-toast";
 
 interface BlogPost {
   id: string;
@@ -49,6 +55,8 @@ const BlogDetail = () => {
   const [blogPost, setBlogPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isPlaying, isPaused, isSupported, speak, pause, resume, stop } = useTextToSpeech();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (slug) {
@@ -462,6 +470,38 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
     });
   };
 
+  const handleReadAloud = () => {
+    if (!isSupported) {
+      toast({
+        title: "Not Supported",
+        description: "Your browser doesn't support text-to-speech.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (isPlaying && !isPaused) {
+      pause();
+    } else if (isPaused) {
+      resume();
+    } else if (blogPost) {
+      const textToRead = `${blogPost.title}. ${blogPost.content}`;
+      speak(textToRead);
+      toast({
+        title: "Reading Started",
+        description: "Blog post is now being read aloud.",
+      });
+    }
+  };
+
+  const handleStopReading = () => {
+    stop();
+    toast({
+      title: "Reading Stopped",
+      description: "Text-to-speech has been stopped.",
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -540,6 +580,40 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-4">
+                  {isSupported && (
+                    <Button 
+                      variant={isPlaying ? "default" : "outline"} 
+                      size="sm"
+                      onClick={handleReadAloud}
+                    >
+                      {isPlaying && !isPaused ? (
+                        <>
+                          <Pause className="h-4 w-4 mr-2" />
+                          Pause
+                        </>
+                      ) : isPaused ? (
+                        <>
+                          <Play className="h-4 w-4 mr-2" />
+                          Resume
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="h-4 w-4 mr-2" />
+                          Read Aloud
+                        </>
+                      )}
+                    </Button>
+                  )}
+                  {isPlaying && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleStopReading}
+                    >
+                      <VolumeX className="h-4 w-4 mr-2" />
+                      Stop
+                    </Button>
+                  )}
                   <Button variant="outline" size="sm">
                     <Share2 className="h-4 w-4 mr-2" />
                     Share
