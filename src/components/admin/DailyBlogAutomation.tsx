@@ -109,7 +109,8 @@ export const DailyBlogAutomation: React.FC = () => {
     }
   };
 
-  const handleUpdateImages = async () => {
+  const handleUpdateImages = async (retryCount = 0) => {
+    const MAX_RETRIES = 2;
     setIsUpdatingImages(true);
     
     try {
@@ -118,9 +119,20 @@ export const DailyBlogAutomation: React.FC = () => {
         description: "Generating AI images for all blogs without images...",
       });
 
-      const { data, error } = await supabase.functions.invoke('update-blog-images');
+      const { data, error } = await supabase.functions.invoke('update-blog-images', {
+        body: {},
+      });
 
-      if (error) throw error;
+      if (error) {
+        // Check if it's a network error and retry
+        if (error.message.includes('Failed to send a request') && retryCount < MAX_RETRIES) {
+          console.log(`Retrying image update (attempt ${retryCount + 1}/${MAX_RETRIES})...`);
+          setIsUpdatingImages(false);
+          await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds before retry
+          return handleUpdateImages(retryCount + 1);
+        }
+        throw error;
+      }
 
       const result = data;
       
@@ -136,7 +148,9 @@ export const DailyBlogAutomation: React.FC = () => {
       console.error('Image update error:', error);
       toast({
         title: "Image Update Failed",
-        description: error.message || "Failed to update blog images",
+        description: retryCount >= MAX_RETRIES 
+          ? "Unable to connect to the server. Please try again in a moment."
+          : error.message || "Failed to update blog images",
         variant: "destructive"
       });
     } finally {
@@ -245,7 +259,7 @@ export const DailyBlogAutomation: React.FC = () => {
                 </p>
               </div>
               <Button 
-                onClick={handleUpdateImages}
+                onClick={() => handleUpdateImages()}
                 disabled={isUpdatingImages}
                 variant="outline"
               >
