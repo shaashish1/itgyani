@@ -564,7 +564,7 @@ const Resources = () => {
       category: "Video Tutorials",
       description: "Full masterclass on n8n - everything you need to know to go from beginner to professional in automation workflows.",
       tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=AURnISajubk"
+      videoUrl: "https://youtube.com/watch?v=AURnISajubk"
     },
     {
       id: 2,
@@ -575,7 +575,7 @@ const Resources = () => {
       category: "Video Tutorials",
       description: "Learn how to create AI agents step by step. Automate workflows, integrate tools, and build powerful AI features without coding.",
       tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=PfdnYe2690E"
+      videoUrl: "https://youtube.com/watch?v=PfdnYe2690E"
     },
     {
       id: 3,
@@ -586,7 +586,7 @@ const Resources = () => {
       category: "Video Tutorials",
       description: "Step-by-step guide to create a sophisticated RAG (Retrieval-Augmented Generation) chatbot using N8N automation platform.",
       tags: ["AI Implementation", "n8n Workflows", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=Iz9fCkgi81E"
+      videoUrl: "https://youtube.com/watch?v=Iz9fCkgi81E"
     },
     {
       id: 4,
@@ -597,7 +597,7 @@ const Resources = () => {
       category: "Video Tutorials",
       description: "Discover 10 powerful n8n workflows and AI agents that automate tasks from content repurposing to email management and lead scraping.",
       tags: ["n8n Workflows", "Business Intelligence", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=PhVTDydFGo0"
+      videoUrl: "https://youtube.com/watch?v=PhVTDydFGo0"
     },
     {
       id: 5,
@@ -608,7 +608,7 @@ const Resources = () => {
       category: "Video Tutorials",
       description: "Complete N8N course covering how to build and sell AI automations and agents. Perfect for professionals looking to master automation.",
       tags: ["n8n Workflows", "AI Implementation", "Business Intelligence"],
-      videoUrl: "https://www.youtube.com/watch?v=2GZ2SNXWK-c"
+      videoUrl: "https://youtube.com/watch?v=2GZ2SNXWK-c"
     },
     {
       id: 6,
@@ -619,7 +619,7 @@ const Resources = () => {
       category: "Video Tutorials",
       description: "Build powerful AI-powered business automation from scratch including email automation, chatbots, and website integrations.",
       tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=CfD17vBCPEU"
+      videoUrl: "https://youtube.com/watch?v=CfD17vBCPEU"
     }
   ];
 
