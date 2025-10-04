@@ -563,7 +563,8 @@ const Resources = () => {
       views: "28.5K",
       category: "Video Tutorials",
       description: "Step-by-step tutorial for creating your first automated workflow using n8n and AI components.",
-      tags: ["n8n Workflows", "AI Implementation", "Automation Guides"]
+      tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=9KHLTZaJcR8"
     },
     {
       id: 2,
@@ -573,7 +574,8 @@ const Resources = () => {
       views: "12.3K",
       category: "Video Tutorials",
       description: "Deep dive into complex data processing workflows, machine learning integration, and performance optimization.",
-      tags: ["Business Intelligence", "AI Implementation", "Automation Guides"]
+      tags: ["Business Intelligence", "AI Implementation", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=RsYCgvNDu3w"
     },
     {
       id: 3,
@@ -583,7 +585,41 @@ const Resources = () => {
       views: "19.7K",
       category: "Video Tutorials",
       description: "Complete guide to building intelligent chatbots for customer service with natural language processing.",
-      tags: ["AI Implementation", "Case Studies", "Automation Guides"]
+      tags: ["AI Implementation", "Case Studies", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=i4QJRLflJYs"
+    },
+    {
+      id: 4,
+      title: "n8n AI Agents Complete Tutorial",
+      duration: "38 minutes",
+      difficulty: "Intermediate",
+      views: "15.2K",
+      category: "Video Tutorials",
+      description: "Learn how to build powerful AI agents using n8n with LangChain integration and custom tools.",
+      tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=9v0li3DeIpw"
+    },
+    {
+      id: 5,
+      title: "Email Automation with AI",
+      duration: "32 minutes",
+      difficulty: "Beginner",
+      views: "22.8K",
+      category: "Video Tutorials",
+      description: "Automate email responses and management using AI-powered workflows and smart routing.",
+      tags: ["n8n Workflows", "AI Implementation", "Business Intelligence"],
+      videoUrl: "https://www.youtube.com/watch?v=yb7yEVRUF8g"
+    },
+    {
+      id: 6,
+      title: "Building AI-Powered Web Scrapers",
+      duration: "28 minutes",
+      difficulty: "Intermediate",
+      views: "18.4K",
+      category: "Video Tutorials",
+      description: "Create intelligent web scrapers that use AI to extract and process data automatically.",
+      tags: ["n8n Workflows", "Business Intelligence", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=n8n_hHzESwk"
     }
   ];
 
@@ -1771,7 +1807,10 @@ const Resources = () => {
                           Duration: {video.duration}
                         </div>
 
-                        <Button className="w-full">
+                        <Button 
+                          className="w-full"
+                          onClick={() => window.open(video.videoUrl, '_blank')}
+                        >
                           <Video className="w-4 h-4 mr-2" />
                           Watch Tutorial
                         </Button>
