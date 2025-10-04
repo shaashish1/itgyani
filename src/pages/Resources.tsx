@@ -1807,15 +1807,37 @@ const Resources = () => {
                           Duration: {video.duration}
                         </div>
 
-                        <Button 
-                          className="w-full"
-                          asChild
-                        >
-                          <a href={video.videoUrl} target="_blank" rel="noopener noreferrer">
-                            <Video className="w-4 h-4 mr-2" />
-                            Watch Tutorial
-                          </a>
-                        </Button>
+<Dialog>
+  <DialogTrigger asChild>
+    <Button 
+      className="w-full"
+    >
+      <Video className="w-4 h-4 mr-2" />
+      Watch Tutorial
+    </Button>
+  </DialogTrigger>
+  <DialogContent className="max-w-3xl">
+    <div className="aspect-video">
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${new URL(video.videoUrl).searchParams.get('v') ?? ''}?autoplay=1&rel=0&modestbranding=1`}
+        title={video.title}
+        className="w-full h-full"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+    <div className="mt-3">
+      <a
+        href={`https://youtu.be/${new URL(video.videoUrl).searchParams.get('v') ?? ''}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary underline text-sm"
+      >
+        Open on YouTube
+      </a>
+    </div>
+  </DialogContent>
+</Dialog>
                       </div>
                     </CardContent>
                   </Card>
