@@ -557,69 +557,69 @@ const Resources = () => {
   const videoTutorials = [
     {
       id: 1,
-      title: "Building Your First AI Automation Workflow",
-      duration: "45 minutes",
+      title: "Master n8n in 2 Hours: Complete Beginner's Guide",
+      duration: "2 hours",
       difficulty: "Beginner",
       views: "28.5K",
       category: "Video Tutorials",
-      description: "Step-by-step tutorial for creating your first automated workflow using n8n and AI components.",
+      description: "Full masterclass on n8n - everything you need to know to go from beginner to professional in automation workflows.",
       tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=9KHLTZaJcR8"
+      videoUrl: "https://www.youtube.com/watch?v=AURnISajubk"
     },
     {
       id: 2,
-      title: "Advanced Data Processing with AI Automation",
-      duration: "1 hour 15 minutes", 
-      difficulty: "Advanced",
-      views: "12.3K",
+      title: "n8n Tutorial: Build AI Agents Step-by-Step",
+      duration: "45 minutes", 
+      difficulty: "Beginner",
+      views: "15.2K",
       category: "Video Tutorials",
-      description: "Deep dive into complex data processing workflows, machine learning integration, and performance optimization.",
-      tags: ["Business Intelligence", "AI Implementation", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=RsYCgvNDu3w"
+      description: "Learn how to create AI agents step by step. Automate workflows, integrate tools, and build powerful AI features without coding.",
+      tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=PfdnYe2690E"
     },
     {
       id: 3,
-      title: "Customer Service Chatbot Development",
-      duration: "55 minutes",
+      title: "Build AI Chatbot - RAG Chatbot with N8N",
+      duration: "52 minutes",
       difficulty: "Intermediate",
       views: "19.7K",
       category: "Video Tutorials",
-      description: "Complete guide to building intelligent chatbots for customer service with natural language processing.",
-      tags: ["AI Implementation", "Case Studies", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=i4QJRLflJYs"
+      description: "Step-by-step guide to create a sophisticated RAG (Retrieval-Augmented Generation) chatbot using N8N automation platform.",
+      tags: ["AI Implementation", "n8n Workflows", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=Iz9fCkgi81E"
     },
     {
       id: 4,
-      title: "n8n AI Agents Complete Tutorial",
+      title: "10 n8n Workflows to Automate Your Business",
       duration: "38 minutes",
       difficulty: "Intermediate",
-      views: "15.2K",
+      views: "22.8K",
       category: "Video Tutorials",
-      description: "Learn how to build powerful AI agents using n8n with LangChain integration and custom tools.",
-      tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=9v0li3DeIpw"
+      description: "Discover 10 powerful n8n workflows and AI agents that automate tasks from content repurposing to email management and lead scraping.",
+      tags: ["n8n Workflows", "Business Intelligence", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=PhVTDydFGo0"
     },
     {
       id: 5,
-      title: "Email Automation with AI",
-      duration: "32 minutes",
-      difficulty: "Beginner",
-      views: "22.8K",
+      title: "N8N Full Course: Build & Sell AI Automations",
+      duration: "6 hours",
+      difficulty: "Advanced",
+      views: "12.3K",
       category: "Video Tutorials",
-      description: "Automate email responses and management using AI-powered workflows and smart routing.",
+      description: "Complete N8N course covering how to build and sell AI automations and agents. Perfect for professionals looking to master automation.",
       tags: ["n8n Workflows", "AI Implementation", "Business Intelligence"],
-      videoUrl: "https://www.youtube.com/watch?v=yb7yEVRUF8g"
+      videoUrl: "https://www.youtube.com/watch?v=2GZ2SNXWK-c"
     },
     {
       id: 6,
-      title: "Building AI-Powered Web Scrapers",
-      duration: "28 minutes",
+      title: "Complete AI Automation Guide with n8n",
+      duration: "98 minutes",
       difficulty: "Intermediate",
       views: "18.4K",
       category: "Video Tutorials",
-      description: "Create intelligent web scrapers that use AI to extract and process data automatically.",
-      tags: ["n8n Workflows", "Business Intelligence", "Automation Guides"],
-      videoUrl: "https://www.youtube.com/watch?v=n8n_hHzESwk"
+      description: "Build powerful AI-powered business automation from scratch including email automation, chatbots, and website integrations.",
+      tags: ["n8n Workflows", "AI Implementation", "Automation Guides"],
+      videoUrl: "https://www.youtube.com/watch?v=CfD17vBCPEU"
     }
   ];
 
