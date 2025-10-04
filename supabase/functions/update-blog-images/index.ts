@@ -36,6 +36,10 @@ Style: Clean, tech-focused, professional, high-quality. Use vibrant colors and m
 
         console.log(`Generating image for: ${title}`);
         
+        // Set timeout for image generation (30 seconds)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
         const response = await fetch(
           'https://ai.gateway.lovable.dev/v1/chat/completions',
           {
@@ -54,8 +58,11 @@ Style: Clean, tech-focused, professional, high-quality. Use vibrant colors and m
               ],
               modalities: ['image', 'text']
             }),
+            signal: controller.signal
           }
         );
+        
+        clearTimeout(timeoutId);
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -79,11 +86,13 @@ Style: Clean, tech-focused, professional, high-quality. Use vibrant colors and m
       }
     }
 
-    // Get all blogs without images
+    // Get blogs without images (limit to 10 per batch to avoid timeout)
+    const BATCH_SIZE = 10;
     const { data: blogsWithoutImages, error: fetchError } = await supabaseClient
       .from('blog_posts')
       .select('id, title, excerpt, category_id, categories(name)')
-      .is('featured_image_url', null);
+      .is('featured_image_url', null)
+      .limit(BATCH_SIZE);
 
     if (fetchError) {
       throw new Error(`Failed to fetch blogs: ${fetchError.message}`);
@@ -99,7 +108,7 @@ Style: Clean, tech-focused, professional, high-quality. Use vibrant colors and m
       });
     }
 
-    console.log(`Found ${blogsWithoutImages.length} blogs without images`);
+    console.log(`Found ${blogsWithoutImages.length} blogs without images (processing batch of ${BATCH_SIZE})`);
 
     const results = {
       successful: 0,
@@ -141,9 +150,9 @@ Style: Clean, tech-focused, professional, high-quality. Use vibrant colors and m
           results.errors.push(`Image generation failed: ${blog.title}`);
         }
 
-        // Add delay between generations to avoid rate limits
+        // Add delay between generations to avoid rate limits (8 seconds like blog generation)
         if (blog.id !== blogsWithoutImages[blogsWithoutImages.length - 1].id) {
-          await new Promise(resolve => setTimeout(resolve, 3000));
+          await new Promise(resolve => setTimeout(resolve, 8000));
         }
 
       } catch (error) {
