@@ -22,6 +22,8 @@ export const DailyBlogAutomation: React.FC = () => {
   const [isUpdatingImages, setIsUpdatingImages] = useState(false);
   const [recentRuns, setRecentRuns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [monitoredRunId, setMonitoredRunId] = useState<string | null>(null);
+  const [previousStatus, setPreviousStatus] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -74,12 +76,57 @@ export const DailyBlogAutomation: React.FC = () => {
         .limit(10);
 
       if (error) throw error;
-      setRecentRuns(data || []);
+      
+      const runs = data || [];
+      setRecentRuns(runs);
 
-      // If latest run is no longer pending, stop generating state
-      const latest = (data || [])[0];
-      if (isGenerating && latest && latest.status !== 'pending' && latest.status !== 'running') {
-        setIsGenerating(false);
+      // Monitor running job for completion
+      if (monitoredRunId && runs.length > 0) {
+        const monitoredRun = runs.find(r => r.id === monitoredRunId);
+        if (monitoredRun && monitoredRun.status !== 'running' && previousStatus === 'running') {
+          // Run has completed - determine actual status
+          const actualStatus = (monitoredRun.status === 'completed' && monitoredRun.blogs_created === 0 && monitoredRun.blogs_failed === 0)
+            ? 'failed'
+            : monitoredRun.status;
+          
+          // Show completion notification
+          if (actualStatus === 'completed') {
+            toast({
+              title: "✅ Generation Complete",
+              description: `Successfully generated ${monitoredRun.blogs_created} blog post(s)`,
+            });
+          } else if (actualStatus === 'partial') {
+            toast({
+              title: "⚠️ Generation Partially Complete",
+              description: `Generated ${monitoredRun.blogs_created} blog(s), ${monitoredRun.blogs_failed} failed`,
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "❌ Generation Failed",
+              description: monitoredRun.error_message || "The generation process did not complete successfully",
+              variant: "destructive",
+            });
+          }
+          
+          // Clear monitoring state
+          setMonitoredRunId(null);
+          setPreviousStatus(null);
+          setIsGenerating(false);
+        } else if (monitoredRun) {
+          // Update previous status for next check
+          setPreviousStatus(monitoredRun.status);
+        }
+      }
+      
+      // Check if there's a new running job to monitor
+      if (!monitoredRunId) {
+        const runningJob = runs.find(r => r.status === 'running');
+        if (runningJob) {
+          setMonitoredRunId(runningJob.id);
+          setPreviousStatus('running');
+          setIsGenerating(true);
+        }
       }
     } catch (error) {
       console.error('Error loading recent runs:', error);
@@ -118,22 +165,18 @@ export const DailyBlogAutomation: React.FC = () => {
       if (error) throw error;
 
       toast({
-        title: "Generation Started!",
-        description: "Blogs are being generated and published one at a time. Watch the Recent Generation Runs section for real-time progress.",
+        title: "🚀 Generation Started!",
+        description: "Monitoring progress... You'll be notified when complete.",
       });
 
-      // Start auto-refresh
-      // The useEffect will handle refreshing every 5 seconds
-      
-      // Stop auto-refresh after 5 minutes (enough time for 10 blogs)
-      setTimeout(() => {
-        setIsGenerating(false);
-        loadRecentRuns();
-        toast({
-          title: "Generation Complete",
-          description: "Check the All Blogs tab to see the newly published posts.",
-        });
-      }, 300000); // 5 minutes
+      // Set up monitoring for the new run
+      if (data?.runId) {
+        setMonitoredRunId(data.runId);
+        setPreviousStatus('running');
+      }
+
+      // Reload to show the new running job
+      loadRecentRuns();
 
     } catch (error: any) {
       console.error('Generation error:', error);
