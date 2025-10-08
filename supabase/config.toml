@@ -57,6 +57,12 @@ verify_jwt = true
 [functions.update-openrouter-key]
 verify_jwt = true
 
+[functions.update-openai-key]
+verify_jwt = true
+
+[functions.test-openai-connection]
+verify_jwt = false
+
 [functions.update-blog-images]
 verify_jwt = false
 

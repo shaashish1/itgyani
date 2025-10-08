@@ -33,6 +33,7 @@ import { BatchBlogGenerator } from '@/components/admin/BatchBlogGenerator';
 import { TopicProcessor } from '@/components/admin/TopicProcessor';
 import { DailyBlogAutomation } from '@/components/admin/DailyBlogAutomation';
 import { BlogPostManager } from '@/components/admin/BlogPostManager';
+import { OpenAIConfig } from '@/components/admin/OpenAIConfig';
 
 const AdminBlogPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -262,14 +263,17 @@ const AdminBlogPage: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="system-settings" className="space-y-6">
+            {/* OpenAI Configuration - Primary */}
+            <OpenAIConfig />
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
-                  System Configuration
+                  Legacy AI Providers
                 </CardTitle>
                 <CardDescription>
-                  Configure AI models, API settings, and system preferences
+                  Legacy configurations (Gemini and OpenRouter are deprecated in favor of OpenAI)
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -277,7 +281,7 @@ const AdminBlogPage: React.FC = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-4">
                     <Key className="h-5 w-5 text-primary" />
-                    <h4 className="font-medium text-lg">AI API Key Management</h4>
+                    <h4 className="font-medium text-lg">Legacy AI API Keys</h4>
                   </div>
 
                   <Tabs defaultValue="gemini" className="w-full">

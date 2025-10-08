@@ -18,609 +18,377 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestStartTime = Date.now();
+  console.log('🚀 Daily blog generation started at:', new Date().toISOString());
+
   try {
-    // Parse incoming request for optional count
-    let requestedCount = 10;
-    try {
-      const body = await req.json();
-      if (typeof body?.count === 'number' && body.count > 0 && body.count <= 20) {
-        requestedCount = body.count;
-      }
-    } catch (_) {
-      // No body provided or invalid JSON
-    }
-
-    console.log(`Starting daily news blog generation (count=${requestedCount})...`);
-
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    const { count = 10 } = await req.json();
     
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is required');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Missing Supabase configuration');
     }
 
-    console.log('Using Lovable AI (Gemini 2.5 Flash)');
+    if (!openAIApiKey) {
+      throw new Error('OpenAI API key not configured');
+    }
 
-    // Create initial run record BEFORE background processing
-    const { data: initialRunRecord, error: initialRunError } = await supabaseClient
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Create initial run record
+    const { data: runRecord, error: runError } = await supabase
       .from('daily_blog_runs')
       .insert({
-        run_date: new Date().toISOString(),
+        status: 'running',
         blogs_created: 0,
-        blogs_failed: 0,
-        status: 'pending'
+        blogs_failed: 0
       })
       .select()
       .single();
 
-    if (initialRunError) {
-      console.error('Failed to create run record:', initialRunError);
+    if (runError) {
+      console.error('Error creating run record:', runError);
+      throw runError;
     }
 
-    const runId = initialRunRecord?.id;
-    console.log('Created run record with ID:', runId);
+    const runId = runRecord.id;
+    console.log('📝 Created run record:', runId);
 
     // Start background processing
-    const processingPromise = (async () => {
-    // Parse incoming request for optional count (duplicate for closure)
-    const countForProcessing = requestedCount;
-    try {
-      const body = await req.json();
-      if (typeof body?.count === 'number' && body.count > 0 && body.count <= 20) {
-        requestedCount = body.count;
-      }
-    } catch (_) {
-      // No body provided or invalid JSON
-    }
-
-    console.log(`Starting background blog generation (count=${countForProcessing})...`);
-
-    // Helper function for Gemini API via Lovable AI Gateway
-    async function callGemini(prompt: string, maxTokens = 3000) {
-      const response = await fetch(
-        'https://ai.gateway.lovable.dev/v1/chat/completions',
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
-            messages: [
-              { role: 'system', content: 'You are a helpful AI assistant for news blog generation. ALWAYS return valid, complete JSON. Never truncate responses.' },
-              { role: 'user', content: prompt }
-            ],
-            max_tokens: maxTokens,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        if (response.status === 429) {
-          throw new Error('429: Rate limits exceeded by Lovable AI');
-        }
-        if (response.status === 402) {
-          throw new Error('402: Payment required for Lovable AI');
-        }
-        throw new Error(`Lovable AI error: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      return data.choices?.[0]?.message?.content || '';
-    }
-
-    // Helper function to generate images using Nano banana
-    async function generateBlogImage(title: string, excerpt: string, category: string) {
+    (async () => {
       try {
-        const imagePrompt = `Create a professional, modern blog header image for an article about: "${title}". 
-Category: ${category}
-Context: ${excerpt}
+        let blogsCreated = 0;
+        let blogsFailed = 0;
 
-Style: Clean, tech-focused, professional, high-quality. Use vibrant colors and modern design elements. Make it visually appealing for a tech blog about AI and automation.`;
-
-        console.log(`Generating image for: ${title}`);
-        
-        const response = await fetch(
-          'https://ai.gateway.lovable.dev/v1/chat/completions',
-          {
+        // Helper: Call OpenAI for text generation
+        const callOpenAI = async (messages: any[], maxTokens = 3000) => {
+          const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+              'Authorization': `Bearer ${openAIApiKey}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              model: 'google/gemini-2.5-flash-image-preview',
-              messages: [
-                {
-                  role: 'user',
-                  content: imagePrompt
+              model: 'gpt-5-mini-2025-08-07',
+              messages,
+              max_completion_tokens: maxTokens,
+              tools: [{
+                type: "function",
+                function: {
+                  name: "generate_blog",
+                  description: "Generate a structured blog post",
+                  parameters: {
+                    type: "object",
+                    properties: {
+                      title: { type: "string" },
+                      content: { type: "string" },
+                      excerpt: { type: "string" },
+                      keywords: { type: "array", items: { type: "string" } },
+                      meta_description: { type: "string" },
+                      tags: { type: "array", items: { type: "string" } }
+                    },
+                    required: ["title", "content", "excerpt", "keywords", "meta_description"]
+                  }
                 }
-              ],
-              modalities: ['image', 'text']
+              }],
+              tool_choice: { type: "function", function: { name: "generate_blog" }}
             }),
-          }
-        );
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`Image generation failed: ${response.status} - ${errorText}`);
-          return null;
-        }
-
-        const data = await response.json();
-        const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-        
-        if (imageUrl) {
-          console.log(`✓ Image generated successfully for: ${title}`);
-          return imageUrl;
-        }
-        
-        console.error('No image URL in response');
-        return null;
-      } catch (error) {
-        console.error(`Image generation error for ${title}:`, error);
-        return null;
-      }
-    }
-
-    // Get trending AI/automation topics
-    console.log('Fetching trending AI topics...');
-    const trendingPrompt = `List ${countForProcessing} trending topics in AI/automation. Return ONLY this JSON array, nothing else:
-[{"title":"Topic Title","category":"ai-machine-learning","keywords":["key1","key2","key3"]}]
-
-Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, edge-ai, future-tech`;
-
-    let trendingContent = await callGemini(trendingPrompt, 1500);
-    
-    let trendingTopics: NewsSource[];
-    try {
-      trendingContent = trendingContent.trim()
-        .replace(/^```(?:json)?\s*\n?/i, '')
-        .replace(/\n?```\s*$/i, '')
-        .replace(/^[^[{]*/, '')
-        .replace(/[^}\]]*$/, '');
-      
-      trendingTopics = JSON.parse(trendingContent);
-      
-      if (!Array.isArray(trendingTopics) || trendingTopics.length === 0) {
-        throw new Error('No topics returned');
-      }
-    } catch (parseError) {
-      console.error('Failed to parse trending topics. Raw response:', trendingContent);
-      throw new Error(`AI returned invalid JSON: ${parseError.message}`);
-    }
-
-    console.log(`Found ${trendingTopics.length} trending topics`);
-
-    // Get existing blog posts to check for duplicates
-    console.log('Fetching existing blog posts for duplicate checking...');
-    const { data: existingBlogs } = await supabaseClient
-      .from('blog_posts')
-      .select('title, slug, keywords, tags');
-
-    const existingTitles = new Set(existingBlogs?.map(b => b.title.toLowerCase()) || []);
-    const existingSlugs = new Set(existingBlogs?.map(b => b.slug.toLowerCase()) || []);
-    const existingKeywords = new Set(
-      existingBlogs?.flatMap(b => b.keywords || []).map(k => k.toLowerCase()) || []
-    );
-
-    // Filter out duplicate topics
-    const uniqueTopics = trendingTopics.filter(topic => {
-      const titleLower = topic.title.toLowerCase();
-      const slugifiedTitle = titleLower.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-      
-      // Check if title already exists
-      if (existingTitles.has(titleLower)) {
-        console.log(`⚠ Skipping duplicate title: ${topic.title}`);
-        return false;
-      }
-      
-      // Check if slug already exists
-      if (existingSlugs.has(slugifiedTitle)) {
-        console.log(`⚠ Skipping duplicate slug: ${slugifiedTitle}`);
-        return false;
-      }
-      
-      // Check if any keywords overlap significantly (3+ matching keywords = duplicate)
-      const topicKeywords = topic.keywords.map(k => k.toLowerCase());
-      const matchingKeywords = topicKeywords.filter(k => existingKeywords.has(k));
-      if (matchingKeywords.length >= 3) {
-        console.log(`⚠ Skipping similar topic (${matchingKeywords.length} matching keywords): ${topic.title}`);
-        return false;
-      }
-      
-      return true;
-    });
-
-    console.log(`After duplicate check: ${uniqueTopics.length} unique topics (filtered ${trendingTopics.length - uniqueTopics.length} duplicates)`);
-
-    // If we filtered out too many, request more topics
-    if (uniqueTopics.length < countForProcessing / 2) {
-      console.log('Too many duplicates found, requesting additional topics...');
-      const additionalNeeded = countForProcessing - uniqueTopics.length;
-      const additionalPrompt = `List ${additionalNeeded} MORE trending topics in AI/automation. Return ONLY this JSON array, nothing else:
-[{"title":"Topic Title","category":"ai-machine-learning","keywords":["key1","key2","key3"]}]
-
-Categories: ai-machine-learning, automation, n8n-workflows, quantum-computing, edge-ai, future-tech
-
-Avoid these topics: ${uniqueTopics.map(t => t.title).join(', ')}`;
-
-      let additionalContent = await callGemini(additionalPrompt, 1500);
-      
-      try {
-        additionalContent = additionalContent.trim()
-          .replace(/^```(?:json)?\s*\n?/i, '')
-          .replace(/\n?```\s*$/i, '')
-          .replace(/^[^[{]*/, '')
-          .replace(/[^}\]]*$/, '');
-        
-        const additionalTopics: NewsSource[] = JSON.parse(additionalContent);
-        
-        // Filter additional topics for duplicates too
-        const filteredAdditional = additionalTopics.filter(topic => {
-          const titleLower = topic.title.toLowerCase();
-          const slugifiedTitle = titleLower.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-          return !existingTitles.has(titleLower) && !existingSlugs.has(slugifiedTitle);
-        });
-        
-        uniqueTopics.push(...filteredAdditional);
-        console.log(`Added ${filteredAdditional.length} additional unique topics`);
-      } catch (parseError) {
-        console.error('Failed to parse additional topics:', parseError);
-      }
-    }
-
-    // Get category mappings
-    const { data: categories } = await supabaseClient
-      .from('categories')
-      .select('*');
-
-    const categoryMap = new Map(categories?.map(c => [c.slug, c]) || []);
-
-    // Generate blogs for each unique topic
-    const results = {
-      successful: 0,
-      failed: 0,
-      total: uniqueTopics.length,
-      duplicatesSkipped: trendingTopics.length - uniqueTopics.length,
-      errors: [] as string[],
-      posts: [] as any[]
-    };
-
-    for (let i = 0; i < uniqueTopics.length; i++) {
-      const topic = uniqueTopics[i];
-      
-      try {
-        console.log(`Processing ${i + 1}/${uniqueTopics.length}: ${topic.title}`);
-
-        const category = categoryMap.get(topic.category);
-        if (!category) {
-          console.error(`Invalid category: ${topic.category}`);
-          results.errors.push(`Invalid category for: ${topic.title}`);
-          results.failed++;
-          continue;
-        }
-
-        // Generate blog content with explicit JSON-only instruction
-        const blogPrompt = `Write a blog article about: "${topic.title}"
-Category: ${category.name}
-Keywords: ${topic.keywords.join(', ')}
-
-CONTENT RULES:
-🚫 No copyrighted/plagiarized material
-🚫 No adult, gambling, drugs, weapons, or other restricted topics
-✅ Follow E-E-A-T (Expertise, Experience, Authoritativeness, Trust)
-✅ Write evergreen content (long-term traffic = long-term ad income)
-✅ Avoid thin content - minimum 800 words required
-
-Write approximately 800-1200 words with proper ## markdown headings.
-Ensure content demonstrates expertise and builds trust with readers.
-Focus on providing actionable, valuable information that remains relevant over time.
-
-YOU MUST RETURN ONLY PURE JSON. NO MARKDOWN BLOCKS. NO EXTRA TEXT.
-Start with { and end with }
-
-Required JSON format:
-{
-  "title": "Engaging title under 60 characters",
-  "slug": "url-friendly-slug",
-  "excerpt": "Compelling summary under 150 characters",
-  "content": "Full article in markdown with ## headings. Make it engaging, informative, and demonstrate expertise.",
-  "metaTitle": "SEO title under 60 characters",
-  "metaDescription": "SEO description under 150 characters",
-  "keywords": ["keyword1", "keyword2", "keyword3", "keyword4", "keyword5"],
-  "tags": ["tag1", "tag2", "tag3", "tag4"],
-  "readingTime": 6
-}`;
-
-        let blogContent;
-        let retryCount = 0;
-        const maxRetries = 2;
-        
-        while (retryCount <= maxRetries) {
-          try {
-            blogContent = await callGemini(blogPrompt, 10000);
-            break; // Success, exit retry loop
-          } catch (error) {
-            if (error.message?.includes('429') || error.message?.includes('rate limit')) {
-              console.log('Rate limit hit, waiting 10 seconds...');
-              await new Promise(resolve => setTimeout(resolve, 10000));
-              results.errors.push(`Rate limited: ${topic.title}`);
-              results.failed++;
-              continue;
-            }
-            
-            retryCount++;
-            if (retryCount > maxRetries) {
-              console.error(`AI error for ${topic.title} after ${maxRetries} retries:`, error);
-              results.errors.push(`AI error: ${topic.title}`);
-              results.failed++;
-              break;
-            }
-            
-            console.log(`Retry ${retryCount}/${maxRetries} for ${topic.title}`);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-          }
-        }
-        
-        if (retryCount > maxRetries) {
-          continue; // Skip to next topic
-        }
-
-        let parsedBlog;
-        try {
-          let cleanBlog = blogContent.trim();
-          
-          // Step 1: Remove markdown code blocks
-          cleanBlog = cleanBlog.replace(/```json\s*/gi, '').replace(/```\s*/gi, '');
-          
-          // Step 2: Find JSON boundaries
-          const firstBrace = cleanBlog.indexOf('{');
-          const lastBrace = cleanBlog.lastIndexOf('}');
-          
-          if (firstBrace === -1 || lastBrace === -1) {
-            throw new Error('No JSON boundaries found');
-          }
-          
-          cleanBlog = cleanBlog.substring(firstBrace, lastBrace + 1);
-          
-          // Step 3: Fix common JSON issues
-          // Normalize smart quotes to standard ASCII to reduce JSON parse errors
-          cleanBlog = cleanBlog
-            .replace(/[\u201C\u201D]/g, '"') // curly double quotes → straight
-            .replace(/[\u2018\u2019]/g, "'"); // curly single quotes → straight
-          
-          // Step 4: Parse JSON
-          parsedBlog = JSON.parse(cleanBlog);
-          
-          // Step 5: Validate required fields with sensible fallbacks
-          const coreRequired = ['title', 'slug', 'content'] as const;
-          for (const field of coreRequired) {
-            if (!parsedBlog[field]) {
-              throw new Error(`Missing required field: ${field}`);
-            }
-          }
-
-          // Provide fallbacks for optional SEO fields to avoid hard failures
-          if (!parsedBlog.excerpt) {
-            const plain = String(parsedBlog.content || '').replace(/\s+/g, ' ').trim();
-            parsedBlog.excerpt = plain.slice(0, 150);
-          }
-          if (!parsedBlog.metaTitle) {
-            parsedBlog.metaTitle = String(parsedBlog.title).slice(0, 60);
-          }
-          if (!parsedBlog.metaDescription) {
-            parsedBlog.metaDescription = String(parsedBlog.excerpt || parsedBlog.content).replace(/\s+/g, ' ').slice(0, 150);
-          }
-          if (!Array.isArray(parsedBlog.keywords)) {
-            parsedBlog.keywords = Array.isArray(topic.keywords) ? topic.keywords : [];
-          }
-          if (!Array.isArray(parsedBlog.tags)) {
-            parsedBlog.tags = [category.slug];
-          }
-          if (!parsedBlog.readingTime || typeof parsedBlog.readingTime !== 'number') {
-            const words = String(parsedBlog.content).split(/\s+/).filter(Boolean).length;
-            parsedBlog.readingTime = Math.max(3, Math.round(words / 200));
-          }
-          
-          // Validate content length
-          if (parsedBlog.content.length < 300) {
-            throw new Error('Content too short');
-          }
-          
-          console.log(`✓ Successfully parsed blog for: ${topic.title}`);
-          
-        } catch (parseError) {
-          console.error(`❌ Parse failed for "${topic.title}"`);
-          console.error('Error:', parseError.message);
-          console.error('Response length:', blogContent.length);
-          console.error('First 300 chars:', blogContent.substring(0, 300));
-          console.error('Last 300 chars:', blogContent.substring(Math.max(0, blogContent.length - 300)));
-          
-          results.errors.push(`Parse error: ${topic.title}`);
-          results.failed++;
-          
-          // Update run record with failure
-          if (runId) {
-            await supabaseClient
-              .from('daily_blog_runs')
-              .update({
-                blogs_failed: results.failed,
-                status: 'pending'
-              })
-              .eq('id', runId);
-          }
-          
-          continue;
-        }
-
-        // Generate blog image with retry logic
-        console.log(`Generating image for: ${parsedBlog.title}`);
-        let featuredImageUrl = null;
-        let imageRetries = 0;
-        const maxImageRetries = 2;
-        
-        while (!featuredImageUrl && imageRetries <= maxImageRetries) {
-          try {
-            featuredImageUrl = await generateBlogImage(
-              parsedBlog.title, 
-              parsedBlog.excerpt, 
-              category.name
-            );
-            
-            if (!featuredImageUrl && imageRetries < maxImageRetries) {
-              console.log(`⚠ Image generation attempt ${imageRetries + 1} failed, retrying...`);
-              await new Promise(resolve => setTimeout(resolve, 3000));
-              imageRetries++;
-            } else if (featuredImageUrl) {
-              console.log(`✓ Image generated successfully for: ${parsedBlog.title}`);
-            }
-          } catch (imgError) {
-            console.error(`Image generation error (attempt ${imageRetries + 1}):`, imgError);
-            if (imageRetries < maxImageRetries) {
-              await new Promise(resolve => setTimeout(resolve, 3000));
-              imageRetries++;
-            } else {
-              console.log(`⚠ All image generation attempts failed for: ${parsedBlog.title}, continuing without image`);
-            }
-          }
-        }
-
-        // Insert blog post as PUBLISHED immediately with generated image
-        const { data: newPost, error: insertError } = await supabaseClient
-          .from('blog_posts')
-          .insert({
-            title: parsedBlog.title,
-            slug: parsedBlog.slug,
-            excerpt: parsedBlog.excerpt,
-            content: parsedBlog.content,
-            category_id: category.id,
-            meta_title: parsedBlog.metaTitle,
-            meta_description: parsedBlog.metaDescription,
-            keywords: parsedBlog.keywords,
-            tags: parsedBlog.tags,
-            reading_time: parsedBlog.readingTime,
-            status: 'published',
-            published_at: new Date().toISOString(),
-            is_premium: false,
-            featured_image_url: featuredImageUrl
-          })
-          .select()
-          .single();
-
-        if (insertError) {
-          console.error('Insert error:', insertError);
-          results.errors.push(`Save error for: ${topic.title}`);
-          results.failed++;
-          continue;
-        }
-
-        // Log generation
-        await supabaseClient
-          .from('ai_generation_logs')
-          .insert({
-            blog_post_id: newPost.id,
-            prompt: topic.title,
-            model_used: 'google/gemini-2.5-flash',
-            tokens_used: 0,
-            status: 'success'
           });
 
-        results.successful++;
-        results.posts.push({
-          id: newPost.id,
-          title: parsedBlog.title,
-          category: category.name
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+          }
+
+          return await response.json();
+        };
+
+        // Helper: Generate blog image with OpenAI
+        const generateBlogImage = async (title: string, excerpt: string, category: string) => {
+          console.log(`🎨 Generating image for: ${title}`);
+          
+          // Category-specific image prompts
+          const categoryStyles: Record<string, string> = {
+            'AI/ML': 'Modern tech illustration with neural network patterns, blue and purple gradients, futuristic AI elements, professional and clean, 16:9 aspect ratio',
+            'Automation': 'Digital workflow illustration showing connected systems, process flow diagrams, efficiency icons, corporate blue theme, 16:9 aspect ratio',
+            'Quantum Computing': 'Scientific visualization of quantum particles, abstract quantum circuits, blue and gold color scheme, futuristic lab aesthetic, 16:9 aspect ratio',
+            'Edge AI': 'Distributed systems illustration, edge devices network, real-time processing visual, tech-forward design, 16:9 aspect ratio',
+            'Future Tech': 'Innovation-focused illustration, cutting-edge technology, forward-thinking design, vibrant colors, inspiring composition, 16:9 aspect ratio'
+          };
+
+          const styleGuide = categoryStyles[category] || categoryStyles['AI/ML'];
+          const imagePrompt = `Professional blog header image: ${title}. ${excerpt}. Style: ${styleGuide}. Ultra high resolution, magazine quality.`;
+
+          try {
+            const response = await fetch('https://api.openai.com/v1/images/generations', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${openAIApiKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                model: 'gpt-image-1',
+                prompt: imagePrompt,
+                n: 1,
+                size: '1792x1024',
+                quality: 'high',
+                output_format: 'png',
+                background: 'opaque'
+              }),
+            });
+
+            if (!response.ok) {
+              const errorText = await response.text();
+              console.error('Image generation error:', errorText);
+              return null;
+            }
+
+            const data = await response.json();
+            const imageBase64 = data.data[0].b64_json;
+            return `data:image/png;base64,${imageBase64}`;
+          } catch (imageError: any) {
+            console.error('Error generating image:', imageError);
+            return null;
+          }
+        };
+
+        // Step 1: Generate trending topics
+        console.log('📰 Fetching trending topics...');
+        const topicsPrompt = `Generate ${count} trending AI and automation blog topics for ${new Date().toLocaleDateString()}. Focus on:
+- Latest AI developments and breakthroughs
+- Business automation trends
+- Quantum computing advances
+- Edge AI applications
+- Future technology predictions
+
+Return ONLY a JSON array of objects with: title, description, category (AI/ML, Automation, Quantum Computing, Edge AI, or Future Tech), keywords (array).`;
+
+        const topicsResponse = await callOpenAI([
+          { role: 'system', content: 'You are an AI trends expert. Respond with valid JSON only.' },
+          { role: 'user', content: topicsPrompt }
+        ], 2000);
+
+        let topics: NewsSource[] = [];
+        try {
+          const toolCall = topicsResponse.choices[0]?.message?.tool_calls?.[0];
+          if (toolCall) {
+            topics = JSON.parse(toolCall.function.arguments).topics || [];
+          } else {
+            const content = topicsResponse.choices[0]?.message?.content || '[]';
+            const jsonMatch = content.match(/\[[\s\S]*\]/);
+            topics = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+          }
+        } catch (parseError) {
+          console.error('Error parsing topics:', parseError);
+          topics = [];
+        }
+
+        console.log(`📋 Generated ${topics.length} topics`);
+
+        // Step 2: Filter out duplicates
+        const recentTitles = await supabase
+          .from('blog_posts')
+          .select('title')
+          .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+
+        const existingTitles = new Set(
+          (recentTitles.data || []).map((post: any) => 
+            post.title.toLowerCase().replace(/[^a-z0-9]/g, '')
+          )
+        );
+
+        const uniqueTopics = topics.filter((topic: NewsSource) => {
+          const normalizedTitle = topic.title.toLowerCase().replace(/[^a-z0-9]/g, '');
+          return !existingTitles.has(normalizedTitle);
         });
 
-        console.log(`✓ Published: ${parsedBlog.title}`);
+        console.log(`✅ ${uniqueTopics.length} unique topics after filtering`);
 
-        // Update run record after each successful blog
-        if (runId) {
-          await supabaseClient
-            .from('daily_blog_runs')
-            .update({
-              blogs_created: results.successful,
-              blogs_failed: results.failed,
-              status: 'pending'
-            })
-            .eq('id', runId);
+        // Step 3: Get category mappings
+        const { data: categories } = await supabase
+          .from('categories')
+          .select('id, name, slug');
+
+        const categoryMap = new Map(
+          (categories || []).map((cat: any) => [cat.name.toLowerCase(), cat.id])
+        );
+
+        // Step 4: Generate blogs for each topic
+        for (const topic of uniqueTopics.slice(0, count)) {
+          try {
+            console.log(`\n📝 Generating blog: ${topic.title}`);
+            
+            const blogPrompt = `Write a comprehensive, engaging blog post about: ${topic.title}
+
+Description: ${topic.description}
+Keywords: ${topic.keywords.join(', ')}
+Category: ${topic.category}
+
+Requirements:
+- Write 1500-2000 words of high-quality content
+- Use clear structure with sections and subsections
+- Include practical examples and real-world applications
+- Make it informative yet accessible
+- SEO optimized with natural keyword integration
+- Professional tone with engaging storytelling`;
+
+            const maxRetries = 3;
+            let blogData = null;
+            
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+              try {
+                console.log(`  Attempt ${attempt}/${maxRetries}...`);
+                const blogResponse = await callOpenAI([
+                  { role: 'system', content: 'You are an expert tech writer specializing in AI, automation, and emerging technologies.' },
+                  { role: 'user', content: blogPrompt }
+                ], 3000);
+
+                const toolCall = blogResponse.choices[0]?.message?.tool_calls?.[0];
+                if (toolCall) {
+                  blogData = JSON.parse(toolCall.function.arguments);
+                  break;
+                }
+              } catch (retryError: any) {
+                console.error(`  Attempt ${attempt} failed:`, retryError.message);
+                if (attempt < maxRetries) {
+                  await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
+                }
+              }
+            }
+
+            if (!blogData) {
+              console.error('❌ Failed to generate blog content after retries');
+              blogsFailed++;
+              continue;
+            }
+
+            // Validate and provide fallbacks
+            const blogContent = {
+              title: blogData.title || topic.title,
+              content: blogData.content || `# ${topic.title}\n\n${topic.description}`,
+              excerpt: blogData.excerpt || topic.description.substring(0, 200),
+              keywords: Array.isArray(blogData.keywords) ? blogData.keywords : topic.keywords,
+              meta_description: blogData.meta_description || topic.description.substring(0, 160),
+              tags: Array.isArray(blogData.tags) ? blogData.tags : topic.keywords.slice(0, 5)
+            };
+
+            console.log('  ✅ Content generated');
+
+            // Generate featured image
+            const featuredImage = await generateBlogImage(
+              blogContent.title,
+              blogContent.excerpt,
+              topic.category
+            );
+
+            if (featuredImage) {
+              console.log('  🎨 Image generated');
+            }
+
+            // Create slug
+            const slug = blogContent.title
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-+|-+$/g, '');
+
+            // Get category ID
+            const categoryId = categoryMap.get(topic.category.toLowerCase()) || 
+                             categoryMap.get('ai/ml') ||
+                             Array.from(categoryMap.values())[0];
+
+            // Calculate reading time
+            const wordCount = blogContent.content.split(/\s+/).length;
+            const readingTime = Math.ceil(wordCount / 200);
+
+            // Insert blog post
+            const { data: insertedPost, error: insertError } = await supabase
+              .from('blog_posts')
+              .insert({
+                title: blogContent.title,
+                slug,
+                content: blogContent.content,
+                excerpt: blogContent.excerpt,
+                meta_description: blogContent.meta_description,
+                keywords: blogContent.keywords,
+                tags: blogContent.tags,
+                category_id: categoryId,
+                featured_image_url: featuredImage,
+                reading_time: readingTime,
+                status: 'published',
+                published_at: new Date().toISOString()
+              })
+              .select()
+              .single();
+
+            if (insertError) {
+              console.error('  ❌ Error inserting blog:', insertError);
+              blogsFailed++;
+              continue;
+            }
+
+            // Log AI generation
+            await supabase.from('ai_generation_logs').insert({
+              blog_post_id: insertedPost.id,
+              model_used: 'gpt-5-mini-2025-08-07 + gpt-image-1',
+              prompt: blogPrompt,
+              status: 'success',
+              generation_time_ms: Date.now() - requestStartTime
+            });
+
+            blogsCreated++;
+            console.log(`  ✨ Blog created successfully (${blogsCreated}/${count})`);
+
+          } catch (topicError: any) {
+            console.error(`❌ Error processing topic "${topic.title}":`, topicError);
+            blogsFailed++;
+          }
         }
 
-        // Shorter delay between blogs
-        if (i < uniqueTopics.length - 1) {
-          console.log('Waiting 8 seconds before next blog...');
-          await new Promise(resolve => setTimeout(resolve, 8000));
-        }
+        // Update run record
+        await supabase
+          .from('daily_blog_runs')
+          .update({
+            status: 'completed',
+            blogs_created: blogsCreated,
+            blogs_failed: blogsFailed
+          })
+          .eq('id', runId);
 
-      } catch (error) {
-        console.error(`Error processing ${topic.title}:`, error);
-        results.errors.push(`${topic.title}: ${error.message}`);
-        results.failed++;
-        
-        // Update run record after each failure
-        if (runId) {
-          await supabaseClient
-            .from('daily_blog_runs')
-            .update({
-              blogs_created: results.successful,
-              blogs_failed: results.failed,
-              status: 'pending'
-            })
-            .eq('id', runId);
-        }
+        console.log(`\n✅ Daily blog generation completed:`);
+        console.log(`   Created: ${blogsCreated}`);
+        console.log(`   Failed: ${blogsFailed}`);
+        console.log(`   Duration: ${(Date.now() - requestStartTime) / 1000}s`);
+
+      } catch (bgError: any) {
+        console.error('Background processing error:', bgError);
+        await supabase
+          .from('daily_blog_runs')
+          .update({
+            status: 'failed',
+            error_message: bgError.message
+          })
+          .eq('id', runId);
       }
-    }
-
-    // Final update to run record
-    if (runId) {
-      await supabaseClient
-        .from('daily_blog_runs')
-        .update({
-          blogs_created: results.successful,
-          blogs_failed: results.failed,
-          status: results.failed > 0 ? 'partial' : 'success',
-          error_message: results.errors.length > 0 ? results.errors.join('; ') : null
-        })
-        .eq('id', runId);
-    }
-
-    console.log(`Generation complete: ${results.successful} published, ${results.failed} failed, ${results.duplicatesSkipped} duplicates skipped`);
-    
-    return results;
     })();
 
-    // Use EdgeRuntime.waitUntil to keep function alive
-    // @ts-ignore
-    if (typeof EdgeRuntime !== 'undefined' && EdgeRuntime.waitUntil) {
-      // @ts-ignore
-      EdgeRuntime.waitUntil(processingPromise);
-    }
+    // Return immediate response
+    return new Response(
+      JSON.stringify({ 
+        message: 'Daily blog generation started',
+        runId,
+        requestedCount: count
+      }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
 
-    // Return immediately with processing status
-    return new Response(JSON.stringify({
-      success: true,
-      message: `Started generating ${requestedCount} blog posts. Each will be published immediately after generation.`,
-      processing: true,
-      timestamp: new Date().toISOString()
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
-
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in generate-daily-news-blogs:', error);
-    return new Response(JSON.stringify({
-      error: error.message,
-      timestamp: new Date().toISOString()
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 });
