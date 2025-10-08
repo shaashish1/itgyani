@@ -47,7 +47,7 @@ export const OpenAIConfig: React.FC = () => {
     contentModel: 'auto',
     imageModel: 'gpt-image-1',
     maxTokens: 3000,
-    imageSize: '1792x1024',
+    imageSize: '1024x1024',
     imageQuality: 'high',
     temperature: 0.7
   });
@@ -360,9 +360,9 @@ export const OpenAIConfig: React.FC = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1792x1024">1792x1024 (Landscape)</SelectItem>
-                    <SelectItem value="1024x1792">1024x1792 (Portrait)</SelectItem>
                     <SelectItem value="1024x1024">1024x1024 (Square)</SelectItem>
+                    <SelectItem value="1024x1536">1024x1536 (Portrait)</SelectItem>
+                    <SelectItem value="1536x1024">1536x1024 (Landscape)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

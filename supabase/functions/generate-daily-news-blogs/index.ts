@@ -29,7 +29,7 @@ serve(async (req) => {
       contentModel: 'auto',
       imageModel: 'gpt-image-1',
       maxTokens: 3000,
-      imageSize: '1792x1024',
+      imageSize: '1024x1024',
       imageQuality: 'high',
       temperature: 0.7
     };
@@ -165,10 +165,13 @@ serve(async (req) => {
               requestBody.output_format = 'png';
               requestBody.background = 'opaque';
             } else if (modelConfig.imageModel === 'dall-e-3') {
-              requestBody.size = '1792x1024';
+              // DALL-E 3 supports 1024x1024, 1024x1792, 1792x1024
+              const validSizes = ['1024x1024', '1024x1792', '1792x1024'];
+              requestBody.size = validSizes.includes(modelConfig.imageSize) ? modelConfig.imageSize : '1024x1024';
               requestBody.quality = modelConfig.imageQuality === 'high' ? 'hd' : 'standard';
               requestBody.style = 'vivid';
             } else if (modelConfig.imageModel === 'dall-e-2') {
+              // DALL-E 2 only supports square images
               requestBody.size = '1024x1024';
             }
 
