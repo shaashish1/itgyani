@@ -404,6 +404,16 @@ Requirements:
             if (!blogData) {
               console.error('❌ Failed to generate blog content after retries');
               blogsFailed++;
+              
+              // Update failed count immediately
+              await supabase
+                .from('daily_blog_runs')
+                .update({
+                  blogs_created: blogsCreated,
+                  blogs_failed: blogsFailed
+                })
+                .eq('id', runId);
+              
               continue;
             }
 
@@ -483,19 +493,44 @@ Requirements:
             blogsCreated++;
             console.log(`  ✨ Blog created successfully (${blogsCreated}/${count})`);
 
+            // Update progress in real-time after each blog
+            await supabase
+              .from('daily_blog_runs')
+              .update({
+                blogs_created: blogsCreated,
+                blogs_failed: blogsFailed
+              })
+              .eq('id', runId);
+            console.log(`  📊 Progress updated: ${blogsCreated} created, ${blogsFailed} failed`);
+
           } catch (topicError: any) {
             console.error(`❌ Error processing topic "${topic.title}":`, topicError);
             blogsFailed++;
+            
+            // Update failed count in real-time
+            await supabase
+              .from('daily_blog_runs')
+              .update({
+                blogs_created: blogsCreated,
+                blogs_failed: blogsFailed
+              })
+              .eq('id', runId);
+            console.log(`  📊 Progress updated: ${blogsCreated} created, ${blogsFailed} failed`);
           }
         }
 
-        // Update run record
+        // Final update of run record
+        const finalStatus = blogsCreated > 0 && blogsFailed === 0 ? 'completed' : 
+                           blogsCreated > 0 && blogsFailed > 0 ? 'partial' : 
+                           'failed';
+        
         await supabase
           .from('daily_blog_runs')
           .update({
-            status: 'completed',
+            status: finalStatus,
             blogs_created: blogsCreated,
-            blogs_failed: blogsFailed
+            blogs_failed: blogsFailed,
+            error_message: blogsFailed > 0 ? `${blogsFailed} blog(s) failed to generate` : null
           })
           .eq('id', runId);
 

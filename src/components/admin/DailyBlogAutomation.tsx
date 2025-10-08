@@ -416,6 +416,20 @@ export const DailyBlogAutomation: React.FC = () => {
                 const elapsedMs = isRunning ? Date.now() - new Date(run.created_at).getTime() : 0;
                 const elapsedMinutes = Math.floor(elapsedMs / 60000);
                 const elapsedSeconds = Math.floor((elapsedMs % 60000) / 1000);
+                
+                // Calculate estimated time remaining based on actual progress
+                const blogsCompleted = run.blogs_created || 0;
+                const blogsRemaining = 10 - blogsCompleted;
+                let estimatedMinutesLeft = 0;
+                
+                if (isRunning && blogsCompleted > 0 && elapsedMs > 0) {
+                  // Calculate average time per blog based on actual progress
+                  const avgTimePerBlog = elapsedMs / blogsCompleted;
+                  estimatedMinutesLeft = Math.ceil((avgTimePerBlog * blogsRemaining) / 60000);
+                } else if (isRunning) {
+                  // Default estimate if no blogs completed yet
+                  estimatedMinutesLeft = blogsRemaining * 2; // 2 min per blog estimate
+                }
 
                 return (
                   <div 
@@ -446,14 +460,35 @@ export const DailyBlogAutomation: React.FC = () => {
                                 Elapsed: {elapsedMinutes}m {elapsedSeconds}s
                                 {elapsedMinutes >= 5 && (
                                   <span className="ml-2 text-orange-500">
-                                    (This may take a few minutes)
+                                    (Generation in progress)
+                                  </span>
+                                )}
+                              </p>
+                              <p className="text-xs text-purple-600 font-medium">
+                                ⏱️ Est. time left: ~{estimatedMinutesLeft}m
+                                {blogsCompleted > 0 && (
+                                  <span className="ml-1 text-xs text-muted-foreground">
+                                    (based on current speed)
+                                  </span>
+                                )}
+                                {blogsCompleted === 0 && (
+                                  <span className="ml-1 text-xs text-muted-foreground">
+                                    (avg. 2min/blog)
                                   </span>
                                 )}
                               </p>
                               {run.blogs_created > 0 && (
-                                <p className="text-xs text-green-600">
-                                  ✓ {run.blogs_created} completed so far
-                                </p>
+                                <div className="space-y-1">
+                                  <p className="text-xs text-green-600 font-medium">
+                                    ✓ {run.blogs_created} completed • {blogsRemaining} remaining
+                                  </p>
+                                  <div className="w-full bg-muted rounded-full h-1.5">
+                                    <div 
+                                      className="bg-gradient-to-r from-primary to-purple-600 h-1.5 rounded-full transition-all duration-500"
+                                      style={{ width: `${(run.blogs_created / 10) * 100}%` }}
+                                    />
+                                  </div>
+                                </div>
                               )}
                             </div>
                           ) : (
