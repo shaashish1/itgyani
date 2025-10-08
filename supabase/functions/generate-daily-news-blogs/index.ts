@@ -160,7 +160,9 @@ serve(async (req) => {
 
             // Add model-specific parameters
             if (modelConfig.imageModel === 'gpt-image-1') {
-              requestBody.size = modelConfig.imageSize;
+              // gpt-image-1 supports: 1024x1024, 1536x1024, 1024x1536, auto
+              const validSizes = ['1024x1024', '1024x1536', '1536x1024', 'auto'];
+              requestBody.size = validSizes.includes(modelConfig.imageSize) ? modelConfig.imageSize : '1024x1024';
               requestBody.quality = modelConfig.imageQuality;
               requestBody.output_format = 'png';
               requestBody.background = 'opaque';
@@ -272,9 +274,12 @@ serve(async (req) => {
             const parsed = JSON.parse(toolCall.function.arguments);
             topics = parsed.topics || [];
             console.log('✅ Parsed topics from tool call:', topics.length);
+          } else {
+            console.error('No tool call found in response:', JSON.stringify(topicsData.choices[0]?.message, null, 2));
           }
         } catch (parseError) {
           console.error('Error parsing topics:', parseError);
+          console.error('Tool call arguments:', topicsData.choices[0]?.message?.tool_calls?.[0]?.function?.arguments);
           topics = [];
         }
 

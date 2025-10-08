@@ -74,7 +74,7 @@ export const DailyBlogAutomation: React.FC = () => {
         contentModel: 'auto',
         imageModel: 'gpt-image-1',
         maxTokens: 3000,
-        imageSize: '1792x1024',
+        imageSize: '1024x1024',
         imageQuality: 'high',
         temperature: 0.7
       };

@@ -214,7 +214,9 @@ export function BatchBlogGenerator() {
       let config = openaiConfig ? JSON.parse(openaiConfig) : {
         contentModel: 'auto',
         maxTokens: 2000,
-        temperature: 0.8
+        temperature: 0.8,
+        imageSize: '1024x1024',
+        imageQuality: 'high'
       };
 
       const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {

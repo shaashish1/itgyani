@@ -57,8 +57,9 @@ export const BlogPostManager: React.FC = () => {
       
       let query = supabase
         .from('blog_posts')
-        .select('*, categories(name, slug)')
-        .order('created_at', { ascending: false });
+        .select('id, title, slug, excerpt, status, created_at, published_at, views, likes, reading_time, featured_image_url, categories(name, slug)')
+        .order('created_at', { ascending: false })
+        .limit(100); // Limit to prevent timeout
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
