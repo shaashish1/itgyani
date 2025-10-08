@@ -162,24 +162,65 @@ serve(async (req) => {
 - Business automation trends
 - Quantum computing advances
 - Edge AI applications
-- Future technology predictions
+- Future technology predictions`;
 
-Return ONLY a JSON array of objects with: title, description, category (AI/ML, Automation, Quantum Computing, Edge AI, or Future Tech), keywords (array).`;
+        const topicsResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openAIApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'gpt-5-mini-2025-08-07',
+            messages: [
+              { role: 'system', content: 'You are an AI trends expert.' },
+              { role: 'user', content: topicsPrompt }
+            ],
+            max_completion_tokens: 2000,
+            tools: [{
+              type: "function",
+              function: {
+                name: "generate_topics",
+                description: "Generate a list of trending blog topics",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    topics: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          title: { type: "string" },
+                          description: { type: "string" },
+                          category: { type: "string" },
+                          keywords: { type: "array", items: { type: "string" } }
+                        },
+                        required: ["title", "description", "category", "keywords"]
+                      }
+                    }
+                  },
+                  required: ["topics"]
+                }
+              }
+            }],
+            tool_choice: { type: "function", function: { name: "generate_topics" }}
+          }),
+        });
 
-        const topicsResponse = await callOpenAI([
-          { role: 'system', content: 'You are an AI trends expert. Respond with valid JSON only.' },
-          { role: 'user', content: topicsPrompt }
-        ], 2000);
+        if (!topicsResponse.ok) {
+          const errorText = await topicsResponse.text();
+          console.error('Topics generation error:', errorText);
+          throw new Error(`OpenAI API error: ${topicsResponse.status} - ${errorText}`);
+        }
 
+        const topicsData = await topicsResponse.json();
         let topics: NewsSource[] = [];
         try {
-          const toolCall = topicsResponse.choices[0]?.message?.tool_calls?.[0];
-          if (toolCall) {
-            topics = JSON.parse(toolCall.function.arguments).topics || [];
-          } else {
-            const content = topicsResponse.choices[0]?.message?.content || '[]';
-            const jsonMatch = content.match(/\[[\s\S]*\]/);
-            topics = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+          const toolCall = topicsData.choices[0]?.message?.tool_calls?.[0];
+          if (toolCall?.function?.arguments) {
+            const parsed = JSON.parse(toolCall.function.arguments);
+            topics = parsed.topics || [];
+            console.log('✅ Parsed topics from tool call:', topics.length);
           }
         } catch (parseError) {
           console.error('Error parsing topics:', parseError);
