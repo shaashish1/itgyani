@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -24,7 +25,9 @@ import {
   Eye,
   EyeOff,
   Key,
-  Save
+  Save,
+  Sparkles,
+  Zap
 } from 'lucide-react';
 
 import BlogManager from '@/components/BlogManager';
@@ -49,6 +52,9 @@ const AdminBlogPage: React.FC = () => {
   const [isUpdatingOpenRouter, setIsUpdatingOpenRouter] = useState(false);
   const [showGeminiKey, setShowGeminiKey] = useState(false);
   const [showOpenRouterKey, setShowOpenRouterKey] = useState(false);
+  const [selectedAIProvider, setSelectedAIProvider] = useState<string>(() => {
+    return localStorage.getItem('selected_ai_provider') || 'openai';
+  });
   const { toast } = useToast();
 
   // Simple admin authentication (in production, use proper auth)
@@ -137,6 +143,15 @@ const AdminBlogPage: React.FC = () => {
     } finally {
       setIsUpdatingOpenRouter(false);
     }
+  };
+
+  const handleProviderChange = (provider: string) => {
+    setSelectedAIProvider(provider);
+    localStorage.setItem('selected_ai_provider', provider);
+    toast({
+      title: "AI Provider Updated",
+      description: `Now using ${provider === 'openai' ? 'OpenAI' : provider === 'openrouter' ? 'OpenRouter' : 'Gemini'} for blog generation`
+    });
   };
 
   if (!isAuthenticated) {
@@ -235,15 +250,82 @@ const AdminBlogPage: React.FC = () => {
           </AlertDescription>
         </Alert>
 
+        {/* AI Provider Selection Banner */}
+        <Card className="mb-6 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-6 w-6 text-primary" />
+                <div>
+                  <h3 className="font-semibold text-lg">Active AI Provider</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Select which AI service to use for blog generation
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <Select value={selectedAIProvider} onValueChange={handleProviderChange}>
+                  <SelectTrigger className="w-[200px] bg-background">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    <SelectItem value="openai">
+                      <div className="flex items-center gap-2">
+                        <Zap className="h-4 w-4 text-blue-500" />
+                        OpenAI (GPT-5)
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="openrouter">
+                      <div className="flex items-center gap-2">
+                        <Brain className="h-4 w-4 text-purple-500" />
+                        OpenRouter
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="gemini">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-orange-500" />
+                        Gemini (Legacy)
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Badge 
+                  variant={selectedAIProvider === 'openai' ? 'default' : 'secondary'}
+                  className="flex items-center gap-1"
+                >
+                  <CheckCircle className="h-3 w-3" />
+                  {selectedAIProvider === 'openai' ? 'Premium' : selectedAIProvider === 'openrouter' ? 'Advanced' : 'Legacy'}
+                </Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Main Content */}
         <Tabs defaultValue="daily-automation" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 h-auto">
-            <TabsTrigger value="daily-automation">Daily Automation</TabsTrigger>
-            <TabsTrigger value="all-blogs">All Blogs</TabsTrigger>
-            <TabsTrigger value="blog-manager">Blog Manager</TabsTrigger>
-            <TabsTrigger value="batch-generator">Batch Generator</TabsTrigger>
-            <TabsTrigger value="system-settings">System Settings</TabsTrigger>
-            <TabsTrigger value="security-logs">Security Logs</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-5 h-auto gap-2 bg-muted/50 p-2">
+            <TabsTrigger value="daily-automation" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Zap className="h-4 w-4 mr-2" />
+              Daily Automation
+            </TabsTrigger>
+            <TabsTrigger value="all-blogs" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Brain className="h-4 w-4 mr-2" />
+              All Blogs
+            </TabsTrigger>
+            <TabsTrigger value="blog-manager" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Settings className="h-4 w-4 mr-2" />
+              Manual Editor
+            </TabsTrigger>
+            <TabsTrigger value="batch-generator" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Sparkles className="h-4 w-4 mr-2" />
+              Batch Generator
+            </TabsTrigger>
+            <TabsTrigger value="system-settings" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              <Key className="h-4 w-4 mr-2" />
+              AI Settings
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="daily-automation">
@@ -264,182 +346,116 @@ const AdminBlogPage: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="system-settings" className="space-y-6">
-            {/* Primary AI Configurations */}
+            {/* Active Provider Configuration */}
             <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-4">Primary AI Providers</h3>
-                <p className="text-sm text-muted-foreground mb-6">
-                  Configure your preferred AI providers for blog generation. Both OpenAI and OpenRouter offer high-quality models with different pricing and features.
-                </p>
-              </div>
+              <Alert className="border-primary/20 bg-primary/5">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <AlertTitle>Active AI Provider: {selectedAIProvider === 'openai' ? 'OpenAI' : selectedAIProvider === 'openrouter' ? 'OpenRouter' : 'Gemini'}</AlertTitle>
+                <AlertDescription>
+                  Configure settings for {selectedAIProvider === 'openai' ? 'OpenAI GPT-5' : selectedAIProvider === 'openrouter' ? 'OpenRouter' : 'Google Gemini'}. 
+                  Switch providers using the dropdown above to configure different AI services.
+                </AlertDescription>
+              </Alert>
 
               {/* OpenAI Configuration */}
-              <OpenAIConfig />
+              {selectedAIProvider === 'openai' && <OpenAIConfig />}
 
               {/* OpenRouter Configuration */}
-              <OpenRouterConfig />
-            </div>
+              {selectedAIProvider === 'openrouter' && <OpenRouterConfig />}
 
-            {/* Legacy Configuration */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Legacy AI Providers
-                </CardTitle>
-                <CardDescription>
-                  Legacy Gemini configuration (deprecated in favor of OpenAI and OpenRouter)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* API Key Management */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-4">
-                    <Key className="h-5 w-5 text-primary" />
-                    <h4 className="font-medium text-lg">Legacy Gemini API Key</h4>
-                  </div>
+              {/* Legacy Gemini Configuration */}
+              {selectedAIProvider === 'gemini' && (
+                <Card className="border-orange-200/50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-orange-500" />
+                      Google Gemini (Legacy Provider)
+                    </CardTitle>
+                    <CardDescription>
+                      Legacy Gemini configuration - Consider upgrading to OpenAI or OpenRouter for better quality and features
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* API Key Management */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Key className="h-5 w-5 text-orange-500" />
+                        <h4 className="font-medium text-lg">Gemini API Key</h4>
+                      </div>
 
-                  <div className="p-6 border rounded-lg bg-muted/50 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="gemini-key" className="text-sm font-medium">
-                        Google Gemini API Key
-                      </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Legacy AI provider. Get your API key from{' '}
-                        <a 
-                          href="https://aistudio.google.com/apikey" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline"
-                        >
-                          Google AI Studio
-                        </a>
-                      </p>
-                      <div className="flex gap-2">
-                        <div className="relative flex-1">
-                          <Input
-                            id="gemini-key"
-                            type={showGeminiKey ? "text" : "password"}
-                            value={geminiApiKey}
-                            onChange={(e) => setGeminiApiKey(e.target.value)}
-                            placeholder="Enter Gemini API key (starts with AI...)..."
-                            className="pr-10"
-                          />
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="absolute right-0 top-0 h-full px-3"
-                            onClick={() => setShowGeminiKey(!showGeminiKey)}
-                          >
-                            {showGeminiKey ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </Button>
+                      <div className="p-6 border rounded-lg bg-muted/50 space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="gemini-key" className="text-sm font-medium">
+                            Google Gemini API Key
+                          </Label>
+                          <p className="text-sm text-muted-foreground">
+                            Legacy AI provider. Get your API key from{' '}
+                            <a 
+                              href="https://aistudio.google.com/apikey" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-primary hover:underline"
+                            >
+                              Google AI Studio
+                            </a>
+                          </p>
+                          <div className="flex gap-2">
+                            <div className="relative flex-1">
+                              <Input
+                                id="gemini-key"
+                                type={showGeminiKey ? "text" : "password"}
+                                value={geminiApiKey}
+                                onChange={(e) => setGeminiApiKey(e.target.value)}
+                                placeholder="Enter Gemini API key (starts with AI...)..."
+                                className="pr-10"
+                              />
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="absolute right-0 top-0 h-full px-3"
+                                onClick={() => setShowGeminiKey(!showGeminiKey)}
+                              >
+                                {showGeminiKey ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </Button>
+                            </div>
+                            <Button
+                              onClick={handleUpdateGeminiKey}
+                              disabled={isUpdatingGemini || !geminiApiKey.trim()}
+                              className="btn-hero"
+                            >
+                              <Save className="h-4 w-4 mr-2" />
+                              {isUpdatingGemini ? 'Updating...' : 'Update'}
+                            </Button>
+                          </div>
                         </div>
-                        <Button
-                          onClick={handleUpdateGeminiKey}
-                          disabled={isUpdatingGemini || !geminiApiKey.trim()}
-                          className="btn-hero"
-                        >
-                          <Save className="h-4 w-4 mr-2" />
-                          {isUpdatingGemini ? 'Updating...' : 'Update'}
-                        </Button>
+
+                        <div className="pt-4 border-t space-y-2">
+                          <h5 className="font-medium text-sm">Model Information</h5>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            <p>• Current Model: <span className="font-medium">gemini-1.5-flash-latest</span></p>
+                            <p>• Free tier: 15 requests/minute</p>
+                            <p>• Best for: Fast, cost-effective generation</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t space-y-2">
-                      <h5 className="font-medium text-sm">Model Information</h5>
-                      <div className="text-sm text-muted-foreground space-y-1">
-                        <p>• Current Model: <span className="font-medium">gemini-1.5-flash-latest</span></p>
-                        <p>• Free tier: 15 requests/minute</p>
-                        <p>• Best for: Fast, cost-effective generation</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertTitle>Security Notice</AlertTitle>
-                  <AlertDescription>
-                    API keys are stored securely as encrypted secrets. Gemini is a legacy provider.
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="security-logs" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  Security & Access Logs
-                </CardTitle>
-                <CardDescription>
-                  Monitor system access and administrative actions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-green-500" />
-                        <span className="font-medium">Admin Login</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {new Date().toLocaleString()}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Successful authentication from current session
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Brain className="h-4 w-4 text-blue-500" />
-                        <span className="font-medium">AI Blog System Initialized</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        Today
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Blog management system successfully deployed
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Settings className="h-4 w-4 text-blue-500" />
-                        <span className="font-medium">System Configuration Updated</span>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        Today
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      OpenRouter API and Hugging Face integrations configured
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                  <h5 className="font-medium mb-2">Security Notice</h5>
-                  <p className="text-sm text-muted-foreground">
-                    All administrative actions are logged and monitored. 
-                    Unauthorized access attempts are tracked and reported.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                    <Alert>
+                      <AlertTriangle className="h-4 w-4" />
+                      <AlertTitle>Security Notice</AlertTitle>
+                      <AlertDescription>
+                        API keys are stored securely as encrypted secrets. Gemini is a legacy provider - consider upgrading to OpenAI or OpenRouter.
+                      </AlertDescription>
+                    </Alert>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </TabsContent>
         </Tabs>
       </div>
