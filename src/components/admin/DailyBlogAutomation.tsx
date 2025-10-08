@@ -43,6 +43,19 @@ export const DailyBlogAutomation: React.FC = () => {
 
   const loadRecentRuns = async () => {
     try {
+      // First, clean up stuck "running" records
+      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      await supabase
+        .from('daily_blog_runs')
+        .update({
+          status: 'failed',
+          error_message: 'Generation process timed out or did not complete'
+        })
+        .eq('status', 'running')
+        .lt('created_at', tenMinutesAgo)
+        .eq('blogs_created', 0)
+        .eq('blogs_failed', 0);
+
       const { data, error } = await supabase
         .from('daily_blog_runs')
         .select('*')
@@ -54,7 +67,7 @@ export const DailyBlogAutomation: React.FC = () => {
 
       // If latest run is no longer pending, stop generating state
       const latest = (data || [])[0];
-      if (isGenerating && latest && latest.status !== 'pending') {
+      if (isGenerating && latest && latest.status !== 'pending' && latest.status !== 'running') {
         setIsGenerating(false);
       }
     } catch (error) {
