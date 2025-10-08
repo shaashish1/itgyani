@@ -531,6 +531,36 @@ export const DailyBlogAutomation: React.FC = () => {
                   // Default estimate if no blogs completed yet
                   estimatedMinutesLeft = blogsRemaining * 2; // 2 min per blog estimate
                 }
+                
+                const handleForceRefresh = async (runId: string) => {
+                  console.log('🔄 Force refreshing status for run:', runId);
+                  toast({
+                    title: "Checking Status...",
+                    description: "Verifying generation status",
+                  });
+                  
+                  await loadRecentRuns();
+                  
+                  const updatedRun = recentRuns.find(r => r.id === runId);
+                  if (updatedRun && updatedRun.status === 'running' && elapsedMinutes > 3) {
+                    // Still stuck after 3 minutes, mark as failed
+                    await supabase
+                      .from('daily_blog_runs')
+                      .update({
+                        status: 'failed',
+                        error_message: 'Manually marked as failed - stuck in running state'
+                      })
+                      .eq('id', runId);
+                    
+                    await loadRecentRuns();
+                    
+                    toast({
+                      title: "Status Updated",
+                      description: "Run marked as failed due to timeout",
+                      variant: "destructive"
+                    });
+                  }
+                };
 
                 return (
                   <div 
@@ -626,6 +656,17 @@ export const DailyBlogAutomation: React.FC = () => {
                        isPartial ? 'Partial' :
                        'Failed'}
                     </Badge>
+                    
+                    {isRunning && elapsedMinutes >= 3 && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleForceRefresh(run.id)}
+                        className="ml-2 flex-shrink-0"
+                      >
+                        Force Refresh
+                      </Button>
+                    )}
                   </div>
                 );
               })}

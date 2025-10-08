@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 
@@ -12,6 +13,35 @@ interface NewsSource {
   category: string;
   keywords: string[];
 }
+
+// Global state for graceful shutdown
+let currentRunId: string | null = null;
+let blogsCreatedCount = 0;
+let blogsFailedCount = 0;
+let supabaseClient: any = null;
+
+// Handle shutdown events to save progress
+addEventListener('beforeunload', async (ev) => {
+  console.log('⚠️ Function shutdown detected, saving progress...');
+  
+  if (currentRunId && supabaseClient) {
+    try {
+      await supabaseClient
+        .from('daily_blog_runs')
+        .update({
+          status: blogsCreatedCount > 0 ? 'partial' : 'failed',
+          blogs_created: blogsCreatedCount,
+          blogs_failed: blogsFailedCount,
+          error_message: `Function shutdown during generation. Created: ${blogsCreatedCount}, Failed: ${blogsFailedCount}`
+        })
+        .eq('id', currentRunId);
+      
+      console.log('✅ Progress saved before shutdown');
+    } catch (error) {
+      console.error('Failed to save progress on shutdown:', error);
+    }
+  }
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -49,6 +79,7 @@ serve(async (req) => {
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    supabaseClient = supabase; // Store for shutdown handler
 
     // Create initial run record
     const { data: runRecord, error: runError } = await supabase
@@ -67,13 +98,15 @@ serve(async (req) => {
     }
 
     const runId = runRecord.id;
+    currentRunId = runId; // Store for shutdown handler
     console.log('📝 Created run record:', runId);
 
     // Start background processing
     (async () => {
+      let blogsCreated = 0;
+      let blogsFailed = 0;
+      
       try {
-        let blogsCreated = 0;
-        let blogsFailed = 0;
 
         // Helper: Call OpenAI for text generation with model selection
         const callOpenAI = async (messages: any[], maxTokens = modelConfig.maxTokens) => {
@@ -491,6 +524,7 @@ Requirements:
             });
 
             blogsCreated++;
+            blogsCreatedCount = blogsCreated; // Update global for shutdown handler
             console.log(`  ✨ Blog created successfully (${blogsCreated}/${count})`);
 
             // Update progress in real-time after each blog
@@ -506,6 +540,7 @@ Requirements:
           } catch (topicError: any) {
             console.error(`❌ Error processing topic "${topic.title}":`, topicError);
             blogsFailed++;
+            blogsFailedCount = blogsFailed; // Update global for shutdown handler
             
             // Update failed count in real-time
             await supabase
@@ -538,16 +573,33 @@ Requirements:
         console.log(`   Created: ${blogsCreated}`);
         console.log(`   Failed: ${blogsFailed}`);
         console.log(`   Duration: ${(Date.now() - requestStartTime) / 1000}s`);
+        
+        // Clear global state
+        currentRunId = null;
+        blogsCreatedCount = 0;
+        blogsFailedCount = 0;
 
       } catch (bgError: any) {
         console.error('Background processing error:', bgError);
+        
+        // Update global counts before saving
+        blogsFailedCount = blogsFailed;
+        blogsCreatedCount = blogsCreated;
+        
         await supabase
           .from('daily_blog_runs')
           .update({
             status: 'failed',
+            blogs_created: blogsCreated,
+            blogs_failed: blogsFailed,
             error_message: bgError.message
           })
           .eq('id', runId);
+        
+        // Clear global state
+        currentRunId = null;
+        blogsCreatedCount = 0;
+        blogsFailedCount = 0;
       }
     })();
 
