@@ -58,6 +58,56 @@ export type Database = {
           },
         ]
       }
+      blog_generation_steps: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          details: Json | null
+          duration_ms: number | null
+          error_message: string | null
+          id: string
+          run_id: string
+          started_at: string | null
+          status: string
+          step_name: string
+          step_number: number
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          details?: Json | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          run_id: string
+          started_at?: string | null
+          status?: string
+          step_name: string
+          step_number: number
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          details?: Json | null
+          duration_ms?: number | null
+          error_message?: string | null
+          id?: string
+          run_id?: string
+          started_at?: string | null
+          status?: string
+          step_name?: string
+          step_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_generation_steps_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "daily_blog_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_posts: {
         Row: {
           author_id: string | null

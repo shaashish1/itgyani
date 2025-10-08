@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { GenerationStepsViewer } from './GenerationStepsViewer';
 import { 
   Clock, 
   TrendingUp, 
@@ -26,6 +27,7 @@ export const DailyBlogAutomation: React.FC = () => {
   const [previousStatus, setPreviousStatus] = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [firstBlogTimeout, setFirstBlogTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [expandedRunId, setExpandedRunId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -598,117 +600,134 @@ export const DailyBlogAutomation: React.FC = () => {
                 };
 
                 return (
-                  <div 
-                    key={run.id} 
-                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3 flex-1">
-                      {isSuccess ? (
-                        <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                      ) : isFailed ? (
-                        <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0" />
-                      ) : isPartial ? (
-                        <AlertTriangle className="h-5 w-5 text-orange-500 flex-shrink-0" />
-                      ) : (
-                        <Loader2 className="h-5 w-5 text-blue-500 animate-spin flex-shrink-0" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium">
-                          {new Date(run.run_date).toLocaleString()}
-                        </p>
-                        <div className="text-sm text-muted-foreground space-y-1">
-                          {isRunning ? (
-                            <div className="space-y-1">
-                              <p className="font-medium text-blue-600">
-                                🔄 Generating blog {run.blogs_created + 1}/10...
-                              </p>
-                              <p className="text-xs">
-                                Elapsed: {elapsedMinutes}m {elapsedSeconds}s
-                                {elapsedMinutes >= 5 && blogsCompleted === 0 && (
-                                  <span className="ml-2 text-orange-500 font-medium animate-pulse">
-                                    ⚠️ Checking status...
-                                  </span>
-                                )}
-                                {elapsedMinutes >= 5 && blogsCompleted > 0 && (
-                                  <span className="ml-2 text-green-600">
-                                    ✓ On track
-                                  </span>
-                                )}
-                              </p>
-                              <p className="text-xs text-purple-600 font-medium">
-                                ⏱️ Est. time left: ~{estimatedMinutesLeft}m
-                                {blogsCompleted > 0 && (
-                                  <span className="ml-1 text-xs text-muted-foreground">
-                                    (based on current speed)
-                                  </span>
-                                )}
-                                {blogsCompleted === 0 && (
-                                  <span className="ml-1 text-xs text-muted-foreground">
-                                    (avg. 2min/blog)
-                                  </span>
-                                )}
-                              </p>
-                              {run.blogs_created > 0 && (
-                                <div className="space-y-1">
-                                  <p className="text-xs text-green-600 font-medium">
-                                    ✓ {run.blogs_created} completed • {blogsRemaining} remaining
-                                  </p>
-                                  <div className="w-full bg-muted rounded-full h-1.5">
-                                    <div 
-                                      className="bg-gradient-to-r from-primary to-purple-600 h-1.5 rounded-full transition-all duration-500"
-                                      style={{ width: `${(run.blogs_created / 10) * 100}%` }}
-                                    />
+                  <div key={run.id} className="border rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center justify-between p-4">
+                      <div className="flex items-center gap-3 flex-1">
+                        {isSuccess ? (
+                          <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+                        ) : isFailed ? (
+                          <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0" />
+                        ) : isPartial ? (
+                          <AlertTriangle className="h-5 w-5 text-orange-500 flex-shrink-0" />
+                        ) : (
+                          <Loader2 className="h-5 w-5 text-blue-500 animate-spin flex-shrink-0" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium">
+                            {new Date(run.run_date).toLocaleString()}
+                          </p>
+                          <div className="text-sm text-muted-foreground space-y-1">
+                            {isRunning ? (
+                              <div className="space-y-1">
+                                <p className="font-medium text-blue-600">
+                                  🔄 Generating blog {run.blogs_created + 1}/10...
+                                </p>
+                                <p className="text-xs">
+                                  Elapsed: {elapsedMinutes}m {elapsedSeconds}s
+                                  {elapsedMinutes >= 5 && blogsCompleted === 0 && (
+                                    <span className="ml-2 text-orange-500 font-medium animate-pulse">
+                                      ⚠️ Checking status...
+                                    </span>
+                                  )}
+                                  {elapsedMinutes >= 5 && blogsCompleted > 0 && (
+                                    <span className="ml-2 text-green-600">
+                                      ✓ On track
+                                    </span>
+                                  )}
+                                </p>
+                                <p className="text-xs text-purple-600 font-medium">
+                                  ⏱️ Est. time left: ~{estimatedMinutesLeft}m
+                                  {blogsCompleted > 0 && (
+                                    <span className="ml-1 text-xs text-muted-foreground">
+                                      (based on current speed)
+                                    </span>
+                                  )}
+                                  {blogsCompleted === 0 && (
+                                    <span className="ml-1 text-xs text-muted-foreground">
+                                      (avg. 2min/blog)
+                                    </span>
+                                  )}
+                                </p>
+                                {run.blogs_created > 0 && (
+                                  <div className="space-y-1">
+                                    <p className="text-xs text-green-600 font-medium">
+                                      ✓ {run.blogs_created} completed • {blogsRemaining} remaining
+                                    </p>
+                                    <div className="w-full bg-muted rounded-full h-1.5">
+                                      <div 
+                                        className="bg-gradient-to-r from-primary to-purple-600 h-1.5 rounded-full transition-all duration-500"
+                                        style={{ width: `${(run.blogs_created / 10) * 100}%` }}
+                                      />
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <p>
-                              {run.blogs_created || 0} published, {run.blogs_failed || 0} failed
-                            </p>
-                          )}
-                          {isFailed && run.error_message && (
-                            <span className="block text-xs text-destructive mt-1">
-                              {run.error_message}
-                            </span>
-                          )}
+                                )}
+                              </div>
+                            ) : (
+                              <p>
+                                {run.blogs_created || 0} published, {run.blogs_failed || 0} failed
+                              </p>
+                            )}
+                            {isFailed && run.error_message && (
+                              <span className="block text-xs text-destructive mt-1">
+                                {run.error_message}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <Badge variant={
+                          isSuccess ? 'default' : 
+                          isRunning ? 'secondary' :
+                          isPartial ? 'outline' :
+                          'destructive'
+                        } className={
+                          isSuccess ? 'bg-green-500 hover:bg-green-600 flex-shrink-0' :
+                          isRunning ? 'bg-blue-500 hover:bg-blue-600 flex-shrink-0' :
+                          isPartial ? 'bg-orange-500 hover:bg-orange-600 text-white flex-shrink-0' :
+                          'flex-shrink-0'
+                        }>
+                          {isRunning ? 'Generating...' : 
+                           isSuccess ? 'Success' :
+                           isPartial ? 'Partial' :
+                           'Failed'}
+                        </Badge>
+                        
+                        {isRunning && elapsedMinutes >= 3 && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleForceRefresh(run.id)}
+                            className="flex-shrink-0"
+                          >
+                            Force Refresh
+                          </Button>
+                        )}
+                        
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setExpandedRunId(expandedRunId === run.id ? null : run.id)}
+                          className="flex-shrink-0"
+                        >
+                          {expandedRunId === run.id ? 'Hide Steps' : 'View Steps'}
+                        </Button>
+                      </div>
                     </div>
-                    <Badge variant={
-                      isSuccess ? 'default' : 
-                      isRunning ? 'secondary' :
-                      isPartial ? 'outline' :
-                      'destructive'
-                    } className={
-                      isSuccess ? 'bg-green-500 hover:bg-green-600 flex-shrink-0' :
-                      isRunning ? 'bg-blue-500 hover:bg-blue-600 flex-shrink-0' :
-                      isPartial ? 'bg-orange-500 hover:bg-orange-600 text-white flex-shrink-0' :
-                      'flex-shrink-0'
-                    }>
-                      {isRunning ? 'Generating...' : 
-                       isSuccess ? 'Success' :
-                       isPartial ? 'Partial' :
-                       'Failed'}
-                    </Badge>
                     
-                    {isRunning && elapsedMinutes >= 3 && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleForceRefresh(run.id)}
-                        className="ml-2 flex-shrink-0"
-                      >
-                        Force Refresh
-                      </Button>
+                    {expandedRunId === run.id && (
+                      <div className="px-4 pb-4">
+                        <GenerationStepsViewer runId={run.id} />
+                      </div>
                     )}
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            );
+          })}
+        </div>
+      )}
+    </CardContent>
+  </Card>
 
       {/* System Info */}
       <Card>

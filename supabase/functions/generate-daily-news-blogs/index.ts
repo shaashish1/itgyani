@@ -81,6 +81,60 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     supabaseClient = supabase; // Store for shutdown handler
 
+    // Helper function to log steps
+    const logStep = async (
+      runId: string, 
+      stepNumber: number, 
+      stepName: string, 
+      status: 'pending' | 'running' | 'completed' | 'failed',
+      details: any = {},
+      errorMessage?: string
+    ) => {
+      const stepData: any = {
+        run_id: runId,
+        step_number: stepNumber,
+        step_name: stepName,
+        status,
+        details,
+        error_message: errorMessage
+      };
+
+      if (status === 'completed' || status === 'failed') {
+        stepData.completed_at = new Date().toISOString();
+      }
+
+      // Try to find existing step
+      const { data: existingStep } = await supabase
+        .from('blog_generation_steps')
+        .select('id, started_at')
+        .eq('run_id', runId)
+        .eq('step_number', stepNumber)
+        .single();
+
+      if (existingStep) {
+        // Update existing step
+        const updates: any = { status, details };
+        if (errorMessage) updates.error_message = errorMessage;
+        if (status === 'completed' || status === 'failed') {
+          updates.completed_at = new Date().toISOString();
+          const duration = Date.now() - new Date(existingStep.started_at).getTime();
+          updates.duration_ms = duration;
+        }
+        
+        await supabase
+          .from('blog_generation_steps')
+          .update(updates)
+          .eq('id', existingStep.id);
+      } else {
+        // Create new step
+        await supabase
+          .from('blog_generation_steps')
+          .insert(stepData);
+      }
+
+      console.log(`📊 Step ${stepNumber}: ${stepName} - ${status}`, details);
+    };
+
     // Create initial run record
     const { data: runRecord, error: runError } = await supabase
       .from('daily_blog_runs')
@@ -242,6 +296,7 @@ serve(async (req) => {
         };
 
         // Step 1: Generate trending topics
+        await logStep(runId, 1, 'Fetching trending topics', 'running', { count });
         console.log('📰 Fetching trending topics...');
         const topicsPrompt = `Generate ${count} trending AI and automation blog topics for ${new Date().toLocaleDateString()}. Focus on:
 - Latest AI developments and breakthroughs
@@ -317,6 +372,10 @@ serve(async (req) => {
         }
 
         console.log(`📋 Generated ${topics.length} topics`);
+        await logStep(runId, 1, 'Fetching trending topics', 'completed', { 
+          topicsCount: topics.length,
+          topics: topics.map(t => t.title) 
+        });
 
         // If topicsOnly mode, return just the topics without creating blogs
         if (topicsOnly) {
@@ -349,6 +408,7 @@ serve(async (req) => {
         }
 
         // Step 2: Filter out duplicates
+        await logStep(runId, 2, 'Filtering duplicate topics', 'running', { totalTopics: topics.length });
         const recentTitles = await supabase
           .from('blog_posts')
           .select('title')
@@ -366,6 +426,10 @@ serve(async (req) => {
         });
 
         console.log(`✅ ${uniqueTopics.length} unique topics after filtering`);
+        await logStep(runId, 2, 'Filtering duplicate topics', 'completed', { 
+          uniqueTopicsCount: uniqueTopics.length,
+          duplicatesRemoved: topics.length - uniqueTopics.length 
+        });
 
         // If no unique topics, update status and exit
         if (uniqueTopics.length === 0) {
@@ -392,8 +456,12 @@ serve(async (req) => {
         );
 
         // Step 4: Generate blogs for each topic
+        await logStep(runId, 3, 'Starting blog generation', 'running', { totalBlogs: Math.min(uniqueTopics.length, count) });
+        
         for (const topic of uniqueTopics.slice(0, count)) {
           try {
+            const blogStepNumber = 4 + blogsCreatedCount;
+            await logStep(runId, blogStepNumber, `Generating blog: ${topic.title}`, 'running', { topic: topic.title });
             console.log(`\n📝 Generating blog: ${topic.title}`);
             
             const blogPrompt = `Write a comprehensive, engaging blog post about: ${topic.title}
@@ -436,7 +504,10 @@ Requirements:
 
             if (!blogData) {
               console.error('❌ Failed to generate blog content after retries');
+              await logStep(runId, blogStepNumber, `Generating blog: ${topic.title}`, 'failed', 
+                { topic: topic.title }, 'Failed to generate content after retries');
               blogsFailed++;
+              blogsFailedCount = blogsFailed;
               
               // Update failed count immediately
               await supabase
@@ -526,6 +597,14 @@ Requirements:
             blogsCreated++;
             blogsCreatedCount = blogsCreated; // Update global for shutdown handler
             console.log(`  ✨ Blog created successfully (${blogsCreated}/${count})`);
+            
+            await logStep(runId, blogStepNumber, `Generating blog: ${topic.title}`, 'completed', { 
+              topic: topic.title,
+              blogId: insertedPost.id,
+              slug,
+              readingTime,
+              hasImage: !!featuredImage
+            });
 
             // Update progress in real-time after each blog
             await supabase
@@ -539,6 +618,8 @@ Requirements:
 
           } catch (topicError: any) {
             console.error(`❌ Error processing topic "${topic.title}":`, topicError);
+            await logStep(runId, blogStepNumber, `Generating blog: ${topic.title}`, 'failed', 
+              { topic: topic.title }, topicError.message);
             blogsFailed++;
             blogsFailedCount = blogsFailed; // Update global for shutdown handler
             
@@ -553,6 +634,11 @@ Requirements:
             console.log(`  📊 Progress updated: ${blogsCreated} created, ${blogsFailed} failed`);
           }
         }
+
+        await logStep(runId, 3, 'Starting blog generation', 'completed', { 
+          totalCreated: blogsCreated,
+          totalFailed: blogsFailed 
+        });
 
         // Final update of run record
         const finalStatus = blogsCreated > 0 && blogsFailed === 0 ? 'completed' : 
