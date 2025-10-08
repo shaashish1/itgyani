@@ -24,6 +24,7 @@ export const DailyBlogAutomation: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [monitoredRunId, setMonitoredRunId] = useState<string | null>(null);
   const [previousStatus, setPreviousStatus] = useState<string | null>(null);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const { toast } = useToast();
 
   useEffect(() => {
@@ -31,11 +32,17 @@ export const DailyBlogAutomation: React.FC = () => {
 
     let interval: NodeJS.Timeout | undefined;
     const hasPending = recentRuns.some((r) => r.status === 'pending');
+    const hasRunning = recentRuns.some((r) => r.status === 'running');
 
-    if (isGenerating || hasPending) {
+    // Refresh every 3 seconds if generating, 10 seconds otherwise
+    if (isGenerating || hasPending || hasRunning) {
       interval = setInterval(() => {
         loadRecentRuns();
-      }, 5000);
+      }, 3000); // Faster refresh during generation
+    } else {
+      interval = setInterval(() => {
+        loadRecentRuns();
+      }, 10000); // Slower refresh when idle
     }
 
     return () => {
@@ -79,6 +86,7 @@ export const DailyBlogAutomation: React.FC = () => {
       
       const runs = data || [];
       setRecentRuns(runs);
+      setLastRefresh(new Date());
 
       // Monitor running job for completion
       if (monitoredRunId && runs.length > 0) {
@@ -365,13 +373,21 @@ export const DailyBlogAutomation: React.FC = () => {
       {/* Recent Runs */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Recent Generation Runs
-          </CardTitle>
-          <CardDescription>
-            History of automated and manual blog generation runs
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Recent Generation Runs
+              </CardTitle>
+              <CardDescription>
+                History of automated and manual blog generation runs
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+              Last updated: {lastRefresh.toLocaleTimeString()}
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -396,34 +412,61 @@ export const DailyBlogAutomation: React.FC = () => {
                 const isPartial = actualStatus === 'partial';
                 const isSuccess = actualStatus === 'completed' && run.blogs_created > 0;
 
+                // Calculate elapsed time for running jobs
+                const elapsedMs = isRunning ? Date.now() - new Date(run.created_at).getTime() : 0;
+                const elapsedMinutes = Math.floor(elapsedMs / 60000);
+                const elapsedSeconds = Math.floor((elapsedMs % 60000) / 1000);
+
                 return (
                   <div 
                     key={run.id} 
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-1">
                       {isSuccess ? (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
+                        <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
                       ) : isFailed ? (
-                        <AlertTriangle className="h-5 w-5 text-destructive" />
+                        <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0" />
                       ) : isPartial ? (
-                        <AlertTriangle className="h-5 w-5 text-orange-500" />
+                        <AlertTriangle className="h-5 w-5 text-orange-500 flex-shrink-0" />
                       ) : (
-                        <Clock className="h-5 w-5 text-blue-500 animate-pulse" />
+                        <Loader2 className="h-5 w-5 text-blue-500 animate-spin flex-shrink-0" />
                       )}
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <p className="font-medium">
                           {new Date(run.run_date).toLocaleString()}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          {run.blogs_created || 0} published, {run.blogs_failed || 0} failed
-                          {isRunning && ' (In Progress...)'}
+                        <div className="text-sm text-muted-foreground space-y-1">
+                          {isRunning ? (
+                            <div className="space-y-1">
+                              <p className="font-medium text-blue-600">
+                                🔄 Generating blog {run.blogs_created + 1}/10...
+                              </p>
+                              <p className="text-xs">
+                                Elapsed: {elapsedMinutes}m {elapsedSeconds}s
+                                {elapsedMinutes >= 5 && (
+                                  <span className="ml-2 text-orange-500">
+                                    (This may take a few minutes)
+                                  </span>
+                                )}
+                              </p>
+                              {run.blogs_created > 0 && (
+                                <p className="text-xs text-green-600">
+                                  ✓ {run.blogs_created} completed so far
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <p>
+                              {run.blogs_created || 0} published, {run.blogs_failed || 0} failed
+                            </p>
+                          )}
                           {isFailed && run.error_message && (
                             <span className="block text-xs text-destructive mt-1">
                               {run.error_message}
                             </span>
                           )}
-                        </p>
+                        </div>
                       </div>
                     </div>
                     <Badge variant={
@@ -432,10 +475,10 @@ export const DailyBlogAutomation: React.FC = () => {
                       isPartial ? 'outline' :
                       'destructive'
                     } className={
-                      isSuccess ? 'bg-green-500 hover:bg-green-600' :
-                      isRunning ? 'bg-blue-500 hover:bg-blue-600' :
-                      isPartial ? 'bg-orange-500 hover:bg-orange-600 text-white' :
-                      ''
+                      isSuccess ? 'bg-green-500 hover:bg-green-600 flex-shrink-0' :
+                      isRunning ? 'bg-blue-500 hover:bg-blue-600 flex-shrink-0' :
+                      isPartial ? 'bg-orange-500 hover:bg-orange-600 text-white flex-shrink-0' :
+                      'flex-shrink-0'
                     }>
                       {isRunning ? 'Generating...' : 
                        isSuccess ? 'Success' :
