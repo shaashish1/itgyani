@@ -31,24 +31,38 @@ export const DailyBlogAutomation: React.FC = () => {
   useEffect(() => {
     loadRecentRuns();
 
+    // Subscribe to realtime changes on daily_blog_runs table
+    const channel = supabase
+      .channel('daily-blog-runs-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'daily_blog_runs'
+        },
+        (payload) => {
+          console.log('🔄 Realtime update received:', payload);
+          loadRecentRuns(); // Reload when any change happens
+        }
+      )
+      .subscribe();
+
     let interval: NodeJS.Timeout | undefined;
     const hasPending = recentRuns.some((r) => r.status === 'pending');
     const hasRunning = recentRuns.some((r) => r.status === 'running');
 
-    // Refresh every 3 seconds if generating, 10 seconds otherwise
+    // Refresh every 10 seconds as backup (realtime will handle most updates)
     if (isGenerating || hasPending || hasRunning) {
       interval = setInterval(() => {
         loadRecentRuns();
-      }, 3000); // Faster refresh during generation
-    } else {
-      interval = setInterval(() => {
-        loadRecentRuns();
-      }, 10000); // Slower refresh when idle
+      }, 10000);
     }
 
     return () => {
       if (interval) clearInterval(interval);
       if (firstBlogTimeout) clearTimeout(firstBlogTimeout);
+      supabase.removeChannel(channel);
     };
   }, [isGenerating, recentRuns]);
 
@@ -534,32 +548,53 @@ export const DailyBlogAutomation: React.FC = () => {
                 
                 const handleForceRefresh = async (runId: string) => {
                   console.log('🔄 Force refreshing status for run:', runId);
-                  toast({
-                    title: "Checking Status...",
-                    description: "Verifying generation status",
-                  });
                   
-                  await loadRecentRuns();
+                  // First, fetch the latest data from the database
+                  const { data: freshRun, error } = await supabase
+                    .from('daily_blog_runs')
+                    .select('*')
+                    .eq('id', runId)
+                    .single();
                   
-                  const updatedRun = recentRuns.find(r => r.id === runId);
-                  if (updatedRun && updatedRun.status === 'running' && elapsedMinutes > 3) {
-                    // Still stuck after 3 minutes, mark as failed
+                  if (error) {
+                    toast({
+                      title: "Error",
+                      description: "Failed to check status",
+                      variant: "destructive"
+                    });
+                    return;
+                  }
+                  
+                  // Calculate elapsed time based on fresh data
+                  const freshElapsedMs = Date.now() - new Date(freshRun.created_at).getTime();
+                  const freshElapsedMinutes = Math.floor(freshElapsedMs / 60000);
+                  
+                  console.log(`📊 Fresh status: ${freshRun.status}, elapsed: ${freshElapsedMinutes}min, blogs: ${freshRun.blogs_created}`);
+                  
+                  // If still running after 3 minutes with no progress, mark as failed
+                  if (freshRun.status === 'running' && freshElapsedMinutes > 3 && (freshRun.blogs_created || 0) === 0) {
                     await supabase
                       .from('daily_blog_runs')
                       .update({
                         status: 'failed',
-                        error_message: 'Manually marked as failed - stuck in running state'
+                        error_message: 'Generation stuck - no progress after 3 minutes'
                       })
                       .eq('id', runId);
                     
-                    await loadRecentRuns();
-                    
                     toast({
-                      title: "Status Updated",
-                      description: "Run marked as failed due to timeout",
+                      title: "Generation Failed",
+                      description: "Marked as failed due to no progress",
                       variant: "destructive"
                     });
+                  } else {
+                    toast({
+                      title: "Status Updated",
+                      description: `Status: ${freshRun.status}, Blogs: ${freshRun.blogs_created || 0}`,
+                    });
                   }
+                  
+                  // Reload to show updated status (realtime will also handle this)
+                  await loadRecentRuns();
                 };
 
                 return (
