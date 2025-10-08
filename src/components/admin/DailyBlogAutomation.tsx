@@ -25,6 +25,7 @@ export const DailyBlogAutomation: React.FC = () => {
   const [monitoredRunId, setMonitoredRunId] = useState<string | null>(null);
   const [previousStatus, setPreviousStatus] = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+  const [firstBlogTimeout, setFirstBlogTimeout] = useState<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -47,8 +48,94 @@ export const DailyBlogAutomation: React.FC = () => {
 
     return () => {
       if (interval) clearInterval(interval);
+      if (firstBlogTimeout) clearTimeout(firstBlogTimeout);
     };
   }, [isGenerating, recentRuns]);
+
+  const checkGenerationHealth = async (runId: string) => {
+    console.log('🔍 Checking generation health for stuck run:', runId);
+    
+    try {
+      // Check the current run status directly
+      const { data: runData } = await supabase
+        .from('daily_blog_runs')
+        .select('*')
+        .eq('id', runId)
+        .single();
+
+      if (!runData) return;
+
+      const elapsedMinutes = Math.floor((Date.now() - new Date(runData.created_at).getTime()) / 60000);
+      const blogsCreated = runData.blogs_created || 0;
+
+      console.log(`📊 Health check: ${elapsedMinutes}min elapsed, ${blogsCreated} blogs created`);
+
+      // Decision logic based on elapsed time and progress
+      if (blogsCreated === 0 && elapsedMinutes >= 7) {
+        // No blogs after 7 minutes - likely failed
+        console.log('❌ No progress after 7 minutes, marking as failed');
+        await supabase
+          .from('daily_blog_runs')
+          .update({
+            status: 'failed',
+            error_message: 'First blog generation exceeded timeout (7 minutes) with no progress'
+          })
+          .eq('id', runId);
+
+        toast({
+          title: "❌ Generation Failed",
+          description: "The first blog took too long to generate. Please check your API configuration and try again.",
+          variant: "destructive"
+        });
+
+        setMonitoredRunId(null);
+        setIsGenerating(false);
+        if (firstBlogTimeout) clearTimeout(firstBlogTimeout);
+      } else if (blogsCreated > 0) {
+        // Progress detected - continue
+        console.log(`✅ Progress detected (${blogsCreated} blogs), continuing...`);
+        toast({
+          title: "✅ Generation Proceeding",
+          description: `First blog completed! ${blogsCreated} blog(s) generated so far.`,
+        });
+        
+        // Clear the timeout since we have progress
+        if (firstBlogTimeout) {
+          clearTimeout(firstBlogTimeout);
+          setFirstBlogTimeout(null);
+        }
+      } else if (elapsedMinutes >= 5 && elapsedMinutes < 7) {
+        // Between 5-7 minutes, warn but continue
+        console.log('⚠️ Slow progress, but continuing...');
+        toast({
+          title: "⚠️ Slow Progress",
+          description: "First blog is taking longer than expected. Continuing to monitor...",
+        });
+        
+        // Set another timeout for 2 more minutes
+        if (firstBlogTimeout) clearTimeout(firstBlogTimeout);
+        const newTimeout = setTimeout(() => {
+          checkGenerationHealth(runId);
+        }, 2 * 60 * 1000); // Check again in 2 minutes
+        setFirstBlogTimeout(newTimeout);
+      } else {
+        // Still within acceptable range - let it continue
+        console.log('✅ Generation still active within acceptable time range');
+        toast({
+          title: "🔄 Still Processing",
+          description: "First blog is being generated. This can take a few minutes...",
+        });
+      }
+
+    } catch (error) {
+      console.error('Error checking generation health:', error);
+      toast({
+        title: "Error",
+        description: "Failed to check generation status",
+        variant: "destructive"
+      });
+    }
+  };
 
   const loadRecentRuns = async () => {
     try {
@@ -117,10 +204,14 @@ export const DailyBlogAutomation: React.FC = () => {
             });
           }
           
-          // Clear monitoring state
+          // Clear monitoring state and timeout
           setMonitoredRunId(null);
           setPreviousStatus(null);
           setIsGenerating(false);
+          if (firstBlogTimeout) {
+            clearTimeout(firstBlogTimeout);
+            setFirstBlogTimeout(null);
+          }
         } else if (monitoredRun) {
           // Update previous status for next check
           setPreviousStatus(monitoredRun.status);
@@ -134,6 +225,16 @@ export const DailyBlogAutomation: React.FC = () => {
           setMonitoredRunId(runningJob.id);
           setPreviousStatus('running');
           setIsGenerating(true);
+          
+          // Set timeout to check if first blog is stuck (5 minutes)
+          const timeout = setTimeout(() => {
+            console.log('⏰ First blog timeout reached, checking status...');
+            if (runningJob.blogs_created === 0) {
+              checkGenerationHealth(runningJob.id);
+            }
+          }, 5 * 60 * 1000); // 5 minutes
+          
+          setFirstBlogTimeout(timeout);
         }
       }
     } catch (error) {
@@ -458,9 +559,14 @@ export const DailyBlogAutomation: React.FC = () => {
                               </p>
                               <p className="text-xs">
                                 Elapsed: {elapsedMinutes}m {elapsedSeconds}s
-                                {elapsedMinutes >= 5 && (
-                                  <span className="ml-2 text-orange-500">
-                                    (Generation in progress)
+                                {elapsedMinutes >= 5 && blogsCompleted === 0 && (
+                                  <span className="ml-2 text-orange-500 font-medium animate-pulse">
+                                    ⚠️ Checking status...
+                                  </span>
+                                )}
+                                {elapsedMinutes >= 5 && blogsCompleted > 0 && (
+                                  <span className="ml-2 text-green-600">
+                                    ✓ On track
                                   </span>
                                 )}
                               </p>
