@@ -32,6 +32,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 import { useToast } from "@/hooks/use-toast";
+import OptimizedImage from "@/components/OptimizedImage";
 
 interface BlogPost {
   id: string;
@@ -637,10 +638,11 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
               <div className="max-w-3xl mx-auto">
                 {/* Featured Image */}
                 <div className="mb-12 rounded-2xl overflow-hidden shadow-xl">
-                  <img 
+                  <OptimizedImage 
                     src={blogDefaultImage} 
                     alt={blogPost.title}
                     className="w-full h-[400px] object-cover"
+                    priority
                   />
                 </div>
 

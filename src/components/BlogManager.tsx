@@ -38,6 +38,7 @@ import {
 import { openRouterBlogService, BlogGenerationRequest } from '@/services/openRouterBlog';
 import { huggingFaceImageService } from '@/services/huggingFaceImageBrowser';
 import { blogSchedulingService, ScheduleRequest, ScheduledBlog } from '@/services/blogSchedulingBrowser';
+import OptimizedImage from '@/components/OptimizedImage';
 
 interface BlogManagerProps {
   className?: string;
@@ -452,9 +453,9 @@ const BlogManager: React.FC<BlogManagerProps> = ({ className = '' }) => {
                     <h4 className="font-medium mb-2">Generated Images:</h4>
                     <div className="grid grid-cols-2 gap-2">
                       {(generatedBlog.images || []).map((image: any, index: number) => (
-                        <img 
+                        <OptimizedImage 
                           key={index}
-                          src={image.url} 
+                          src={image.url}
                           alt={image.prompt}
                           className="w-full h-32 object-cover rounded"
                         />

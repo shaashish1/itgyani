@@ -23,6 +23,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       alt={alt}
       loading={priority ? 'eager' : 'lazy'}
       decoding="async"
+      fetchPriority={priority ? 'high' : 'auto'}
       className={className}
       {...props}
     />

@@ -12,6 +12,7 @@ import resourceHealthcare from "@/assets/resource-healthcare.jpg";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PopupManager from "@/components/PopupManager";
+import OptimizedImage from "@/components/OptimizedImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -1518,7 +1519,7 @@ const Resources = () => {
                 {filteredResources.map((resource) => (
                   <Card key={resource.id} className={`glass-card hover-lift ${resource.featured ? 'border-primary/50' : ''}`}>
                     <div className="aspect-video bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden rounded-t-lg">
-                      <img 
+                      <OptimizedImage 
                         src={resource.image || "/images/generated/ai-automation-guide.svg"} 
                         alt={resource.title}
                         className="w-full h-full object-cover"

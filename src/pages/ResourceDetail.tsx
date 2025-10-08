@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import FutureFlowHeader from "@/components/FutureFlowHeader";
 import Footer from "@/components/Footer";
+import OptimizedImage from "@/components/OptimizedImage";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -407,12 +408,10 @@ const ResourceDetail = () => {
         </div>
 
         <div className="aspect-video relative overflow-hidden rounded-lg mb-8">
-          <img 
+          <OptimizedImage 
             src={resource.image} 
             alt={resource.title}
             className="w-full h-full object-cover"
-            loading="lazy"
-            decoding="async"
           />
         </div>
 

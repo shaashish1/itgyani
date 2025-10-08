@@ -58,6 +58,8 @@ export const YouTubeVideo: React.FC<YouTubeVideoProps> = ({
               src={thumbnailUrl} 
               alt={title}
               className="w-full h-full object-cover"
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 // Fallback to default YouTube thumbnail
                 e.currentTarget.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
