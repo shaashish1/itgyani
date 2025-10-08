@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Sparkles, FileText, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, Sparkles, FileText, CheckCircle, XCircle, RefreshCw } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -116,6 +116,7 @@ export function BatchBlogGenerator() {
   const [length, setLength] = useState<'short' | 'medium' | 'long'>('medium');
   const [category, setCategory] = useState('ai-machine-learning');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [results, setResults] = useState<any>(null);
 
@@ -198,6 +199,63 @@ export function BatchBlogGenerator() {
     }
   };
 
+  const handleRefreshTopics = async () => {
+    setIsRefreshing(true);
+    try {
+      toast.info("Fetching latest trending topics with AI...", {
+        duration: 3000
+      });
+
+      // Get the selected AI provider
+      const selectedProvider = localStorage.getItem('selected_ai_provider') || 'openai';
+      
+      // Get OpenAI config
+      const openaiConfig = localStorage.getItem('openai_model_config');
+      let config = openaiConfig ? JSON.parse(openaiConfig) : {
+        contentModel: 'auto',
+        maxTokens: 2000,
+        temperature: 0.8
+      };
+
+      const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {
+        body: {
+          count: 50, // Generate 50 trending topics
+          config,
+          topicsOnly: true // New parameter to only fetch topics
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.topics && data.topics.length > 0) {
+        // Format topics as one per line
+        const formattedTopics = data.topics
+          .map((t: any) => t.title || t.topic || t)
+          .join('\n');
+        
+        setTopics(formattedTopics);
+        
+        toast.success(`Loaded ${data.topics.length} fresh trending topics!`, {
+          description: `Based on latest ${selectedProvider === 'openai' ? 'OpenAI' : selectedProvider === 'openrouter' ? 'OpenRouter' : 'Gemini'} AI analysis`,
+          duration: 5000
+        });
+      } else {
+        toast.warning("No topics were generated", {
+          description: "Please try again or enter topics manually"
+        });
+      }
+
+    } catch (error: any) {
+      console.error('Error refreshing topics:', error);
+      toast.error("Failed to fetch trending topics", {
+        description: error.message || "Please try again or enter topics manually",
+        duration: 5000
+      });
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   const topicCount = topics.split('\n').filter(t => t.trim().length > 0).length;
 
   return (
@@ -214,7 +272,28 @@ export function BatchBlogGenerator() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="topics">Blog Topics ({topicCount} topics)</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="topics">Blog Topics ({topicCount} topics)</Label>
+              <Button
+                onClick={handleRefreshTopics}
+                disabled={isRefreshing || isGenerating}
+                variant="outline"
+                size="sm"
+                className="gap-2"
+              >
+                {isRefreshing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Fetching Latest...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="h-4 w-4" />
+                    Refresh with AI
+                  </>
+                )}
+              </Button>
+            </div>
             <Textarea
               id="topics"
               placeholder="Enter one topic per line..."
@@ -222,8 +301,11 @@ export function BatchBlogGenerator() {
               onChange={(e) => setTopics(e.target.value)}
               rows={12}
               className="font-mono text-sm"
-              disabled={isGenerating}
+              disabled={isGenerating || isRefreshing}
             />
+            <p className="text-xs text-muted-foreground">
+              Click "Refresh with AI" to auto-generate trending topics based on latest news and trends
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

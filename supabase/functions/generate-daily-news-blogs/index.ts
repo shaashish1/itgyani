@@ -22,7 +22,7 @@ serve(async (req) => {
   console.log('🚀 Daily blog generation started at:', new Date().toISOString());
 
   try {
-    const { count = 10, config } = await req.json();
+    const { count = 10, config, topicsOnly = false } = await req.json();
     
     // Default config if not provided
     const modelConfig = config || {
@@ -279,6 +279,19 @@ serve(async (req) => {
         }
 
         console.log(`📋 Generated ${topics.length} topics`);
+
+        // If topicsOnly mode, return just the topics without creating blogs
+        if (topicsOnly) {
+          console.log('📤 Returning topics only (no blog generation)');
+          return new Response(
+            JSON.stringify({ 
+              success: true,
+              topics: topics,
+              count: topics.length
+            }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
 
         // Step 2: Filter out duplicates
         const recentTitles = await supabase
