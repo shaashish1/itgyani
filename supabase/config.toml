@@ -68,3 +68,9 @@ verify_jwt = false
 
 [functions.send-password-reset]
 verify_jwt = false
+
+[functions.fix-stuck-daily-blog-runs]
+verify_jwt = false
+
+[functions.kill-daily-blog-run]
+verify_jwt = false

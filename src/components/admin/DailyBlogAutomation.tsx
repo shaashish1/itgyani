@@ -155,29 +155,12 @@ export const DailyBlogAutomation: React.FC = () => {
 
   const loadRecentRuns = async () => {
     try {
-      // First, clean up stuck "running" records
-      const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-      await supabase
-        .from('daily_blog_runs')
-        .update({
-          status: 'failed',
-          error_message: 'Generation process timed out or did not complete'
-        })
-        .eq('status', 'running')
-        .lt('created_at', tenMinutesAgo)
-        .eq('blogs_created', 0)
-        .eq('blogs_failed', 0);
-
-      // Clean up "completed" runs that actually failed (0 blogs created)
-      await supabase
-        .from('daily_blog_runs')
-        .update({
-          status: 'failed',
-          error_message: 'No blogs were created during this run'
-        })
-        .eq('status', 'completed')
-        .eq('blogs_created', 0)
-        .eq('blogs_failed', 0);
+      // Server-side cleanup to avoid client-side RLS/permission quirks
+      try {
+        await supabase.functions.invoke('fix-stuck-daily-blog-runs', { body: {} });
+      } catch (e) {
+        console.warn('Cleanup function failed', e);
+      }
 
       const { data, error } = await supabase
         .from('daily_blog_runs')
@@ -361,6 +344,20 @@ export const DailyBlogAutomation: React.FC = () => {
       });
     } finally {
       setIsUpdatingImages(false);
+    }
+  };
+
+  const handleKillRun = async (runId: string, reason = 'Terminated by admin') => {
+    try {
+      await supabase.functions.invoke('kill-daily-blog-run', { body: { runId, reason } });
+      toast({ title: 'Run Terminated', description: 'The generation run was marked as failed.' });
+      if (monitoredRunId === runId) {
+        setMonitoredRunId(null);
+        setIsGenerating(false);
+      }
+      await loadRecentRuns();
+    } catch (e: any) {
+      toast({ title: 'Kill Failed', description: e.message || 'Could not terminate run', variant: 'destructive' });
     }
   };
 
@@ -575,13 +572,9 @@ export const DailyBlogAutomation: React.FC = () => {
                   
                   // If still running after 3 minutes with no progress, mark as failed
                   if (freshRun.status === 'running' && freshElapsedMinutes > 3 && (freshRun.blogs_created || 0) === 0) {
-                    await supabase
-                      .from('daily_blog_runs')
-                      .update({
-                        status: 'failed',
-                        error_message: 'Generation stuck - no progress after 3 minutes'
-                      })
-                      .eq('id', runId);
+                    await supabase.functions.invoke('kill-daily-blog-run', {
+                      body: { runId, reason: 'Generation stuck - no progress after 3 minutes' }
+                    });
                     
                     toast({
                       title: "Generation Failed",
@@ -694,16 +687,26 @@ export const DailyBlogAutomation: React.FC = () => {
                            'Failed'}
                         </Badge>
                         
-                        {isRunning && elapsedMinutes >= 3 && (
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleForceRefresh(run.id)}
-                            className="flex-shrink-0"
-                          >
-                            Force Refresh
-                          </Button>
-                        )}
+                          {isRunning && elapsedMinutes >= 3 && (
+                            <>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleForceRefresh(run.id)}
+                                className="flex-shrink-0"
+                              >
+                                Force Refresh
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleKillRun(run.id)}
+                                className="flex-shrink-0"
+                              >
+                                Kill Run
+                              </Button>
+                            </>
+                          )}
                         
                         <Button
                           size="sm"
