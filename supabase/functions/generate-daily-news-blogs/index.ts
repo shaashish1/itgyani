@@ -22,7 +22,19 @@ serve(async (req) => {
   console.log('🚀 Daily blog generation started at:', new Date().toISOString());
 
   try {
-    const { count = 10 } = await req.json();
+    const { count = 10, config } = await req.json();
+    
+    // Default config if not provided
+    const modelConfig = config || {
+      contentModel: 'auto',
+      imageModel: 'gpt-image-1',
+      maxTokens: 3000,
+      imageSize: '1792x1024',
+      imageQuality: 'high',
+      temperature: 0.7
+    };
+
+    console.log('📋 Using config:', modelConfig);
     
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -63,39 +75,56 @@ serve(async (req) => {
         let blogsCreated = 0;
         let blogsFailed = 0;
 
-        // Helper: Call OpenAI for text generation
-        const callOpenAI = async (messages: any[], maxTokens = 3000) => {
+        // Helper: Call OpenAI for text generation with model selection
+        const callOpenAI = async (messages: any[], maxTokens = modelConfig.maxTokens) => {
+          // Auto-select model based on task complexity if set to 'auto'
+          let selectedModel = modelConfig.contentModel;
+          if (selectedModel === 'auto') {
+            // Simple heuristic: use faster models for shorter content, premium for longer
+            selectedModel = maxTokens > 4000 ? 'gpt-5-2025-08-07' : 'gpt-5-mini-2025-08-07';
+          }
+
+          const requestBody: any = {
+            model: selectedModel,
+            messages,
+            max_completion_tokens: maxTokens,
+            tools: [{
+              type: "function",
+              function: {
+                name: "generate_blog",
+                description: "Generate a structured blog post",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    title: { type: "string" },
+                    content: { type: "string" },
+                    excerpt: { type: "string" },
+                    keywords: { type: "array", items: { type: "string" } },
+                    meta_description: { type: "string" },
+                    tags: { type: "array", items: { type: "string" } }
+                  },
+                  required: ["title", "content", "excerpt", "keywords", "meta_description"]
+                }
+              }
+            }],
+            tool_choice: { type: "function", function: { name: "generate_blog" }}
+          };
+
+          // Only add temperature for legacy models
+          const legacyModels = ['gpt-4o', 'gpt-4o-mini', 'dall-e-2', 'dall-e-3'];
+          if (legacyModels.some(m => selectedModel.includes(m))) {
+            requestBody.temperature = modelConfig.temperature;
+          }
+
+          console.log(`  Using model: ${selectedModel}`);
+
           const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${openAIApiKey}`,
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              model: 'gpt-5-mini-2025-08-07',
-              messages,
-              max_completion_tokens: maxTokens,
-              tools: [{
-                type: "function",
-                function: {
-                  name: "generate_blog",
-                  description: "Generate a structured blog post",
-                  parameters: {
-                    type: "object",
-                    properties: {
-                      title: { type: "string" },
-                      content: { type: "string" },
-                      excerpt: { type: "string" },
-                      keywords: { type: "array", items: { type: "string" } },
-                      meta_description: { type: "string" },
-                      tags: { type: "array", items: { type: "string" } }
-                    },
-                    required: ["title", "content", "excerpt", "keywords", "meta_description"]
-                  }
-                }
-              }],
-              tool_choice: { type: "function", function: { name: "generate_blog" }}
-            }),
+            body: JSON.stringify(requestBody),
           });
 
           if (!response.ok) {
@@ -106,7 +135,7 @@ serve(async (req) => {
           return await response.json();
         };
 
-        // Helper: Generate blog image with OpenAI
+        // Helper: Generate blog image with OpenAI using config
         const generateBlogImage = async (title: string, excerpt: string, category: string) => {
           console.log(`🎨 Generating image for: ${title}`);
           
@@ -123,21 +152,33 @@ serve(async (req) => {
           const imagePrompt = `Professional blog header image: ${title}. ${excerpt}. Style: ${styleGuide}. Ultra high resolution, magazine quality.`;
 
           try {
+            const requestBody: any = {
+              model: modelConfig.imageModel,
+              prompt: imagePrompt,
+              n: 1
+            };
+
+            // Add model-specific parameters
+            if (modelConfig.imageModel === 'gpt-image-1') {
+              requestBody.size = modelConfig.imageSize;
+              requestBody.quality = modelConfig.imageQuality;
+              requestBody.output_format = 'png';
+              requestBody.background = 'opaque';
+            } else if (modelConfig.imageModel === 'dall-e-3') {
+              requestBody.size = '1792x1024';
+              requestBody.quality = modelConfig.imageQuality === 'high' ? 'hd' : 'standard';
+              requestBody.style = 'vivid';
+            } else if (modelConfig.imageModel === 'dall-e-2') {
+              requestBody.size = '1024x1024';
+            }
+
             const response = await fetch('https://api.openai.com/v1/images/generations', {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${openAIApiKey}`,
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({
-                model: 'gpt-image-1',
-                prompt: imagePrompt,
-                n: 1,
-                size: '1792x1024',
-                quality: 'high',
-                output_format: 'png',
-                background: 'opaque'
-              }),
+              body: JSON.stringify(requestBody),
             });
 
             if (!response.ok) {
@@ -147,8 +188,15 @@ serve(async (req) => {
             }
 
             const data = await response.json();
-            const imageBase64 = data.data[0].b64_json;
-            return `data:image/png;base64,${imageBase64}`;
+            
+            // Handle different response formats
+            if (modelConfig.imageModel === 'gpt-image-1') {
+              const imageBase64 = data.data[0].b64_json;
+              return `data:image/png;base64,${imageBase64}`;
+            } else {
+              // DALL-E returns URL
+              return data.data[0].url;
+            }
           } catch (imageError: any) {
             console.error('Error generating image:', imageError);
             return null;

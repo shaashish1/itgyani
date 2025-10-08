@@ -68,13 +68,27 @@ export const DailyBlogAutomation: React.FC = () => {
     setIsGenerating(true);
     
     try {
+      // Load saved OpenAI config from localStorage
+      const savedConfig = localStorage.getItem('openai_model_config');
+      const config = savedConfig ? JSON.parse(savedConfig) : {
+        contentModel: 'auto',
+        imageModel: 'gpt-image-1',
+        maxTokens: 3000,
+        imageSize: '1792x1024',
+        imageQuality: 'high',
+        temperature: 0.7
+      };
+
       toast({
         title: "Generating Daily Blogs",
         description: "Fetching trending topics and generating 10 AI-powered blog posts with images as drafts...",
       });
 
       const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {
-        body: { count: 10 }
+        body: { 
+          count: 10,
+          config
+        }
       });
 
       if (error) throw error;
