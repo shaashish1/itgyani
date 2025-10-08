@@ -56,6 +56,17 @@ export const DailyBlogAutomation: React.FC = () => {
         .eq('blogs_created', 0)
         .eq('blogs_failed', 0);
 
+      // Clean up "completed" runs that actually failed (0 blogs created)
+      await supabase
+        .from('daily_blog_runs')
+        .update({
+          status: 'failed',
+          error_message: 'No blogs were created during this run'
+        })
+        .eq('status', 'completed')
+        .eq('blogs_created', 0)
+        .eq('blogs_failed', 0);
+
       const { data, error } = await supabase
         .from('daily_blog_runs')
         .select('*')
@@ -331,39 +342,66 @@ export const DailyBlogAutomation: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-3">
-              {recentRuns.map((run) => (
-                <div 
-                  key={run.id} 
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    {run.status === 'success' ? (
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                    ) : run.status === 'failed' ? (
-                      <AlertTriangle className="h-5 w-5 text-destructive" />
-                    ) : (
-                      <Clock className="h-5 w-5 text-blue-500" />
-                    )}
-                    <div>
-                      <p className="font-medium">
-                        {new Date(run.run_date).toLocaleString()}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {run.blogs_created || 0} published, {run.blogs_failed || 0} failed
-                        {run.status === 'pending' && ' (In Progress...)'}
-                      </p>
+              {recentRuns.map((run) => {
+                // Determine actual status based on results
+                const actualStatus = run.status === 'completed' && run.blogs_created === 0 && run.blogs_failed === 0 
+                  ? 'failed' 
+                  : run.status;
+                
+                const isRunning = actualStatus === 'running' || actualStatus === 'pending';
+                const isFailed = actualStatus === 'failed';
+                const isPartial = actualStatus === 'partial';
+                const isSuccess = actualStatus === 'completed' && run.blogs_created > 0;
+
+                return (
+                  <div 
+                    key={run.id} 
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      {isSuccess ? (
+                        <CheckCircle className="h-5 w-5 text-green-500" />
+                      ) : isFailed ? (
+                        <AlertTriangle className="h-5 w-5 text-destructive" />
+                      ) : isPartial ? (
+                        <AlertTriangle className="h-5 w-5 text-orange-500" />
+                      ) : (
+                        <Clock className="h-5 w-5 text-blue-500 animate-pulse" />
+                      )}
+                      <div>
+                        <p className="font-medium">
+                          {new Date(run.run_date).toLocaleString()}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {run.blogs_created || 0} published, {run.blogs_failed || 0} failed
+                          {isRunning && ' (In Progress...)'}
+                          {isFailed && run.error_message && (
+                            <span className="block text-xs text-destructive mt-1">
+                              {run.error_message}
+                            </span>
+                          )}
+                        </p>
+                      </div>
                     </div>
+                    <Badge variant={
+                      isSuccess ? 'default' : 
+                      isRunning ? 'secondary' :
+                      isPartial ? 'outline' :
+                      'destructive'
+                    } className={
+                      isSuccess ? 'bg-green-500 hover:bg-green-600' :
+                      isRunning ? 'bg-blue-500 hover:bg-blue-600' :
+                      isPartial ? 'bg-orange-500 hover:bg-orange-600 text-white' :
+                      ''
+                    }>
+                      {isRunning ? 'Generating...' : 
+                       isSuccess ? 'Success' :
+                       isPartial ? 'Partial' :
+                       'Failed'}
+                    </Badge>
                   </div>
-                  <Badge variant={
-                    run.status === 'success' ? 'default' : 
-                    run.status === 'pending' ? 'secondary' :
-                    run.status === 'partial' ? 'secondary' :
-                    'destructive'
-                  }>
-                    {run.status === 'pending' ? 'Generating...' : run.status || 'pending'}
-                  </Badge>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </CardContent>
