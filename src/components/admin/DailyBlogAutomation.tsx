@@ -28,6 +28,7 @@ export const DailyBlogAutomation: React.FC = () => {
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [firstBlogTimeout, setFirstBlogTimeout] = useState<NodeJS.Timeout | null>(null);
   const [expandedRunId, setExpandedRunId] = useState<string | null>(null);
+  const [blogCount, setBlogCount] = useState<number>(10);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -265,7 +266,7 @@ export const DailyBlogAutomation: React.FC = () => {
 
       const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {
         body: { 
-          count: 10,
+          count: blogCount,
           config
         }
       });
@@ -429,16 +430,31 @@ export const DailyBlogAutomation: React.FC = () => {
           {/* Manual Trigger */}
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-primary/5 to-primary/10">
-              <div>
-                <h4 className="font-medium mb-1">Generate & Publish 10 Blogs</h4>
-                <p className="text-sm text-muted-foreground">
-                  Generate 10 trending AI news blogs. Each blog is published immediately after generation.
+              <div className="flex-1">
+                <h4 className="font-medium mb-1">Generate & Publish Blogs</h4>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Generate trending AI news blogs. Each blog is published immediately after generation.
                 </p>
+                <div className="flex items-center gap-3">
+                  <label htmlFor="blog-count" className="text-sm font-medium">
+                    Number of blogs:
+                  </label>
+                  <input
+                    id="blog-count"
+                    type="number"
+                    min="1"
+                    max="20"
+                    value={blogCount}
+                    onChange={(e) => setBlogCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
+                    disabled={isGenerating}
+                    className="w-20 px-3 py-1 border rounded-md bg-background text-foreground"
+                  />
+                </div>
               </div>
               <Button 
                 onClick={triggerManualGeneration}
                 disabled={isGenerating}
-                className="btn-hero"
+                className="btn-hero ml-4"
               >
                 {isGenerating ? (
                   <>
@@ -448,7 +464,7 @@ export const DailyBlogAutomation: React.FC = () => {
                 ) : (
                   <>
                     <Play className="mr-2 h-4 w-4" />
-                    Generate 10 Blogs
+                    Generate {blogCount} {blogCount === 1 ? 'Blog' : 'Blogs'}
                   </>
                 )}
               </Button>
