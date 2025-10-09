@@ -135,13 +135,14 @@ serve(async (req) => {
       console.log(`📊 Step ${stepNumber}: ${stepName} - ${status}`, details);
     };
 
-    // Create initial run record
+    // Create initial run record with target count
     const { data: runRecord, error: runError } = await supabase
       .from('daily_blog_runs')
       .insert({
         status: 'running',
         blogs_created: 0,
-        blogs_failed: 0
+        blogs_failed: 0,
+        blogs_total: count
       })
       .select()
       .single();

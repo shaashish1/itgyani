@@ -549,7 +549,8 @@ export const DailyBlogAutomation: React.FC = () => {
                 
                 // Calculate estimated time remaining based on actual progress
                 const blogsCompleted = run.blogs_created || 0;
-                const blogsRemaining = 10 - blogsCompleted;
+                const blogsTotal = run.blogs_total || 10;
+                const blogsRemaining = blogsTotal - blogsCompleted;
                 let estimatedMinutesLeft = 0;
                 
                 if (isRunning && blogsCompleted > 0 && elapsedMs > 0) {
@@ -629,7 +630,7 @@ export const DailyBlogAutomation: React.FC = () => {
                             {isRunning ? (
                               <div className="space-y-1">
                                 <p className="font-medium text-blue-600">
-                                  🔄 Generating blog {run.blogs_created + 1}/10...
+                                  🔄 Generating blog {run.blogs_created + 1}/{run.blogs_total || 10}...
                                 </p>
                                 <p className="text-xs">
                                   Elapsed: {elapsedMinutes}m {elapsedSeconds}s
@@ -665,7 +666,7 @@ export const DailyBlogAutomation: React.FC = () => {
                                     <div className="w-full bg-muted rounded-full h-1.5">
                                       <div 
                                         className="bg-gradient-to-r from-primary to-purple-600 h-1.5 rounded-full transition-all duration-500"
-                                        style={{ width: `${(run.blogs_created / 10) * 100}%` }}
+                                        style={{ width: `${(run.blogs_created / (run.blogs_total || 10)) * 100}%` }}
                                       />
                                     </div>
                                   </div>

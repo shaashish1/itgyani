@@ -302,6 +302,7 @@ export type Database = {
         Row: {
           blogs_created: number | null
           blogs_failed: number | null
+          blogs_total: number
           created_at: string | null
           error_message: string | null
           id: string
@@ -311,6 +312,7 @@ export type Database = {
         Insert: {
           blogs_created?: number | null
           blogs_failed?: number | null
+          blogs_total?: number
           created_at?: string | null
           error_message?: string | null
           id?: string
@@ -320,6 +322,7 @@ export type Database = {
         Update: {
           blogs_created?: number | null
           blogs_failed?: number | null
+          blogs_total?: number
           created_at?: string | null
           error_message?: string | null
           id?: string
