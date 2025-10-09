@@ -49,6 +49,7 @@ const Blog = () => {
   useEffect(() => {
     loadBlogPosts();
   }, []);
+
   const loadBlogPosts = async () => {
     try {
       setLoading(true);
