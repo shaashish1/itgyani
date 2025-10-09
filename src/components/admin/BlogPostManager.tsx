@@ -33,11 +33,12 @@ interface BlogPost {
   status: 'draft' | 'published' | 'scheduled';
   published_at: string | null;
   created_at: string;
-  categories: {
-    name: string;
-    slug: string;
-  };
+  category_id: string | null;
+  category_name?: string;
   featured_image_url: string | null;
+  views: number;
+  likes: number;
+  reading_time: number;
 }
 
 export const BlogPostManager: React.FC = () => {
@@ -55,11 +56,12 @@ export const BlogPostManager: React.FC = () => {
     try {
       setLoading(true);
       
+      // Optimized query without JOIN - fetch only essential fields
       let query = supabase
         .from('blog_posts')
-        .select('id, title, slug, excerpt, status, created_at, published_at, views, likes, reading_time, featured_image_url, categories(name, slug)')
+        .select('id, title, slug, excerpt, status, created_at, published_at, category_id, featured_image_url, views, likes, reading_time')
         .order('created_at', { ascending: false })
-        .limit(100); // Limit to prevent timeout
+        .limit(50); // Reduced limit for better performance
 
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
@@ -69,7 +71,31 @@ export const BlogPostManager: React.FC = () => {
 
       if (error) throw error;
 
-      setBlogPosts(data || []);
+      // Fetch categories separately if needed
+      if (data && data.length > 0) {
+        const categoryIds = [...new Set(data.map(p => p.category_id).filter(Boolean))];
+        
+        if (categoryIds.length > 0) {
+          const { data: categoriesData } = await supabase
+            .from('categories')
+            .select('id, name')
+            .in('id', categoryIds);
+          
+          const categoryMap = new Map(categoriesData?.map(c => [c.id, c.name]) || []);
+          
+          // Merge category names
+          const postsWithCategories = data.map(post => ({
+            ...post,
+            category_name: categoryMap.get(post.category_id) || 'Uncategorized'
+          }));
+          
+          setBlogPosts(postsWithCategories);
+        } else {
+          setBlogPosts(data.map(p => ({ ...p, category_name: 'Uncategorized' })));
+        }
+      } else {
+        setBlogPosts([]);
+      }
     } catch (error) {
       console.error('Error loading blog posts:', error);
       toast({
@@ -288,7 +314,7 @@ export const BlogPostManager: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">
-                        {post.categories?.name || 'Uncategorized'}
+                        {post.category_name || 'Uncategorized'}
                       </Badge>
                     </TableCell>
                     <TableCell>
