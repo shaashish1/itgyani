@@ -687,19 +687,21 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                 </div>
 
                 {/* Article Content with Custom Styling */}
-                <article className="blog-content prose prose-lg max-w-none">
+                <article className="blog-content prose prose-xl max-w-none">
                   <ReactMarkdown 
                     remarkPlugins={[remarkGfm]}
                     components={{
-                      h1: ({node, ...props}) => <h1 className="text-4xl font-bold mt-12 mb-6 leading-tight text-foreground bg-gradient-to-r from-primary/10 to-secondary/10 p-4 rounded-lg border-l-4 border-primary" {...props} />,
+                      h1: ({node, ...props}) => (
+                        <h1 className="text-5xl md:text-6xl font-bold mt-16 mb-8 leading-tight text-foreground bg-gradient-to-r from-primary/15 via-secondary/10 to-accent/15 p-6 rounded-xl border-l-8 border-primary shadow-sm" {...props} />
+                      ),
                       h2: ({node, index, ...props}: any) => {
                         // Insert ad after 2nd and 4th H2
                         const showAd = index === 1 || index === 3;
                         return (
                           <>
-                            <h2 className="text-3xl font-bold mt-10 mb-6 leading-tight text-foreground bg-accent/20 p-4 rounded-lg border-l-4 border-secondary" {...props} />
+                            <h2 className="text-4xl md:text-5xl font-bold mt-14 mb-7 leading-tight text-foreground bg-gradient-to-r from-accent/15 to-secondary/10 p-5 rounded-xl border-l-8 border-secondary shadow-sm" {...props} />
                             {showAd && (
-                              <div className="my-10">
+                              <div className="my-12">
                                 <AdSenseAd 
                                   slot="content-mid" 
                                   format="rectangle"
@@ -710,24 +712,42 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                           </>
                         );
                       },
-                      h3: ({node, ...props}) => <h3 className="text-2xl font-semibold mt-8 mb-4 text-foreground bg-accent/10 p-3 rounded-lg border-l-4 border-accent" {...props} />,
-                      h4: ({node, ...props}) => <h4 className="text-xl font-semibold mt-6 mb-3 text-foreground bg-muted/50 p-3 rounded-lg" {...props} />,
-                      p: ({node, ...props}) => <p className="text-base leading-relaxed mb-6 text-foreground/90" {...props} />,
-                      ul: ({node, ...props}) => <ul className="space-y-3 mb-6 ml-6" {...props} />,
-                      ol: ({node, ...props}) => <ol className="space-y-3 mb-6 ml-6 list-decimal" {...props} />,
-                      li: ({node, ...props}) => <li className="text-lg leading-relaxed text-foreground/90 pl-2" {...props} />,
+                      h3: ({node, ...props}) => (
+                        <h3 className="text-3xl md:text-4xl font-semibold mt-12 mb-6 text-foreground bg-accent/10 p-4 rounded-lg border-l-6 border-accent shadow-sm" {...props} />
+                      ),
+                      h4: ({node, ...props}) => (
+                        <h4 className="text-2xl md:text-3xl font-semibold mt-10 mb-5 text-foreground bg-muted/50 p-4 rounded-lg border-l-4 border-muted-foreground/30" {...props} />
+                      ),
+                      p: ({node, ...props}) => (
+                        <p className="text-lg md:text-xl leading-relaxed mb-8 text-foreground/90 font-normal" {...props} />
+                      ),
+                      ul: ({node, ...props}) => (
+                        <ul className="space-y-4 mb-8 ml-8 list-disc marker:text-primary" {...props} />
+                      ),
+                      ol: ({node, ...props}) => (
+                        <ol className="space-y-4 mb-8 ml-8 list-decimal marker:text-secondary marker:font-bold" {...props} />
+                      ),
+                      li: ({node, ...props}) => (
+                        <li className="text-lg md:text-xl leading-relaxed text-foreground/90 pl-3" {...props} />
+                      ),
                       blockquote: ({node, ...props}) => (
-                        <blockquote className="border-l-4 border-primary pl-6 py-4 my-8 italic bg-accent/5 rounded-r-lg" {...props} />
+                        <blockquote className="border-l-8 border-primary pl-8 py-6 my-10 italic bg-gradient-to-r from-accent/10 to-transparent rounded-r-xl text-lg md:text-xl font-medium shadow-sm" {...props} />
                       ),
                       code: ({node, inline, ...props}: any) => 
                         inline ? (
-                          <code className="bg-accent/30 px-2 py-1 rounded text-sm font-mono" {...props} />
+                          <code className="bg-accent/30 px-3 py-1 rounded-md text-base font-mono text-primary" {...props} />
                         ) : (
-                          <code className="block bg-accent/20 p-4 rounded-lg my-6 overflow-x-auto font-mono text-sm" {...props} />
+                          <code className="block bg-accent/20 p-6 rounded-xl my-8 overflow-x-auto font-mono text-base leading-relaxed shadow-inner" {...props} />
                         ),
-                      strong: ({node, ...props}) => <strong className="font-bold text-foreground" {...props} />,
-                      a: ({node, ...props}) => <a className="text-primary hover:underline font-medium" {...props} />,
-                      hr: ({node, ...props}) => <Separator className="my-10" {...props} />,
+                      strong: ({node, ...props}) => (
+                        <strong className="font-bold text-foreground" {...props} />
+                      ),
+                      a: ({node, ...props}) => (
+                        <a className="text-primary hover:underline font-semibold hover:text-primary/80 transition-colors" {...props} />
+                      ),
+                      hr: ({node, ...props}) => (
+                        <Separator className="my-12 h-1 bg-gradient-to-r from-transparent via-border to-transparent" {...props} />
+                      ),
                     }}
                   >
                     {blogPost.content}
