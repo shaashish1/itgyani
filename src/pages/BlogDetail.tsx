@@ -645,9 +645,10 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
           {/* Article Content */}
           <section className="py-16">
             <div className="container mx-auto px-6">
-              <div className="max-w-3xl mx-auto">
+              <div className="grid lg:grid-cols-[1fr_300px] gap-8 max-w-6xl mx-auto">
+                <div className="max-w-3xl">
                 {/* Featured Image */}
-                <div className="mb-12 rounded-2xl overflow-hidden shadow-xl">
+                <div className="mb-10 rounded-2xl overflow-hidden shadow-xl">
                   <OptimizedImage 
                     src={blogDefaultImage} 
                     alt={blogPost.title}
@@ -657,15 +658,17 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                 </div>
 
                 {/* AdSense - Top of Content */}
-                <AdSenseAd 
-                  slot="content-top" 
-                  format="rectangle"
-                  responsive={true}
-                  className="my-8"
-                />
+                <div className="mb-10">
+                  <AdSenseAd 
+                    slot="content-top" 
+                    format="horizontal"
+                    responsive={true}
+                    className="my-6"
+                  />
+                </div>
 
                 {/* Author Info */}
-                <div className="flex items-center gap-4 mb-12 p-6 bg-accent/5 rounded-xl border border-border/50">
+                <div className="flex items-center gap-4 mb-10 p-6 bg-accent/5 rounded-xl border border-border/50">
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xl">
                     IG
                   </div>
@@ -684,31 +687,32 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                 </div>
 
                 {/* Article Content with Custom Styling */}
-                <article className="blog-content">
+                <article className="blog-content prose prose-lg max-w-none">
                   <ReactMarkdown 
                     remarkPlugins={[remarkGfm]}
                     components={{
-                      h1: ({node, ...props}) => <h1 className="text-4xl font-bold mt-12 mb-6 leading-tight" {...props} />,
+                      h1: ({node, ...props}) => <h1 className="text-4xl font-bold mt-12 mb-6 leading-tight text-foreground" {...props} />,
                       h2: ({node, index, ...props}: any) => {
-                        // Insert ad after 2nd H2
-                        const showAd = index === 1;
+                        // Insert ad after 2nd and 4th H2
+                        const showAd = index === 1 || index === 3;
                         return (
                           <>
-                            <h2 className="text-3xl font-bold mt-10 mb-5 leading-tight" {...props} />
+                            <h2 className="text-3xl font-bold mt-10 mb-6 leading-tight text-foreground" {...props} />
                             {showAd && (
-                              <AdSenseAd 
-                                slot="content-mid" 
-                                format="rectangle"
-                                responsive={true}
-                                className="my-8"
-                              />
+                              <div className="my-10">
+                                <AdSenseAd 
+                                  slot="content-mid" 
+                                  format="rectangle"
+                                  responsive={true}
+                                />
+                              </div>
                             )}
                           </>
                         );
                       },
-                      h3: ({node, ...props}) => <h3 className="text-2xl font-semibold mt-8 mb-4" {...props} />,
-                      h4: ({node, ...props}) => <h4 className="text-xl font-semibold mt-6 mb-3" {...props} />,
-                      p: ({node, ...props}) => <p className="text-lg leading-relaxed mb-6 text-foreground/90" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-2xl font-semibold mt-8 mb-4 text-foreground" {...props} />,
+                      h4: ({node, ...props}) => <h4 className="text-xl font-semibold mt-6 mb-3 text-foreground" {...props} />,
+                      p: ({node, ...props}) => <p className="text-base leading-relaxed mb-6 text-foreground/90" {...props} />,
                       ul: ({node, ...props}) => <ul className="space-y-3 mb-6 ml-6" {...props} />,
                       ol: ({node, ...props}) => <ol className="space-y-3 mb-6 ml-6 list-decimal" {...props} />,
                       li: ({node, ...props}) => <li className="text-lg leading-relaxed text-foreground/90 pl-2" {...props} />,
@@ -731,12 +735,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                 </article>
 
                 {/* AdSense - Bottom of Content */}
-                <AdSenseAd 
-                  slot="content-bottom" 
-                  format="rectangle"
-                  responsive={true}
-                  className="my-8"
-                />
+                <div className="my-10">
+                  <AdSenseAd 
+                    slot="content-bottom" 
+                    format="horizontal"
+                    responsive={true}
+                  />
+                </div>
 
                 {/* Share Section */}
                 <div className="mt-16 pt-8 border-t border-border">
@@ -773,18 +778,67 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                   </div>
                 </div>
               </div>
+
+              {/* Sidebar */}
+              <aside className="hidden lg:block space-y-6 sticky top-24 self-start">
+                {/* AdSense - Sidebar Top */}
+                <div className="mb-6">
+                  <AdSenseAd 
+                    slot="sidebar-top" 
+                    format="vertical"
+                    responsive={true}
+                  />
+                </div>
+
+                {/* Table of Contents */}
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">Quick Navigation</h3>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-foreground/70">Scroll to explore the full article</p>
+                  </div>
+                </Card>
+
+                {/* AdSense - Sidebar Middle */}
+                <div className="my-6">
+                  <AdSenseAd 
+                    slot="sidebar-mid" 
+                    format="vertical"
+                    responsive={true}
+                  />
+                </div>
+
+                {/* Popular Posts */}
+                <Card className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">Popular Posts</h3>
+                  <div className="space-y-3 text-sm">
+                    <Link to="/blog" className="block hover:text-primary transition-colors">
+                      <p className="font-medium line-clamp-2">Explore more articles</p>
+                    </Link>
+                  </div>
+                </Card>
+
+                {/* AdSense - Sidebar Bottom */}
+                <div className="mt-6">
+                  <AdSenseAd 
+                    slot="sidebar-bottom" 
+                    format="vertical"
+                    responsive={true}
+                  />
+                </div>
+              </aside>
+            </div>
             </div>
           </section>
 
           {/* AdSense - Before Related Posts */}
-          <section className="py-8">
+          <section className="py-8 bg-accent/5">
             <div className="container mx-auto px-6">
-              <div className="max-w-3xl mx-auto">
+              <div className="max-w-4xl mx-auto">
                 <AdSenseAd 
-                  slot="content-mid" 
+                  slot="before-related" 
                   format="horizontal"
                   responsive={true}
-                  className="my-8"
+                  className="my-6"
                 />
               </div>
             </div>
@@ -792,16 +846,16 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
 
           {/* Related Posts */}
           {relatedPosts.length > 0 && (
-            <section className="py-16 bg-accent/5">
+            <section className="py-16 bg-background">
               <div className="container mx-auto px-6">
-                <div className="max-w-4xl mx-auto">
-                  <h2 className="text-3xl font-bold mb-8 text-center">
+                <div className="max-w-6xl mx-auto">
+                  <h2 className="text-3xl font-bold mb-10 text-center">
                     <span className="gradient-text">Related Articles</span>
                   </h2>
                   
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {relatedPosts.map((post) => (
-                      <Card key={post.id} className="hover:shadow-lg transition-shadow">
+                      <Card key={post.id} className="hover:shadow-xl transition-all hover:-translate-y-1">
                         <CardContent className="p-6">
                           <Badge variant="outline" className="mb-3">
                             {post.category}
@@ -825,6 +879,15 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                         </CardContent>
                       </Card>
                     ))}
+                  </div>
+
+                  {/* AdSense - After Related Posts */}
+                  <div className="mt-12">
+                    <AdSenseAd 
+                      slot="after-related" 
+                      format="horizontal"
+                      responsive={true}
+                    />
                   </div>
                 </div>
               </div>
