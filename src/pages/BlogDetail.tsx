@@ -691,13 +691,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                   <ReactMarkdown 
                     remarkPlugins={[remarkGfm]}
                     components={{
-                      h1: ({node, ...props}) => <h1 className="text-4xl font-bold mt-12 mb-6 leading-tight text-foreground" {...props} />,
+                      h1: ({node, ...props}) => <h1 className="text-4xl font-bold mt-12 mb-6 leading-tight text-foreground bg-gradient-to-r from-primary/10 to-secondary/10 p-4 rounded-lg border-l-4 border-primary" {...props} />,
                       h2: ({node, index, ...props}: any) => {
                         // Insert ad after 2nd and 4th H2
                         const showAd = index === 1 || index === 3;
                         return (
                           <>
-                            <h2 className="text-3xl font-bold mt-10 mb-6 leading-tight text-foreground" {...props} />
+                            <h2 className="text-3xl font-bold mt-10 mb-6 leading-tight text-foreground bg-accent/20 p-4 rounded-lg border-l-4 border-secondary" {...props} />
                             {showAd && (
                               <div className="my-10">
                                 <AdSenseAd 
@@ -710,8 +710,8 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                           </>
                         );
                       },
-                      h3: ({node, ...props}) => <h3 className="text-2xl font-semibold mt-8 mb-4 text-foreground" {...props} />,
-                      h4: ({node, ...props}) => <h4 className="text-xl font-semibold mt-6 mb-3 text-foreground" {...props} />,
+                      h3: ({node, ...props}) => <h3 className="text-2xl font-semibold mt-8 mb-4 text-foreground bg-accent/10 p-3 rounded-lg border-l-4 border-accent" {...props} />,
+                      h4: ({node, ...props}) => <h4 className="text-xl font-semibold mt-6 mb-3 text-foreground bg-muted/50 p-3 rounded-lg" {...props} />,
                       p: ({node, ...props}) => <p className="text-base leading-relaxed mb-6 text-foreground/90" {...props} />,
                       ul: ({node, ...props}) => <ul className="space-y-3 mb-6 ml-6" {...props} />,
                       ol: ({node, ...props}) => <ol className="space-y-3 mb-6 ml-6 list-decimal" {...props} />,
