@@ -167,7 +167,7 @@ const FutureFlowIndex = () => {
                           </div>
                         </div>
                       </div>
-                      <Button variant="ghost" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors" asChild>
+                      <Button variant="outline" className="w-full bg-primary text-primary-foreground border-primary hover:bg-secondary hover:text-secondary-foreground hover:border-secondary transition-colors" asChild>
                         <Link to={`/blog/${post.slug}`}>
                           Read More
                           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
