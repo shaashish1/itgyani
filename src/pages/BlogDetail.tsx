@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import blogDefaultImage from "@/assets/blog-default.jpg";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
@@ -33,6 +33,8 @@ import remarkGfm from 'remark-gfm';
 import { useTextToSpeech } from "@/hooks/useTextToSpeech";
 import { useToast } from "@/hooks/use-toast";
 import OptimizedImage from "@/components/OptimizedImage";
+import { LazyAd } from "@/components/LazyAd";
+import { prefetchResource } from "@/lib/performance";
 
 interface BlogPost {
   id: string;
@@ -50,6 +52,35 @@ interface BlogPost {
   readingTime: number;
 }
 
+// Memoized components for performance
+const RelatedPostCard = memo(({ post }: { post: BlogPost }) => (
+  <Card className="hover:shadow-xl transition-all hover:-translate-y-1">
+    <CardContent className="p-6">
+      <Badge variant="outline" className="mb-3">
+        {post.category}
+      </Badge>
+      <h3 className="font-semibold mb-2 line-clamp-2">
+        <Link to={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
+          {post.title}
+        </Link>
+      </h3>
+      <p className="text-sm text-foreground/70 mb-4 line-clamp-3">
+        {post.excerpt}
+      </p>
+      <div className="flex items-center justify-between text-xs text-foreground/60">
+        <span>{post.readingTime} min read</span>
+        <Link to={`/blog/${post.slug}`}>
+          <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 p-0">
+            Read More <ArrowRight className="ml-1 h-3 w-3" />
+          </Button>
+        </Link>
+      </div>
+    </CardContent>
+  </Card>
+));
+
+RelatedPostCard.displayName = 'RelatedPostCard';
+
 const BlogDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
@@ -59,17 +90,22 @@ const BlogDetail = () => {
   const { isPlaying, isPaused, isSupported, speak, pause, resume, stop } = useTextToSpeech();
   const { toast } = useToast();
 
+  // Prefetch related posts on hover
+  const handleRelatedPostHover = useCallback((postSlug: string) => {
+    prefetchResource(`/blog/${postSlug}`);
+  }, []);
+
   useEffect(() => {
     if (slug) {
       loadBlogPost(slug);
     }
   }, [slug]);
 
-  const loadBlogPost = async (postSlug: string) => {
+  const loadBlogPost = useCallback(async (postSlug: string) => {
     try {
       setLoading(true);
       
-      // Try to load from Supabase first
+      // Try to load from Supabase first with optimized query
       const { data, error } = await supabase
         .from('blog_posts')
         .select('id, title, slug, content, excerpt, author_id, category_id, tags, published_at, created_at, updated_at, status, meta_description, reading_time, featured_image_url')
@@ -129,13 +165,13 @@ const BlogDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate]);
 
-  const loadRelatedPosts = async (category: string) => {
+  const loadRelatedPosts = useCallback(async (category: string) => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select('id, title, slug, content, excerpt, author_id, category_id, tags, published_at, created_at, updated_at, status, meta_description, reading_time, featured_image_url')
+        .select('id, title, slug, excerpt, category_id, tags, published_at, reading_time')
         .eq('status', 'published')
         .neq('slug', slug)
         .order('published_at', { ascending: false })
@@ -158,15 +194,15 @@ const BlogDetail = () => {
           id: post.id,
           title: post.title,
           slug: post.slug,
-          content: post.content || '',
+          content: '',
           excerpt: post.excerpt || '',
-          author_id: post.author_id,
+          author_id: undefined,
           category: (post.category_id && catMap.get(post.category_id)) || 'General',
           tags: post.tags || [],
-          publishedAt: new Date(post.published_at || post.created_at),
-          updatedAt: new Date(post.updated_at),
-          status: post.status as 'published',
-          metaDescription: post.meta_description || '',
+          publishedAt: new Date(post.published_at),
+          updatedAt: new Date(post.published_at),
+          status: 'published' as const,
+          metaDescription: '',
           readingTime: post.reading_time || 5
         }));
         setRelatedPosts(formattedPosts);
@@ -174,7 +210,7 @@ const BlogDetail = () => {
     } catch (error) {
       setRelatedPosts(getDemoRelatedPosts(category));
     }
-  };
+  }, [slug]);
 
   const getDemoPost = (postSlug: string): BlogPost | null => {
     const demoPosts: Record<string, BlogPost> = {
@@ -473,13 +509,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
     ];
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
+  const formatDate = useMemo(() => {
+    return (date: Date) => date.toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     });
-  };
+  }, []);
 
   const handleReadAloud = () => {
     if (!isSupported) {
@@ -658,14 +694,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                 </div>
 
                 {/* AdSense - Top of Content */}
-                <div className="mb-10">
+                <LazyAd className="mb-10">
                   <AdSenseAd 
                     slot="content-top" 
                     format="horizontal"
                     responsive={true}
-                    className="my-6"
                   />
-                </div>
+                </LazyAd>
 
                 {/* Author Info */}
                 <div className="flex items-center gap-4 mb-10 p-6 bg-accent/5 rounded-xl border border-border/50">
@@ -773,13 +808,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                 </article>
 
                 {/* AdSense - Bottom of Content */}
-                <div className="my-10">
+                <LazyAd className="my-10">
                   <AdSenseAd 
                     slot="content-bottom" 
                     format="horizontal"
                     responsive={true}
                   />
-                </div>
+                </LazyAd>
 
                 {/* Share Section */}
                 <div className="mt-16 pt-8 border-t border-border">
@@ -820,13 +855,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
               {/* Sidebar */}
               <aside className="hidden lg:block space-y-6 sticky top-24 self-start">
                 {/* AdSense - Sidebar Top */}
-                <div className="mb-6">
+                <LazyAd minHeight="600px">
                   <AdSenseAd 
                     slot="sidebar-top" 
                     format="vertical"
                     responsive={true}
                   />
-                </div>
+                </LazyAd>
 
                 {/* Table of Contents */}
                 <Card className="p-6">
@@ -837,13 +872,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                 </Card>
 
                 {/* AdSense - Sidebar Middle */}
-                <div className="my-6">
+                <LazyAd minHeight="600px">
                   <AdSenseAd 
                     slot="sidebar-mid" 
                     format="vertical"
                     responsive={true}
                   />
-                </div>
+                </LazyAd>
 
                 {/* Popular Posts */}
                 <Card className="p-6">
@@ -856,13 +891,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                 </Card>
 
                 {/* AdSense - Sidebar Bottom */}
-                <div className="mt-6">
+                <LazyAd minHeight="600px">
                   <AdSenseAd 
                     slot="sidebar-bottom" 
                     format="vertical"
                     responsive={true}
                   />
-                </div>
+                </LazyAd>
               </aside>
             </div>
             </div>
@@ -872,12 +907,13 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
           <section className="py-8 bg-accent/5">
             <div className="container mx-auto px-6">
               <div className="max-w-4xl mx-auto">
-                <AdSenseAd 
-                  slot="before-related" 
-                  format="horizontal"
-                  responsive={true}
-                  className="my-6"
-                />
+                <LazyAd>
+                  <AdSenseAd 
+                    slot="before-related" 
+                    format="horizontal"
+                    responsive={true}
+                  />
+                </LazyAd>
               </div>
             </div>
           </section>
@@ -893,40 +929,23 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                   
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {relatedPosts.map((post) => (
-                      <Card key={post.id} className="hover:shadow-xl transition-all hover:-translate-y-1">
-                        <CardContent className="p-6">
-                          <Badge variant="outline" className="mb-3">
-                            {post.category}
-                          </Badge>
-                          <h3 className="font-semibold mb-2 line-clamp-2">
-                            <Link to={`/blog/${post.slug}`} className="hover:text-primary transition-colors">
-                              {post.title}
-                            </Link>
-                          </h3>
-                          <p className="text-sm text-foreground/70 mb-4 line-clamp-3">
-                            {post.excerpt}
-                          </p>
-                          <div className="flex items-center justify-between text-xs text-foreground/60">
-                            <span>{post.readingTime} min read</span>
-                            <Link to={`/blog/${post.slug}`}>
-                              <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 p-0">
-                                Read More <ArrowRight className="ml-1 h-3 w-3" />
-                              </Button>
-                            </Link>
-                          </div>
-                        </CardContent>
-                      </Card>
+                      <div 
+                        key={post.id}
+                        onMouseEnter={() => handleRelatedPostHover(post.slug)}
+                      >
+                        <RelatedPostCard post={post} />
+                      </div>
                     ))}
                   </div>
 
                   {/* AdSense - After Related Posts */}
-                  <div className="mt-12">
+                  <LazyAd className="mt-12">
                     <AdSenseAd 
                       slot="after-related" 
                       format="horizontal"
                       responsive={true}
                     />
-                  </div>
+                  </LazyAd>
                 </div>
               </div>
             </section>
