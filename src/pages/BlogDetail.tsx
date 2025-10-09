@@ -718,9 +718,27 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                       h4: ({node, ...props}) => (
                         <h4 className="text-2xl md:text-3xl font-semibold mt-10 mb-5 text-foreground bg-muted/50 p-4 rounded-lg border-l-4 border-muted-foreground/30" {...props} />
                       ),
-                      p: ({node, ...props}) => (
-                        <p className="text-lg md:text-xl leading-relaxed mb-8 text-foreground/90 font-normal" {...props} />
-                      ),
+                      p: ({node, children, ...props}) => {
+                        // Check if this paragraph comes right after a heading (lead paragraph)
+                        const text = String(children);
+                        const isShort = text.length < 150;
+                        const hasStrongEmphasis = text.includes('**') || (typeof children === 'object' && children);
+                        
+                        // Style as subheading if it's a short, emphasized paragraph
+                        if (isShort && text.trim().length > 0) {
+                          return (
+                            <p className="text-xl md:text-2xl font-semibold leading-relaxed mb-6 text-foreground/95 mt-6" {...props}>
+                              {children}
+                            </p>
+                          );
+                        }
+                        
+                        return (
+                          <p className="text-lg md:text-xl leading-relaxed mb-8 text-foreground/90 font-normal" {...props}>
+                            {children}
+                          </p>
+                        );
+                      },
                       ul: ({node, ...props}) => (
                         <ul className="space-y-4 mb-8 ml-8 list-disc marker:text-primary" {...props} />
                       ),
