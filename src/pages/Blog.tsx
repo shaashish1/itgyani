@@ -52,23 +52,29 @@ const Blog = () => {
   const loadBlogPosts = async () => {
     try {
       setLoading(true);
+      
+      // Optimized query - fetch only essential fields without joins
       const { data, error } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          categories (
-            name,
-            slug
-          )
-        `)
+        .select('id, title, slug, content, excerpt, author_id, category_id, tags, published_at, created_at, updated_at, status, meta_description, reading_time, featured_image_url')
         .eq('status', 'published')
-        .order('published_at', { ascending: false });
+        .order('published_at', { ascending: false })
+        .limit(100); // Limit initial fetch
 
       if (error) {
         console.error('Error loading blog posts:', error);
         setBlogPosts(getDemoBlogPosts());
         setFeaturedPosts(getDemoBlogPosts().slice(0, 3));
       } else if (data && data.length > 0) {
+        // Fetch categories separately in a lighter query
+        const categoryIds = [...new Set(data.map(p => p.category_id).filter(Boolean))];
+        const { data: categoriesData } = await supabase
+          .from('categories')
+          .select('id, name, slug')
+          .in('id', categoryIds);
+        
+        const categoryMap = new Map(categoriesData?.map(c => [c.id, c.name]) || []);
+        
         const formattedPosts = data.map(post => ({
           id: post.id,
           title: post.title,
@@ -76,14 +82,16 @@ const Blog = () => {
           content: post.content || '',
           excerpt: post.excerpt || '',
           author_id: post.author_id,
-          category: post.categories?.name || 'General',
+          category: categoryMap.get(post.category_id) || 'General',
           tags: post.tags || [],
           publishedAt: new Date(post.published_at || post.created_at),
           updatedAt: new Date(post.updated_at),
           status: post.status as 'published',
           metaDescription: post.meta_description || '',
-          readingTime: post.reading_time || 5
+          readingTime: post.reading_time || 5,
+          featured_image_url: post.featured_image_url
         }));
+        
         setBlogPosts(formattedPosts);
         setFeaturedPosts(formattedPosts.slice(0, 3));
       } else {
