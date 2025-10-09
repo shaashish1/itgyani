@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { HelmetProvider } from 'react-helmet-async';
+import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
 
 // Lazy load pages for better performance
 const FutureFlowIndex = lazy(() => import("./pages/FutureFlowIndex"));
@@ -89,48 +90,50 @@ const App = () => (
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter>
-            <ScrollToTop />
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-            <Route path="/" element={<FutureFlowIndex />} />
-            <Route path="/services" element={<ServicesPage />} />
-            <Route path="/ai-studio" element={<AIStudio />} />
-            <Route path="/services/business-automation" element={<BusinessAutomation />} />
-            <Route path="/services/ai-customer-support" element={<AICustomerSupport />} />
-            <Route path="/services/data-integration" element={<DataIntegration />} />
-            <Route path="/services/ecommerce-automation" element={<EcommerceAutomation />} />
-            <Route path="/services/marketing-automation" element={<MarketingAutomation />} />
-            <Route path="/services/scheduling-management" element={<SchedulingManagement />} />
-            <Route path="/services/n8n-workflow" element={<N8nWorkflow />} />
-            <Route path="/services/ai-strategy-consulting" element={<AIStrategyConsulting />} />
-            <Route path="/automation/:toolName" element={<AutomationDetail />} />
-            <Route path="/case-studies" element={<CaseStudies />} />
-            <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
-            <Route path="/case-studies/:id/report" element={<CaseStudyReport />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/resources/:id" element={<ResourceDetail />} />
-            <Route path="/whitepapers/:id" element={<WhitepaperDetail />} />
-            <Route path="/academy" element={<Academy />} />
-            <Route path="/course/:id" element={<CourseDetail />} />
-            <Route path="/learning-track/:trackId" element={<LearningTrackDetail />} />
-            <Route path="/industries" element={<Industries />} />
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogDetail />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-service" element={<TermsOfService />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/auth/reset-password" element={<ResetPassword />} />
-            <Route path="/admin/blog" element={<AdminBlogPage />} />
-            <Route path="/images" element={<ImageShowcase />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
-          </BrowserRouter>
+          <GlobalErrorBoundary>
+            <BrowserRouter>
+              <ScrollToTop />
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+              <Route path="/" element={<FutureFlowIndex />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/ai-studio" element={<AIStudio />} />
+              <Route path="/services/business-automation" element={<BusinessAutomation />} />
+              <Route path="/services/ai-customer-support" element={<AICustomerSupport />} />
+              <Route path="/services/data-integration" element={<DataIntegration />} />
+              <Route path="/services/ecommerce-automation" element={<EcommerceAutomation />} />
+              <Route path="/services/marketing-automation" element={<MarketingAutomation />} />
+              <Route path="/services/scheduling-management" element={<SchedulingManagement />} />
+              <Route path="/services/n8n-workflow" element={<N8nWorkflow />} />
+              <Route path="/services/ai-strategy-consulting" element={<AIStrategyConsulting />} />
+              <Route path="/automation/:toolName" element={<AutomationDetail />} />
+              <Route path="/case-studies" element={<CaseStudies />} />
+              <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
+              <Route path="/case-studies/:id/report" element={<CaseStudyReport />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/resources/:id" element={<ResourceDetail />} />
+              <Route path="/whitepapers/:id" element={<WhitepaperDetail />} />
+              <Route path="/academy" element={<Academy />} />
+              <Route path="/course/:id" element={<CourseDetail />} />
+              <Route path="/learning-track/:trackId" element={<LearningTrackDetail />} />
+              <Route path="/industries" element={<Industries />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogDetail />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/auth/reset-password" element={<ResetPassword />} />
+              <Route path="/admin/blog" element={<AdminBlogPage />} />
+              <Route path="/images" element={<ImageShowcase />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+          </GlobalErrorBoundary>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>

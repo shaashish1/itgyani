@@ -72,16 +72,10 @@ const BlogDetail = () => {
       // Try to load from Supabase first
       const { data, error } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          categories (
-            name,
-            slug
-          )
-        `)
+        .select('id, title, slug, content, excerpt, author_id, category_id, tags, published_at, created_at, updated_at, status, meta_description, reading_time, featured_image_url')
         .eq('slug', postSlug)
         .eq('status', 'published')
-        .single();
+        .maybeSingle();
 
       if (error || !data) {
         console.error('Error loading blog post:', error);
@@ -94,6 +88,17 @@ const BlogDetail = () => {
           navigate('/blog');
         }
       } else {
+        // Resolve category name without join
+        let categoryName = 'General';
+        if (data.category_id) {
+          const { data: cat } = await supabase
+            .from('categories')
+            .select('name')
+            .eq('id', data.category_id)
+            .maybeSingle();
+          if (cat?.name) categoryName = cat.name;
+        }
+
         const formattedPost = {
           id: data.id,
           title: data.title,
@@ -101,7 +106,7 @@ const BlogDetail = () => {
           content: data.content || '',
           excerpt: data.excerpt || '',
           author_id: data.author_id,
-          category: data.categories?.name || 'General',
+          category: categoryName,
           tags: data.tags || [],
           publishedAt: new Date(data.published_at || data.created_at),
           updatedAt: new Date(data.updated_at),
@@ -130,20 +135,25 @@ const BlogDetail = () => {
     try {
       const { data, error } = await supabase
         .from('blog_posts')
-        .select(`
-          *,
-          categories (
-            name,
-            slug
-          )
-        `)
+        .select('id, title, slug, content, excerpt, author_id, category_id, tags, published_at, created_at, updated_at, status, meta_description, reading_time, featured_image_url')
         .eq('status', 'published')
         .neq('slug', slug)
+        .order('published_at', { ascending: false })
         .limit(3);
       
       if (error || !data) {
         setRelatedPosts(getDemoRelatedPosts(category));
       } else {
+        // Fetch category names in a single query
+        const catIds = [...new Set(data.map(p => p.category_id).filter(Boolean))];
+        let catMap = new Map<string, string>();
+        if (catIds.length) {
+          const { data: cats } = await supabase
+            .from('categories')
+            .select('id, name')
+            .in('id', catIds);
+          catMap = new Map((cats || []).map(c => [c.id, c.name]));
+        }
         const formattedPosts = data.map(post => ({
           id: post.id,
           title: post.title,
@@ -151,7 +161,7 @@ const BlogDetail = () => {
           content: post.content || '',
           excerpt: post.excerpt || '',
           author_id: post.author_id,
-          category: post.categories?.name || 'General',
+          category: (post.category_id && catMap.get(post.category_id)) || 'General',
           tags: post.tags || [],
           publishedAt: new Date(post.published_at || post.created_at),
           updatedAt: new Date(post.updated_at),
