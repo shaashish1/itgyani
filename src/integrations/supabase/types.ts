@@ -58,6 +58,53 @@ export type Database = {
           },
         ]
       }
+      blog_generation_queue: {
+        Row: {
+          attempts: number | null
+          completed_at: string | null
+          created_at: string | null
+          error_message: string | null
+          id: string
+          max_attempts: number | null
+          run_id: string | null
+          started_at: string | null
+          status: string | null
+          topic: Json
+        }
+        Insert: {
+          attempts?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          max_attempts?: number | null
+          run_id?: string | null
+          started_at?: string | null
+          status?: string | null
+          topic: Json
+        }
+        Update: {
+          attempts?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          max_attempts?: number | null
+          run_id?: string | null
+          started_at?: string | null
+          status?: string | null
+          topic?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blog_generation_queue_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "daily_blog_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blog_generation_steps: {
         Row: {
           completed_at: string | null
@@ -403,10 +450,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      trigger_daily_blog_generation: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      trigger_daily_blog_generation: { Args: never; Returns: undefined }
     }
     Enums: {
       blog_status: "draft" | "published" | "scheduled"

@@ -23,9 +23,9 @@ serve(async (req) => {
 
   try {
     const body = (await req.json().catch(() => ({}))) as { timeoutMinutes?: number };
-    const timeoutMinutes = body.timeoutMinutes ?? 10;
+    const timeoutMinutes = body.timeoutMinutes ?? 30; // Increased from 10 to 30 minutes
 
-    const tenMinutesAgoIso = new Date(Date.now() - timeoutMinutes * 60 * 1000).toISOString();
+    const timeoutAgoIso = new Date(Date.now() - timeoutMinutes * 60 * 1000).toISOString();
 
     console.log(`Running stuck-runs cleanup for runs older than ${timeoutMinutes} minutes`);
 
@@ -37,14 +37,28 @@ serve(async (req) => {
         error_message: "Generation process timed out or did not complete",
       })
       .eq("status", "running")
-      .lt("created_at", tenMinutesAgoIso)
+      .lt("created_at", timeoutAgoIso)
       .eq("blogs_created", 0)
       .eq("blogs_failed", 0)
       .select("id");
 
     if (timeoutErr) throw timeoutErr;
 
-    // 2) Mark completed runs with 0 results as failed
+    // 2) Mark old running runs with some progress as partial
+    const { data: partialRuns, error: partialErr } = await supabase
+      .from("daily_blog_runs")
+      .update({
+        status: "partial",
+        error_message: "Generation timed out but some blogs were created",
+      })
+      .eq("status", "running")
+      .lt("created_at", timeoutAgoIso)
+      .gt("blogs_created", 0)
+      .select("id");
+
+    if (partialErr) throw partialErr;
+
+    // 3) Mark completed runs with 0 results as failed
     const { data: zeroCompletedRuns, error: zeroErr } = await supabase
       .from("daily_blog_runs")
       .update({
@@ -60,6 +74,7 @@ serve(async (req) => {
 
     const result = {
       timedOutUpdated: timedOutRuns?.length ?? 0,
+      partialUpdated: partialRuns?.length ?? 0,
       zeroCompletedUpdated: zeroCompletedRuns?.length ?? 0,
     };
 

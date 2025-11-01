@@ -9,7 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Bot, Loader2, Sparkles, Zap, Clock } from "lucide-react";
+import { Bot, Loader2, Sparkles, Zap, Clock, Brain, Edit, Download } from "lucide-react";
+import BlogPreview from "@/components/BlogPreview";
 
 interface GenerationRequest {
   topic: string;
@@ -23,7 +24,10 @@ interface GenerationRequest {
 
 const AIBlogGenerator = () => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingTopic, setIsGeneratingTopic] = useState(false);
   const [generatedBlog, setGeneratedBlog] = useState<any>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editedContent, setEditedContent] = useState('');
   const [request, setRequest] = useState<GenerationRequest>({
     topic: '',
     category: 'ai-machine-learning',
@@ -114,6 +118,100 @@ const AIBlogGenerator = () => {
     }
   };
 
+  const handleGenerateTopic = async () => {
+    if (!request.category) {
+      toast({
+        title: "Category required",
+        description: "Please select a category first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeneratingTopic(true);
+    try {
+      const categoryName = categories.find(c => c.value === request.category)?.label || request.category;
+      const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {
+        body: { 
+          count: 5,
+          topicsOnly: true,
+          category: categoryName
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.topics && data.topics.length > 0) {
+        // Pick a random topic
+        const randomTopic = data.topics[Math.floor(Math.random() * data.topics.length)];
+        setRequest(prev => ({
+          ...prev,
+          topic: randomTopic.title,
+          keywords: randomTopic.keywords || []
+        }));
+        toast({
+          title: "Topic generated! 💡",
+          description: "AI suggested a trending topic for you.",
+        });
+      }
+    } catch (error: any) {
+      console.error('Topic generation error:', error);
+      toast({
+        title: "Generation failed",
+        description: error.message || "Failed to generate topic.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingTopic(false);
+    }
+  };
+
+  const handleSaveEdits = async () => {
+    if (!generatedBlog || !editedContent) return;
+    
+    try {
+      const { error } = await supabase
+        .from('blog_posts')
+        .update({ content: editedContent })
+        .eq('id', generatedBlog.id);
+
+      if (error) throw error;
+
+      setGeneratedBlog(prev => ({ ...prev, content: editedContent }));
+      setEditMode(false);
+      toast({
+        title: "Changes saved ✓",
+        description: "Blog content has been updated.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Save failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDownload = () => {
+    if (!generatedBlog) return;
+
+    const markdown = `# ${generatedBlog.title}\n\n${generatedBlog.excerpt}\n\n---\n\n${generatedBlog.content}`;
+    const blob = new Blob([markdown], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${generatedBlog.slug || 'blog-post'}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Downloaded ✓",
+      description: "Blog post saved as Markdown file.",
+    });
+  };
+
   const handlePublish = async () => {
     if (!generatedBlog) return;
 
@@ -164,13 +262,32 @@ const AIBlogGenerator = () => {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="topic">Blog Topic</Label>
-            <Textarea
-              id="topic"
-              placeholder="e.g., The Future of Edge AI in Healthcare Applications"
-              value={request.topic}
-              onChange={(e) => setRequest(prev => ({ ...prev, topic: e.target.value }))}
-              rows={3}
-            />
+            <div className="flex gap-2">
+              <Textarea
+                id="topic"
+                placeholder="e.g., The Future of Edge AI in Healthcare Applications"
+                value={request.topic}
+                onChange={(e) => setRequest(prev => ({ ...prev, topic: e.target.value }))}
+                rows={3}
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleGenerateTopic}
+                disabled={isGeneratingTopic || isGenerating}
+                className="h-auto"
+              >
+                {isGeneratingTopic ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Brain className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Click the <Brain className="h-3 w-3 inline" /> button to generate AI topic suggestions
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -239,9 +356,9 @@ const AIBlogGenerator = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="short">Short (800-1200 words)</SelectItem>
-                  <SelectItem value="medium">Medium (1500-2000 words)</SelectItem>
-                  <SelectItem value="long">Long (2500-3500 words)</SelectItem>
+                  <SelectItem value="short">Short (700-900 words)</SelectItem>
+                  <SelectItem value="medium">Medium (900-1000 words)</SelectItem>
+                  <SelectItem value="long">Long (1000-1200 words)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -309,10 +426,10 @@ const AIBlogGenerator = () => {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Zap className="mr-2 h-5 w-5" />
-            Generated Content
+            Generated Blog Preview
           </CardTitle>
           <CardDescription>
-            Preview and publish your AI-generated blog post
+            Preview exactly how your blog will look when published
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -323,57 +440,73 @@ const AIBlogGenerator = () => {
             </div>
           ) : generatedBlog ? (
             <div className="space-y-6">
-              <div>
-                <h3 className="font-semibold text-lg mb-2">{generatedBlog.title}</h3>
-                <p className="text-muted-foreground mb-4">{generatedBlog.excerpt}</p>
-                
-                <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-4">
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-1" />
-                    {generatedBlog.reading_time} min read
-                  </div>
-                  {generatedBlog.is_premium && (
-                    <Badge variant="outline" className="text-xs">Premium</Badge>
-                  )}
-                  <Badge variant="secondary" className="text-xs">
-                    {generatedBlog.status}
-                  </Badge>
-                </div>
-              </div>
-
-              <div className="bg-muted/50 p-4 rounded-lg max-h-60 overflow-y-auto">
-                <p className="text-sm whitespace-pre-wrap">
-                  {generatedBlog.content?.substring(0, 500)}...
-                </p>
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium">SEO Keywords</Label>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {generatedBlog.keywords?.map((keyword: string) => (
-                    <Badge key={keyword} variant="outline" className="text-xs">
-                      {keyword}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium">Tags</Label>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {generatedBlog.tags?.map((tag: string) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-
-              {generatedBlog.status === 'draft' && (
-                <Button onClick={handlePublish} className="w-full" size="lg">
-                  <Zap className="mr-2 h-4 w-4" />
-                  Publish Blog Post
+              {/* Action Buttons */}
+              <div className="flex gap-2 pb-4 border-b">
+                <Button
+                  onClick={() => {
+                    setEditMode(!editMode);
+                    if (!editMode) setEditedContent(generatedBlog.content);
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Edit className="h-4 w-4 mr-2" />
+                  {editMode ? 'Cancel Edit' : 'Edit Content'}
                 </Button>
+                <Button
+                  onClick={handleDownload}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+                {generatedBlog.status === 'draft' && (
+                  <Button
+                    onClick={handlePublish}
+                    size="sm"
+                    className="ml-auto"
+                  >
+                    <Zap className="h-4 w-4 mr-2" />
+                    Publish Now
+                  </Button>
+                )}
+                {generatedBlog.status === 'published' && (
+                  <Badge variant="default" className="ml-auto">
+                    Published ✓
+                  </Badge>
+                )}
+              </div>
+
+              {/* Edit Mode */}
+              {editMode ? (
+                <div className="space-y-4">
+                  <Label>Edit Content (Markdown)</Label>
+                  <Textarea
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    rows={20}
+                    className="font-mono text-sm"
+                  />
+                  <Button onClick={handleSaveEdits} className="w-full">
+                    Save Changes
+                  </Button>
+                </div>
+              ) : (
+                /* Full Blog Preview */
+                <div className="border rounded-lg p-6 bg-background max-h-[600px] overflow-y-auto">
+                  <BlogPreview
+                    title={generatedBlog.title}
+                    excerpt={generatedBlog.excerpt}
+                    content={generatedBlog.content}
+                    featuredImage={generatedBlog.featured_image_url}
+                    readingTime={generatedBlog.reading_time || 5}
+                    category={generatedBlog.category?.name || 'General'}
+                    tags={generatedBlog.tags}
+                    keywords={generatedBlog.keywords}
+                    publishedAt={generatedBlog.published_at || new Date().toLocaleDateString()}
+                  />
+                </div>
               )}
             </div>
           ) : (

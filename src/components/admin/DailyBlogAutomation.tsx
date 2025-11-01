@@ -248,34 +248,23 @@ export const DailyBlogAutomation: React.FC = () => {
     setIsGenerating(true);
     
     try {
-      // Load saved OpenAI config from localStorage
-      const savedConfig = localStorage.getItem('openai_model_config');
-      const config = savedConfig ? JSON.parse(savedConfig) : {
-        contentModel: 'auto',
-        imageModel: 'gpt-image-1',
-        maxTokens: 3000,
-        imageSize: '1024x1024',
-        imageQuality: 'high',
-        temperature: 0.7
-      };
-
       toast({
         title: "Generating Daily Blogs",
-        description: "Fetching trending topics and generating 10 AI-powered blog posts with images as drafts...",
+        description: `Creating ${blogCount} blog topics and queueing them for generation...`,
       });
 
       const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {
         body: { 
           count: blogCount,
-          config
+          topicsOnly: true // Use queue-based system
         }
       });
 
       if (error) throw error;
 
       toast({
-        title: "🚀 Generation Started!",
-        description: "Monitoring progress... You'll be notified when complete.",
+        title: "🚀 Topics Generated!",
+        description: `${blogCount} blog topics queued. They will be generated every 10 minutes.`,
       });
 
       // Set up monitoring for the new run
@@ -294,8 +283,7 @@ export const DailyBlogAutomation: React.FC = () => {
         description: error.message || "Failed to generate daily blogs",
         variant: "destructive"
       });
-    } finally {
-      // Keep isGenerating true until the run completes or until the timeout handler clears it
+      setIsGenerating(false);
     }
   };
 
@@ -409,10 +397,10 @@ export const DailyBlogAutomation: React.FC = () => {
             <div className="p-4 border rounded-lg bg-muted/50">
               <div className="flex items-center gap-2 mb-2">
                 <Newspaper className="h-5 w-5 text-primary" />
-                <h4 className="font-medium">10 Blogs Daily</h4>
+                <h4 className="font-medium">Queue System</h4>
               </div>
               <p className="text-sm text-muted-foreground">
-                Generates comprehensive, SEO-optimized blog posts
+                Generates blogs every 10 minutes to avoid rate limits
               </p>
             </div>
 
@@ -422,7 +410,7 @@ export const DailyBlogAutomation: React.FC = () => {
                 <h4 className="font-medium">Auto-Publish</h4>
               </div>
               <p className="text-sm text-muted-foreground">
-                Posts are automatically published and categorized
+                Posts are automatically published (700-1000 words)
               </p>
             </div>
           </div>
@@ -431,9 +419,9 @@ export const DailyBlogAutomation: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-primary/5 to-primary/10">
               <div className="flex-1">
-                <h4 className="font-medium mb-1">Generate & Publish Blogs</h4>
+                <h4 className="font-medium mb-1">Generate & Queue Blogs</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Generate trending AI news blogs. Each blog is published immediately after generation.
+                  Generate trending AI news topics and queue them for automatic generation (1 blog every 10 minutes). Each blog is published automatically.
                 </p>
                 <div className="flex items-center gap-3">
                   <label htmlFor="blog-count" className="text-sm font-medium">
@@ -464,7 +452,7 @@ export const DailyBlogAutomation: React.FC = () => {
                 ) : (
                   <>
                     <Play className="mr-2 h-4 w-4" />
-                    Generate {blogCount} {blogCount === 1 ? 'Blog' : 'Blogs'}
+                    Queue {blogCount} {blogCount === 1 ? 'Blog' : 'Blogs'}
                   </>
                 )}
               </Button>

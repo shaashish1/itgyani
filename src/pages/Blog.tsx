@@ -54,10 +54,10 @@ const Blog = () => {
     try {
       setLoading(true);
       
-      // Optimized query - fetch only essential fields without joins
+      // Optimized query - fetch only essential fields WITHOUT content (reduces data transfer from 2MB+ to ~50KB)
       const { data, error } = await supabase
         .from('blog_posts')
-        .select('id, title, slug, content, excerpt, author_id, category_id, tags, published_at, created_at, updated_at, status, meta_description, reading_time, featured_image_url')
+        .select('id, title, slug, excerpt, author_id, category_id, tags, published_at, created_at, updated_at, status, meta_description, reading_time, featured_image_url')
         .eq('status', 'published')
         .order('published_at', { ascending: false })
         .limit(100); // Limit initial fetch
@@ -80,7 +80,7 @@ const Blog = () => {
           id: post.id,
           title: post.title,
           slug: post.slug,
-          content: post.content || '',
+          content: '', // Not fetched for performance - only needed in BlogDetail
           excerpt: post.excerpt || '',
           author_id: post.author_id,
           category: categoryMap.get(post.category_id) || 'General',

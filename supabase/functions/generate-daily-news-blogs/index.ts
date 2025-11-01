@@ -380,24 +380,40 @@ serve(async (req) => {
 
         // If topicsOnly mode, return just the topics without creating blogs
         if (topicsOnly) {
-          console.log('📤 Returning topics only (no blog generation)');
+          console.log('📤 Returning topics only (topics will be queued)');
           
-          // Update run record even in topicsOnly mode
+          // Create queue items for each topic
+          const queueItems = topics.map(topic => ({
+            run_id: runId,
+            topic: topic,
+            status: 'pending'
+          }));
+
+          const { error: queueError } = await supabase
+            .from('blog_generation_queue')
+            .insert(queueItems);
+
+          if (queueError) {
+            console.error('Error creating queue items:', queueError);
+            throw queueError;
+          }
+
+          // Update run record
           await supabase
             .from('daily_blog_runs')
             .update({
-              status: topics.length > 0 ? 'completed' : 'failed',
-              blogs_created: 0,
-              blogs_failed: 0,
-              error_message: topics.length === 0 ? 'No topics generated' : null
+              status: 'running', // Will be marked completed by queue processor
+              blogs_total: topics.length
             })
             .eq('id', runId);
           
           return new Response(
             JSON.stringify({ 
-              success: topics.length > 0,
+              success: true,
+              runId: runId,
               topics: topics,
-              count: topics.length
+              count: topics.length,
+              message: 'Topics queued for processing'
             }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
@@ -472,12 +488,13 @@ Keywords: ${topic.keywords.join(', ')}
 Category: ${topic.category}
 
 Requirements:
-- Write 1500-2000 words of high-quality content
+- **Word Count: 700-1000 words** (this is CRITICAL - do not exceed 1000 words)
 - Use clear structure with sections and subsections
 - Include practical examples and real-world applications
 - Make it informative yet accessible
 - SEO optimized with natural keyword integration
-- Professional tone with engaging storytelling`;
+- Professional tone with engaging storytelling
+- Keep content focused and concise`;
 
             const maxRetries = 3;
             let blogData = null;
@@ -486,9 +503,9 @@ Requirements:
               try {
                 console.log(`  Attempt ${attempt}/${maxRetries}...`);
                 const blogResponse = await callOpenAI([
-                  { role: 'system', content: 'You are an expert tech writer specializing in AI, automation, and emerging technologies.' },
+                  { role: 'system', content: 'You are an expert tech writer specializing in AI, automation, and emerging technologies. You write concise, high-quality content.' },
                   { role: 'user', content: blogPrompt }
-                ], 3000);
+                ], 1500); // Reduced to ~1000 words max
 
                 const toolCall = blogResponse.choices[0]?.message?.tool_calls?.[0];
                 if (toolCall) {
