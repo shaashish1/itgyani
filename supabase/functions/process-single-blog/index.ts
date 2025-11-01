@@ -64,7 +64,17 @@ Requirements:
 - Include a strong conclusion with call-to-action
 - Format in Markdown
 
-Keep content concise and focused. Quality over quantity.`;
+Keep content concise and focused. Quality over quantity.
+
+Return a JSON object with these fields:
+{
+  "title": "Blog post title (60 chars max)",
+  "content": "Full blog content in Markdown format",
+  "excerpt": "Brief summary (150 chars max)",
+  "keywords": ["keyword1", "keyword2", "keyword3"],
+  "meta_description": "SEO meta description (160 chars max)",
+  "tags": ["tag1", "tag2", "tag3"]
+}`;
 
       const contentResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -73,32 +83,14 @@ Keep content concise and focused. Quality over quantity.`;
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-5-mini-2025-08-07',
+          model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: 'You are an expert technical writer who creates concise, high-quality blog content.' },
             { role: 'user', content: blogPrompt }
           ],
           max_completion_tokens: 1500, // ~1000 words max
-          tools: [{
-            type: "function",
-            function: {
-              name: "generate_blog",
-              description: "Generate a structured blog post",
-              parameters: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  content: { type: "string" },
-                  excerpt: { type: "string" },
-                  keywords: { type: "array", items: { type: "string" } },
-                  meta_description: { type: "string" },
-                  tags: { type: "array", items: { type: "string" } }
-                },
-                required: ["title", "content", "excerpt", "keywords", "meta_description"]
-              }
-            }
-          }],
-          tool_choice: { type: "function", function: { name: "generate_blog" }}
+          response_format: { type: "json_object" },
+          temperature: 0.7
         }),
       });
 
@@ -108,12 +100,14 @@ Keep content concise and focused. Quality over quantity.`;
       }
 
       const contentData = await contentResponse.json();
-      const toolCall = contentData.choices[0]?.message?.tool_calls?.[0];
-      if (!toolCall?.function?.arguments) {
-        throw new Error('Invalid response from OpenAI');
+      const message = contentData.choices[0]?.message;
+      
+      if (!message?.content) {
+        console.error('OpenAI response:', JSON.stringify(contentData, null, 2));
+        throw new Error('Invalid response from OpenAI - no content in message');
       }
 
-      const blogContent = JSON.parse(toolCall.function.arguments);
+      const blogContent = JSON.parse(message.content);
 
       // Generate blog image
       let featuredImageUrl = null;
@@ -127,12 +121,12 @@ Keep content concise and focused. Quality over quantity.`;
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-image-1',
+            model: 'dall-e-3',
             prompt: imagePrompt,
             n: 1,
             size: '1024x1024',
-            quality: 'high',
-            output_format: 'png'
+            quality: 'standard',
+            response_format: 'b64_json'
           }),
         });
 
@@ -191,11 +185,19 @@ Keep content concise and focused. Quality over quantity.`;
         })
         .eq('id', queueItemId);
 
-      // Update run stats
-      await supabase.rpc('increment', {
-        row_id: queueItem.run_id,
-        x: 1
-      });
+      // Update run stats - increment created count
+      const { data: run } = await supabase
+        .from('daily_blog_runs')
+        .select('blogs_created')
+        .eq('id', queueItem.run_id)
+        .single();
+      
+      if (run) {
+        await supabase
+          .from('daily_blog_runs')
+          .update({ blogs_created: (run.blogs_created || 0) + 1 })
+          .eq('id', queueItem.run_id);
+      }
 
       const duration = Date.now() - startTime;
       console.log(`✅ Blog created in ${duration}ms: ${blogContent.title}`);
@@ -216,10 +218,10 @@ Keep content concise and focused. Quality over quantity.`;
       await supabase
         .from('blog_generation_queue')
         .update({
-          status: 'failed',
+          status: queueItem.attempts + 1 < queueItem.max_attempts ? 'pending' : 'failed',
           error_message: error.message,
           attempts: queueItem.attempts + 1,
-          completed_at: new Date().toISOString()
+          completed_at: queueItem.attempts + 1 >= queueItem.max_attempts ? new Date().toISOString() : null
         })
         .eq('id', queueItemId);
 

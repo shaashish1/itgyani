@@ -66,24 +66,36 @@ serve(async (req) => {
           results.failed++;
           results.errors.push(`${item.topic.title}: ${error.message}`);
           
-          // Update run stats
-          await supabase
+          // Update run stats - increment failed count
+          const { data: run } = await supabase
             .from('daily_blog_runs')
-            .update({ 
-              blogs_failed: supabase.raw('blogs_failed + 1')
-            })
-            .eq('id', item.run_id);
+            .select('blogs_failed')
+            .eq('id', item.run_id)
+            .single();
+          
+          if (run) {
+            await supabase
+              .from('daily_blog_runs')
+              .update({ blogs_failed: (run.blogs_failed || 0) + 1 })
+              .eq('id', item.run_id);
+          }
         } else {
           console.log(`✅ Successfully processed: ${item.topic.title}`);
           results.successful++;
           
-          // Update run stats
-          await supabase
+          // Update run stats - increment created count
+          const { data: run } = await supabase
             .from('daily_blog_runs')
-            .update({ 
-              blogs_created: supabase.raw('blogs_created + 1')
-            })
-            .eq('id', item.run_id);
+            .select('blogs_created')
+            .eq('id', item.run_id)
+            .single();
+          
+          if (run) {
+            await supabase
+              .from('daily_blog_runs')
+              .update({ blogs_created: (run.blogs_created || 0) + 1 })
+              .eq('id', item.run_id);
+          }
         }
 
         results.processed++;

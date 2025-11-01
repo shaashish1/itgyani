@@ -74,3 +74,9 @@ verify_jwt = false
 
 [functions.kill-daily-blog-run]
 verify_jwt = false
+
+[functions.process-blog-queue]
+verify_jwt = false
+
+[functions.process-single-blog]
+verify_jwt = false
