@@ -50,6 +50,7 @@ interface BlogPost {
   status: 'draft' | 'published' | 'archived';
   metaDescription: string;
   readingTime: number;
+  views?: number;
 }
 
 // Memoized components for performance
@@ -100,6 +101,29 @@ const BlogDetail = () => {
       loadBlogPost(slug);
     }
   }, [slug]);
+
+  // Track view count
+  useEffect(() => {
+    if (blogPost?.id) {
+      incrementViewCount(blogPost.id);
+    }
+  }, [blogPost?.id]);
+
+  const incrementViewCount = async (postId: string) => {
+    try {
+      // Increment view count in database
+      const { error } = await supabase
+        .from('blog_posts')
+        .update({ views: (blogPost?.views || 0) + 1 })
+        .eq('id', postId);
+
+      if (error) {
+        console.error('Error incrementing view count:', error);
+      }
+    } catch (error) {
+      console.error('Failed to increment view count:', error);
+    }
+  };
 
   const loadBlogPost = useCallback(async (postSlug: string) => {
     try {

@@ -37,9 +37,12 @@ interface BlogPost {
 const Blog = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const [featuredPosts, setFeaturedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,10 +98,25 @@ const Blog = () => {
         
         setBlogPosts(formattedPosts);
         setFeaturedPosts(formattedPosts.slice(0, 3));
+        
+        // Extract unique tags
+        const tags = new Set<string>();
+        formattedPosts.forEach(post => {
+          post.tags?.forEach(tag => tags.add(tag));
+        });
+        setAllTags(Array.from(tags).sort());
       } else {
         // No posts found, use demo posts
-        setBlogPosts(getDemoBlogPosts());
-        setFeaturedPosts(getDemoBlogPosts().slice(0, 3));
+        const demoPosts = getDemoBlogPosts();
+        setBlogPosts(demoPosts);
+        setFeaturedPosts(demoPosts.slice(0, 3));
+        
+        // Extract tags from demo posts
+        const tags = new Set<string>();
+        demoPosts.forEach(post => {
+          post.tags?.forEach(tag => tags.add(tag));
+        });
+        setAllTags(Array.from(tags).sort());
       }
     } catch (error) {
       console.error('Failed to load blog posts:', error);
@@ -233,12 +251,36 @@ const Blog = () => {
   }];
   const categories = ["All", "Technology", "Business", "Automation", "Industry", "AI Studio"];
 
-  // Filter posts based on search and category
+  // Filter posts based on search, category, tags, and date range
   const filteredPosts = blogPosts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) || post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+    
     const matchesCategory = selectedCategory === "All" || post.category.toLowerCase() === selectedCategory.toLowerCase();
-    return matchesSearch && matchesCategory;
+    
+    const matchesTags = selectedTags.length === 0 || selectedTags.some(tag => post.tags.includes(tag));
+    
+    const matchesDateRange = (!dateRange.from || post.publishedAt >= dateRange.from) &&
+                            (!dateRange.to || post.publishedAt <= dateRange.to);
+    
+    return matchesSearch && matchesCategory && matchesTags && matchesDateRange;
   });
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
+    setCurrentPage(1); // Reset to first page
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("All");
+    setSelectedTags([]);
+    setDateRange({});
+    setCurrentPage(1);
+  };
 
   // Pagination logic
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
@@ -334,13 +376,121 @@ const Blog = () => {
           </div>
         </section>
 
-        {/* Category Filter */}
+        {/* Advanced Filters */}
         <section className="py-8 border-b border-border/50">
           <div className="container mx-auto px-6">
-            <div className="flex flex-wrap gap-2 justify-center">
-              {categories.map(category => <Button key={category} variant={selectedCategory === category ? "default" : "outline"} size="sm" onClick={() => setSelectedCategory(category)} className="transition-all duration-300">
-                  {category}
-                </Button>)}
+            <div className="space-y-4">
+              {/* Category Filter */}
+              <div>
+                <h3 className="text-sm font-medium mb-2 text-muted-foreground">Categories</h3>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map(category => (
+                    <Button 
+                      key={category} 
+                      variant={selectedCategory === category ? "default" : "outline"} 
+                      size="sm" 
+                      onClick={() => {
+                        setSelectedCategory(category);
+                        setCurrentPage(1);
+                      }}
+                      className="transition-all duration-300"
+                    >
+                      {category}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tag Filter */}
+              {allTags.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-medium mb-2 text-muted-foreground">Tags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {allTags.slice(0, 15).map(tag => (
+                      <Badge
+                        key={tag}
+                        variant={selectedTags.includes(tag) ? "default" : "outline"}
+                        className="cursor-pointer hover:bg-primary/20 transition-colors"
+                        onClick={() => toggleTag(tag)}
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Date Range Filter */}
+              <div>
+                <h3 className="text-sm font-medium mb-2 text-muted-foreground">Date Range</h3>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={!dateRange.from && !dateRange.to ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setDateRange({});
+                      setCurrentPage(1);
+                    }}
+                  >
+                    All Time
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const today = new Date();
+                      const lastWeek = new Date(today);
+                      lastWeek.setDate(today.getDate() - 7);
+                      setDateRange({ from: lastWeek, to: today });
+                      setCurrentPage(1);
+                    }}
+                  >
+                    Last 7 Days
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const today = new Date();
+                      const lastMonth = new Date(today);
+                      lastMonth.setMonth(today.getMonth() - 1);
+                      setDateRange({ from: lastMonth, to: today });
+                      setCurrentPage(1);
+                    }}
+                  >
+                    Last 30 Days
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const today = new Date();
+                      const lastYear = new Date(today);
+                      lastYear.setFullYear(today.getFullYear() - 1);
+                      setDateRange({ from: lastYear, to: today });
+                      setCurrentPage(1);
+                    }}
+                  >
+                    Last Year
+                  </Button>
+                </div>
+              </div>
+
+              {/* Active Filters Summary */}
+              {(selectedCategory !== "All" || selectedTags.length > 0 || dateRange.from || dateRange.to) && (
+                <div className="flex items-center gap-2 pt-2">
+                  <span className="text-sm text-muted-foreground">Active filters:</span>
+                  <Badge variant="secondary">{filteredPosts.length} results</Badge>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearFilters}
+                    className="text-xs"
+                  >
+                    Clear all
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </section>

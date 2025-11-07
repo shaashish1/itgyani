@@ -44,6 +44,7 @@ import { DailyBlogAutomation } from '@/components/admin/DailyBlogAutomation';
 import { BlogPostManager } from '@/components/admin/BlogPostManager';
 import { OpenAIConfig } from '@/components/admin/OpenAIConfig';
 import { OpenRouterConfig } from '@/components/admin/OpenRouterConfig';
+import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard';
 
 const AdminBlogPage: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -61,7 +62,7 @@ const AdminBlogPage: React.FC = () => {
   const [selectedAIProvider, setSelectedAIProvider] = useState<string>(() => {
     return localStorage.getItem('selected_ai_provider') || 'openai';
   });
-  const [activeTab, setActiveTab] = useState('daily-automation');
+  const [activeTab, setActiveTab] = useState('analytics');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { toast } = useToast();
 
@@ -216,6 +217,7 @@ const AdminBlogPage: React.FC = () => {
   }
 
   const navItems = [
+    { id: 'analytics', label: 'Analytics', icon: LayoutDashboard, description: 'Performance & insights' },
     { id: 'daily-automation', label: 'Daily Automation', icon: Zap, description: 'Automated blog generation' },
     { id: 'all-blogs', label: 'All Blogs', icon: FileText, description: 'View all blog posts' },
     { id: 'blog-manager', label: 'Manual Editor', icon: PenTool, description: 'Create & edit posts' },
@@ -378,6 +380,7 @@ const AdminBlogPage: React.FC = () => {
           {/* Content Area */}
           <div className="p-8">
             <div className="max-w-7xl mx-auto">
+              {activeTab === 'analytics' && <AnalyticsDashboard />}
               {activeTab === 'daily-automation' && <DailyBlogAutomation />}
               {activeTab === 'all-blogs' && <BlogPostManager />}
               {activeTab === 'blog-manager' && <BlogManager className="space-y-6" />}
