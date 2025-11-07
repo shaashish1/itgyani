@@ -52,7 +52,7 @@ serve(async (req) => {
   console.log('🚀 Daily blog generation started at:', new Date().toISOString());
 
   try {
-    const { count = 10, config, topicsOnly = false } = await req.json();
+    const { count = 10, config, topicsOnly = false, priority = 2 } = await req.json();
     
     // Default config if not provided
     const modelConfig = config || {
@@ -386,7 +386,8 @@ serve(async (req) => {
           const queueItems = topics.map(topic => ({
             run_id: runId,
             topic: topic,
-            status: 'pending'
+            status: 'pending',
+            priority: priority
           }));
 
           const { error: queueError } = await supabase

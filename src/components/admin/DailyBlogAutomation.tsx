@@ -6,6 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { GenerationStepsViewer } from './GenerationStepsViewer';
+import { QueueProgressViewer } from './QueueProgressViewer';
 import { 
   Clock, 
   TrendingUp, 
@@ -15,8 +16,18 @@ import {
   Calendar,
   Newspaper,
   Play,
-  Loader2
+  Loader2,
+  Flame,
+  Pin
 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from '@/components/ui/label';
 
 export const DailyBlogAutomation: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -29,6 +40,8 @@ export const DailyBlogAutomation: React.FC = () => {
   const [firstBlogTimeout, setFirstBlogTimeout] = useState<NodeJS.Timeout | null>(null);
   const [expandedRunId, setExpandedRunId] = useState<string | null>(null);
   const [blogCount, setBlogCount] = useState<number>(10);
+  const [selectedPriority, setSelectedPriority] = useState<'1' | '2' | '3'>('2');
+  const [activeRunId, setActiveRunId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -250,13 +263,14 @@ export const DailyBlogAutomation: React.FC = () => {
     try {
       toast({
         title: "Generating Daily Blogs",
-        description: `Creating ${blogCount} blog topics and starting queue processor...`,
+        description: `Creating ${blogCount} blog topics with ${selectedPriority === '1' ? 'HIGH' : selectedPriority === '3' ? 'LOW' : 'NORMAL'} priority and starting queue processor...`,
       });
 
       const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {
         body: { 
           count: blogCount,
-          topicsOnly: true
+          topicsOnly: true,
+          priority: parseInt(selectedPriority)
         }
       });
 
@@ -266,6 +280,8 @@ export const DailyBlogAutomation: React.FC = () => {
 
       // Start queue runner immediately
       if (runId) {
+        setActiveRunId(runId);
+        
         const { error: runnerError } = await supabase.functions.invoke('queue-runner', {
           body: { runId }
         });
@@ -279,24 +295,25 @@ export const DailyBlogAutomation: React.FC = () => {
           });
         } else {
           toast({
-            title: "✅ Queue Processing Started!",
-            description: `${blogCount} blogs queued and processing in background.`,
+            title: "✅ Queue Processing Started",
+            description: "Topics queued and processing in background. Watch progress below.",
           });
         }
 
+        // Monitor this run
         setMonitoredRunId(runId);
-        setPreviousStatus('running');
       }
 
-      loadRecentRuns();
+      await loadRecentRuns();
 
     } catch (error: any) {
       console.error('Generation error:', error);
       toast({
-        title: "Generation Failed",
-        description: error.message || "Failed to generate daily blogs",
+        title: "Error",
+        description: error.message || "Failed to start blog generation",
         variant: "destructive"
       });
+    } finally {
       setIsGenerating(false);
     }
   };
@@ -464,22 +481,58 @@ export const DailyBlogAutomation: React.FC = () => {
               <div className="flex-1">
                 <h4 className="font-medium mb-1">Generate & Queue Blogs</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Generate trending AI news topics and queue them for automatic generation (1 blog every 10 minutes). Each blog is published automatically.
+                  Generate trending AI news topics and queue them for automatic generation (1 blog every 12 seconds). Each blog is published automatically.
                 </p>
-                <div className="flex items-center gap-3">
-                  <label htmlFor="blog-count" className="text-sm font-medium">
-                    Number of blogs:
-                  </label>
-                  <input
-                    id="blog-count"
-                    type="number"
-                    min="1"
-                    max="20"
-                    value={blogCount}
-                    onChange={(e) => setBlogCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
-                    disabled={isGenerating}
-                    className="w-20 px-3 py-1 border rounded-md bg-background text-foreground"
-                  />
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-3">
+                    <label htmlFor="blog-count" className="text-sm font-medium">
+                      Number of blogs:
+                    </label>
+                    <input
+                      id="blog-count"
+                      type="number"
+                      min="1"
+                      max="20"
+                      value={blogCount}
+                      onChange={(e) => setBlogCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
+                      disabled={isGenerating}
+                      className="w-20 px-3 py-1 border rounded-md bg-background text-foreground"
+                    />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Label htmlFor="priority-select" className="text-sm font-medium">
+                      Priority:
+                    </Label>
+                    <Select
+                      value={selectedPriority}
+                      onValueChange={(value: '1' | '2' | '3') => setSelectedPriority(value)}
+                      disabled={isGenerating}
+                    >
+                      <SelectTrigger id="priority-select" className="w-[140px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">
+                          <div className="flex items-center gap-2">
+                            <Flame className="h-3 w-3 text-destructive" />
+                            High (Urgent)
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="2">
+                          <div className="flex items-center gap-2">
+                            <Zap className="h-3 w-3" />
+                            Normal
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="3">
+                          <div className="flex items-center gap-2">
+                            <Pin className="h-3 w-3" />
+                            Low
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
               <Button 
@@ -547,6 +600,11 @@ export const DailyBlogAutomation: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Live Queue Progress */}
+      {activeRunId && (
+        <QueueProgressViewer runId={activeRunId} />
+      )}
 
       {/* Recent Runs */}
       <Card>

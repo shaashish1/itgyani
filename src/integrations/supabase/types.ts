@@ -66,6 +66,7 @@ export type Database = {
           error_message: string | null
           id: string
           max_attempts: number | null
+          priority: number | null
           run_id: string | null
           started_at: string | null
           status: string | null
@@ -78,6 +79,7 @@ export type Database = {
           error_message?: string | null
           id?: string
           max_attempts?: number | null
+          priority?: number | null
           run_id?: string | null
           started_at?: string | null
           status?: string | null
@@ -90,6 +92,7 @@ export type Database = {
           error_message?: string | null
           id?: string
           max_attempts?: number | null
+          priority?: number | null
           run_id?: string | null
           started_at?: string | null
           status?: string | null

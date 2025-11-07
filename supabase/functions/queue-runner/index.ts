@@ -43,11 +43,12 @@ serve(async (req) => {
       // Process loop
       while (true) {
         try {
-          // Build query
+          // Build query - prioritize by priority first, then created_at
           let query = supabase
             .from('blog_generation_queue')
             .select('*')
             .eq('status', 'pending')
+            .order('priority', { ascending: true })
             .order('created_at', { ascending: true })
             .limit(1);
 
