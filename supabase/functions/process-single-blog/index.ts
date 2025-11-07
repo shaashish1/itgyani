@@ -7,6 +7,134 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Content validation function
+function validateBlogContent(blogContent: any): { isValid: boolean; errors: string[]; warnings: string[]; score: number } {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  let score = 100;
+
+  // Word count validation (700-1000 words target)
+  const wordCount = blogContent.content?.split(/\s+/).length || 0;
+  if (wordCount < 500) {
+    errors.push(`Content too short: ${wordCount} words (minimum 500)`);
+    score -= 30;
+  } else if (wordCount < 700) {
+    warnings.push(`Content below target: ${wordCount} words (target 700-1000)`);
+    score -= 10;
+  } else if (wordCount > 1200) {
+    warnings.push(`Content too long: ${wordCount} words (target 700-1000)`);
+    score -= 5;
+  }
+
+  // Title validation (50-60 chars optimal)
+  const titleLength = blogContent.title?.length || 0;
+  if (titleLength < 30) {
+    warnings.push(`Title too short: ${titleLength} chars (optimal 50-60)`);
+    score -= 5;
+  } else if (titleLength > 70) {
+    warnings.push(`Title too long: ${titleLength} chars (optimal 50-60)`);
+    score -= 5;
+  }
+
+  // Meta description validation (150-160 chars optimal)
+  const metaLength = blogContent.meta_description?.length || 0;
+  if (metaLength < 120) {
+    warnings.push(`Meta description too short: ${metaLength} chars (optimal 150-160)`);
+    score -= 5;
+  } else if (metaLength > 170) {
+    warnings.push(`Meta description too long: ${metaLength} chars (optimal 150-160)`);
+    score -= 5;
+  }
+
+  // Required fields validation
+  if (!blogContent.title) {
+    errors.push('Missing title');
+    score -= 20;
+  }
+  if (!blogContent.content) {
+    errors.push('Missing content');
+    score -= 30;
+  }
+  if (!blogContent.excerpt) {
+    warnings.push('Missing excerpt');
+    score -= 5;
+  }
+
+  // SEO keywords validation
+  if (!blogContent.keywords || blogContent.keywords.length < 3) {
+    warnings.push('Insufficient keywords (minimum 3 recommended)');
+    score -= 5;
+  }
+
+  const isValid = errors.length === 0 && score >= 60;
+  
+  return { isValid, errors, warnings, score };
+}
+
+// Image generation with retry logic
+async function generateImageWithRetry(prompt: string, apiKey: string, maxAttempts = 3): Promise<string | null> {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      console.log(`🎨 Image generation attempt ${attempt}/${maxAttempts}`);
+      
+      const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'dall-e-3',
+          prompt,
+          n: 1,
+          size: '1024x1024',
+          quality: 'standard',
+          response_format: 'b64_json'
+        }),
+      });
+
+      if (imageResponse.ok) {
+        const imageData = await imageResponse.json();
+        console.log(`✅ Image generated successfully on attempt ${attempt}`);
+        return `data:image/png;base64,${imageData.data[0].b64_json}`;
+      }
+
+      const errorText = await imageResponse.text();
+      console.error(`❌ Image generation failed (attempt ${attempt}):`, errorText);
+
+      // If not the last attempt, wait with exponential backoff
+      if (attempt < maxAttempts) {
+        const delayMs = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s
+        console.log(`⏳ Waiting ${delayMs}ms before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+    } catch (error) {
+      console.error(`❌ Image generation error (attempt ${attempt}):`, error);
+      
+      if (attempt < maxAttempts) {
+        const delayMs = Math.pow(2, attempt) * 1000;
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      }
+    }
+  }
+
+  console.log('⚠️ All image generation attempts failed, will use fallback');
+  return null;
+}
+
+// Get default image based on category
+function getDefaultImageUrl(category: string): string {
+  const categoryImages: Record<string, string> = {
+    'technology': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&auto=format&fit=crop',
+    'automation': 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&auto=format&fit=crop',
+    'business': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop',
+    'ai': 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop',
+    'default': 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1200&auto=format&fit=crop'
+  };
+  
+  return categoryImages[category.toLowerCase()] || categoryImages['default'];
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -109,34 +237,32 @@ Return a JSON object with these fields:
 
       const blogContent = JSON.parse(message.content);
 
-      // Generate blog image
-      let featuredImageUrl = null;
-      try {
-        const imagePrompt = `Professional blog header image: ${blogContent.title}. Style: Modern tech illustration, ${topic.category} theme, professional and clean, 16:9 aspect ratio, ultra high resolution.`;
-        
-        const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${openAIApiKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'dall-e-3',
-            prompt: imagePrompt,
-            n: 1,
-            size: '1024x1024',
-            quality: 'standard',
-            response_format: 'b64_json'
-          }),
-        });
+      // Validate blog content
+      console.log('📋 Validating blog content...');
+      const validation = validateBlogContent(blogContent);
+      console.log(`✅ Validation score: ${validation.score}/100`);
+      
+      if (validation.errors.length > 0) {
+        console.error('❌ Validation errors:', validation.errors);
+      }
+      if (validation.warnings.length > 0) {
+        console.warn('⚠️ Validation warnings:', validation.warnings);
+      }
 
-        if (imageResponse.ok) {
-          const imageData = await imageResponse.json();
-          featuredImageUrl = `data:image/png;base64,${imageData.data[0].b64_json}`;
-        }
-      } catch (imageError) {
-        console.error('Image generation failed:', imageError);
-        // Continue without image
+      if (!validation.isValid) {
+        throw new Error(`Content validation failed (score: ${validation.score}): ${validation.errors.join(', ')}`);
+      }
+
+      // Generate blog image with retry logic
+      console.log('🎨 Generating featured image...');
+      const imagePrompt = `Professional blog header image: ${blogContent.title}. Style: Modern tech illustration, ${topic.category} theme, professional and clean, 16:9 aspect ratio, ultra high resolution.`;
+      
+      let featuredImageUrl = await generateImageWithRetry(imagePrompt, openAIApiKey, 3);
+      
+      // Fallback to default category image if generation failed
+      if (!featuredImageUrl) {
+        console.log('📷 Using default category image');
+        featuredImageUrl = getDefaultImageUrl(topic.category || 'default');
       }
 
       // Get category ID
@@ -200,13 +326,19 @@ Return a JSON object with these fields:
       }
 
       const duration = Date.now() - startTime;
-      console.log(`✅ Blog created in ${duration}ms: ${blogContent.title}`);
+      const wordCount = blogContent.content.split(/\s+/).length;
+      console.log(`✅ Blog created in ${duration}ms: ${blogContent.title} (${wordCount} words, quality: ${validation.score}/100)`);
 
       return new Response(
         JSON.stringify({
           success: true,
           blogPost,
-          duration
+          duration,
+          validation: {
+            score: validation.score,
+            warnings: validation.warnings,
+            wordCount: blogContent.content.split(/\s+/).length
+          }
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
