@@ -250,30 +250,44 @@ export const DailyBlogAutomation: React.FC = () => {
     try {
       toast({
         title: "Generating Daily Blogs",
-        description: `Creating ${blogCount} blog topics and queueing them for generation...`,
+        description: `Creating ${blogCount} blog topics and starting queue processor...`,
       });
 
       const { data, error } = await supabase.functions.invoke('generate-daily-news-blogs', {
         body: { 
           count: blogCount,
-          topicsOnly: true // Use queue-based system
+          topicsOnly: true
         }
       });
 
       if (error) throw error;
 
-      toast({
-        title: "🚀 Topics Generated!",
-        description: `${blogCount} blog topics queued. They will be generated every 10 minutes.`,
-      });
+      const runId = data?.runId;
 
-      // Set up monitoring for the new run
-      if (data?.runId) {
-        setMonitoredRunId(data.runId);
+      // Start queue runner immediately
+      if (runId) {
+        const { error: runnerError } = await supabase.functions.invoke('queue-runner', {
+          body: { runId }
+        });
+
+        if (runnerError) {
+          console.error('Runner start error:', runnerError);
+          toast({
+            title: "⚠️ Runner Warning",
+            description: "Queue created but auto-processor may not have started. Use 'Process Queue Now' button.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "✅ Queue Processing Started!",
+            description: `${blogCount} blogs queued and processing in background.`,
+          });
+        }
+
+        setMonitoredRunId(runId);
         setPreviousStatus('running');
       }
 
-      // Reload to show the new running job
       loadRecentRuns();
 
     } catch (error: any) {
@@ -284,6 +298,35 @@ export const DailyBlogAutomation: React.FC = () => {
         variant: "destructive"
       });
       setIsGenerating(false);
+    }
+  };
+
+  const processQueueNow = async () => {
+    try {
+      toast({
+        title: "Starting Queue Processor",
+        description: "Processing all pending items in the background...",
+      });
+
+      const { error } = await supabase.functions.invoke('queue-runner', {
+        body: {}
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "✅ Processor Started",
+        description: "Queue is being processed. Check Recent Runs for progress.",
+      });
+
+      loadRecentRuns();
+    } catch (error: any) {
+      console.error('Queue processor error:', error);
+      toast({
+        title: "Processor Failed",
+        description: error.message || "Failed to start queue processor",
+        variant: "destructive"
+      });
     }
   };
 
@@ -455,6 +498,23 @@ export const DailyBlogAutomation: React.FC = () => {
                     Queue {blogCount} {blogCount === 1 ? 'Blog' : 'Blogs'}
                   </>
                 )}
+              </Button>
+            </div>
+
+            <div className="flex items-center justify-between p-4 border rounded-lg bg-gradient-to-r from-blue-500/5 to-blue-500/10">
+              <div>
+                <h4 className="font-medium mb-1">Process Queue Now</h4>
+                <p className="text-sm text-muted-foreground">
+                  Manually start the background queue processor for all pending blog items.
+                </p>
+              </div>
+              <Button 
+                onClick={processQueueNow}
+                disabled={isGenerating}
+                variant="outline"
+              >
+                <Play className="mr-2 h-4 w-4" />
+                Process Queue
               </Button>
             </div>
 

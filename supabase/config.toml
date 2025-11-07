@@ -80,3 +80,6 @@ verify_jwt = false
 
 [functions.process-single-blog]
 verify_jwt = false
+
+[functions.queue-runner]
+verify_jwt = false

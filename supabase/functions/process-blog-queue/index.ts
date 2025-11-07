@@ -22,15 +22,15 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    console.log('🔄 Processing blog queue...');
+    console.log('🔄 Processing blog queue (single item)...');
 
-    // Get pending items (limit 2 per run to avoid timeouts)
+    // Get 1 pending item for quick processing
     const { data: queueItems, error: queueError } = await supabase
       .from('blog_generation_queue')
       .select('*')
       .eq('status', 'pending')
       .order('created_at', { ascending: true })
-      .limit(2);
+      .limit(1);
 
     if (queueError) throw queueError;
 
@@ -42,8 +42,6 @@ serve(async (req) => {
       );
     }
 
-    console.log(`📝 Found ${queueItems.length} items to process`);
-
     const results = {
       processed: 0,
       successful: 0,
@@ -51,66 +49,30 @@ serve(async (req) => {
       errors: [] as string[]
     };
 
-    // Process each item
-    for (const item of queueItems) {
-      try {
-        console.log(`Processing: ${item.topic.title}`);
-        
-        // Call process-single-blog function
-        const { data, error } = await supabase.functions.invoke('process-single-blog', {
-          body: { queueItemId: item.id }
-        });
+    const item = queueItems[0];
 
-        if (error) {
-          console.error(`Failed to process ${item.id}:`, error);
-          results.failed++;
-          results.errors.push(`${item.topic.title}: ${error.message}`);
-          
-          // Update run stats - increment failed count
-          const { data: run } = await supabase
-            .from('daily_blog_runs')
-            .select('blogs_failed')
-            .eq('id', item.run_id)
-            .single();
-          
-          if (run) {
-            await supabase
-              .from('daily_blog_runs')
-              .update({ blogs_failed: (run.blogs_failed || 0) + 1 })
-              .eq('id', item.run_id);
-          }
-        } else {
-          console.log(`✅ Successfully processed: ${item.topic.title}`);
-          results.successful++;
-          
-          // Update run stats - increment created count
-          const { data: run } = await supabase
-            .from('daily_blog_runs')
-            .select('blogs_created')
-            .eq('id', item.run_id)
-            .single();
-          
-          if (run) {
-            await supabase
-              .from('daily_blog_runs')
-              .update({ blogs_created: (run.blogs_created || 0) + 1 })
-              .eq('id', item.run_id);
-          }
-        }
+    try {
+      console.log(`Processing: ${item.topic.title}`);
+      
+      const { data, error } = await supabase.functions.invoke('process-single-blog', {
+        body: { queueItemId: item.id }
+      });
 
-        results.processed++;
-
-        // Add delay between items to respect rate limits (60 seconds)
-        if (queueItems.indexOf(item) < queueItems.length - 1) {
-          console.log('⏱️ Waiting 60 seconds before next blog...');
-          await new Promise(resolve => setTimeout(resolve, 60000));
-        }
-
-      } catch (error: any) {
-        console.error(`Error processing item ${item.id}:`, error);
+      if (error) {
+        console.error(`Failed to process ${item.id}:`, error);
         results.failed++;
-        results.errors.push(error.message);
+        results.errors.push(`${item.topic.title}: ${error.message}`);
+      } else {
+        console.log(`✅ Successfully processed: ${item.topic.title}`);
+        results.successful++;
       }
+
+      results.processed++;
+
+    } catch (error: any) {
+      console.error(`Error processing item ${item.id}:`, error);
+      results.failed++;
+      results.errors.push(error.message);
     }
 
     // Check if any runs are complete

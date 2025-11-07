@@ -70,20 +70,28 @@ const Blog = () => {
         setBlogPosts(getDemoBlogPosts());
         setFeaturedPosts(getDemoBlogPosts().slice(0, 3));
       } else if (data && data.length > 0) {
-        // Fetch categories separately in a lighter query
+        // Fetch categories separately in a lighter query (don't fail if categories fail)
         const categoryIds = [...new Set(data.map(p => p.category_id).filter(Boolean))];
-        const { data: categoriesData } = await supabase
-          .from('categories')
-          .select('id, name, slug')
-          .in('id', categoryIds);
+        let categoryMap = new Map<string, string>();
         
-        const categoryMap = new Map(categoriesData?.map(c => [c.id, c.name]) || []);
+        if (categoryIds.length > 0) {
+          const { data: categoriesData, error: catError } = await supabase
+            .from('categories')
+            .select('id, name, slug')
+            .in('id', categoryIds);
+          
+          if (catError) {
+            console.warn('Categories fetch failed, using defaults:', catError);
+          } else {
+            categoryMap = new Map(categoriesData?.map(c => [c.id, c.name]) || []);
+          }
+        }
         
         const formattedPosts = data.map(post => ({
           id: post.id,
           title: post.title,
           slug: post.slug,
-          content: '', // Not fetched for performance - only needed in BlogDetail
+          content: '',
           excerpt: post.excerpt || '',
           author_id: post.author_id,
           category: categoryMap.get(post.category_id) || 'General',
@@ -96,6 +104,7 @@ const Blog = () => {
           featured_image_url: post.featured_image_url
         }));
         
+        console.log(`✅ Loaded ${formattedPosts.length} published posts`);
         setBlogPosts(formattedPosts);
         setFeaturedPosts(formattedPosts.slice(0, 3));
         
@@ -368,9 +377,15 @@ const Blog = () => {
               </p>
               
               {/* Search Bar */}
-              <div className="max-w-md mx-auto relative">
+              <div className="max-w-md mx-auto relative mb-4">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-foreground/50" />
                 <Input type="text" placeholder="Search articles..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="pl-10 bg-input/50 border-border/50 focus:border-primary" />
+              </div>
+              
+              <div className="text-center">
+                <Button onClick={loadBlogPosts} variant="outline" size="sm">
+                  Refresh Posts
+                </Button>
               </div>
             </div>
           </div>
