@@ -57,13 +57,13 @@ const Blog = () => {
     try {
       setLoading(true);
       
-      // Optimized query - fetch only essential fields WITHOUT content (reduces data transfer from 2MB+ to ~50KB)
+      // Performance-optimized query - fetch only fields needed for blog list display
       const { data, error } = await supabase
         .from('blog_posts')
-        .select('id, title, slug, excerpt, author_id, category_id, tags, published_at, created_at, updated_at, status, meta_description, reading_time, featured_image_url')
+        .select('id, title, slug, excerpt, category_id, tags, published_at, created_at, reading_time, featured_image_url')
         .eq('status', 'published')
         .order('published_at', { ascending: false })
-        .limit(100); // Limit initial fetch
+        .limit(50); // Reduced limit to prevent timeout - load more via pagination
 
       if (error) {
         console.error('Error loading blog posts:', error);
@@ -93,13 +93,13 @@ const Blog = () => {
           slug: post.slug,
           content: '',
           excerpt: post.excerpt || '',
-          author_id: post.author_id,
+          author_id: 'itgyani-ai', // Default author for all posts
           category: categoryMap.get(post.category_id) || 'General',
           tags: post.tags || [],
           publishedAt: new Date(post.published_at || post.created_at),
-          updatedAt: new Date(post.updated_at),
-          status: post.status as 'published',
-          metaDescription: post.meta_description || '',
+          updatedAt: new Date(post.created_at), // Use created_at since updated_at not fetched
+          status: 'published' as 'published', // All fetched posts are published
+          metaDescription: post.title, // Use title as meta description fallback
           readingTime: post.reading_time || 5,
           featured_image_url: post.featured_image_url
         }));

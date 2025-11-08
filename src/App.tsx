@@ -31,7 +31,7 @@ const WhitepaperDetail = lazy(() => import("./pages/WhitepaperDetail"));
 const Academy = lazy(() => import("./pages/Academy"));
 const Industries = lazy(() => import("./pages/Industries"));
 const Careers = lazy(() => import("./pages/Careers"));
-const Blog = lazy(() => import("./pages/Blog"));
+const BlogStatic = lazy(() => import("./pages/BlogStatic"));
 const BlogDetail = lazy(() => import("./pages/BlogDetail"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
@@ -118,10 +118,12 @@ const App = () => (
               <Route path="/learning-track/:trackId" element={<LearningTrackDetail />} />
               <Route path="/industries" element={<Industries />} />
               <Route path="/careers" element={<Careers />} />
-              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog" element={<BlogStatic />} />
               <Route path="/blog/:slug" element={<BlogDetail />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/terms" element={<TermsOfService />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/auth" element={<AuthPage />} />

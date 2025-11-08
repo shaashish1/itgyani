@@ -1,0 +1,59 @@
+[
+  {
+    "id": "1",
+    "title": "AI Video Generation Showdown: Sora vs. Runway vs. Pika - The Future of Visual Storytelling",
+    "slug": "ai-video-generation-showdown-sora-runway-pika",
+    "excerpt": "Compare the latest AI video generation tools and discover which platform leads in creating compelling visual content for businesses and creators.",
+    "category": "AI & Machine Learning",
+    "tags": [
+      "AI Video",
+      "Sora",
+      "Runway",
+      "Visual AI",
+      "Content Creation"
+    ],
+    "publishedAt": "2025-11-07T16:54:49.514654+00:00",
+    "readingTime": 8,
+    "featuredImage": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop",
+    "url": "/blog/ai-video-generation-showdown-sora-runway-pika",
+    "searchText": "ai video generation showdown sora runway pika visual storytelling content creation"
+  },
+  {
+    "id": "2",
+    "title": "Unleashing the Power: A Deep Dive into Anthropic Claude 3 Sonnet Performance Benchmarks",
+    "slug": "anthropic-claude-3-sonnet-performance-benchmarks",
+    "excerpt": "Comprehensive analysis of Claude 3 Sonnet's capabilities, performance metrics, and real-world applications for enterprise automation.",
+    "category": "AI & Machine Learning",
+    "tags": [
+      "Claude 3",
+      "Anthropic",
+      "AI Benchmarks",
+      "Enterprise AI",
+      "Performance"
+    ],
+    "publishedAt": "2025-11-07T16:54:49.514654+00:00",
+    "readingTime": 12,
+    "featuredImage": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop",
+    "url": "/blog/anthropic-claude-3-sonnet-performance-benchmarks",
+    "searchText": "anthropic claude 3 sonnet performance benchmarks ai enterprise automation"
+  },
+  {
+    "id": "3",
+    "title": "GPT-5 Unleashed: Exploring OpenAI's Next-Gen AI and Its Transformative Capabilities",
+    "slug": "gpt-5-unleashed-openai-next-gen-capabilities",
+    "excerpt": "Discover the revolutionary features of GPT-5 and how it's reshaping artificial intelligence applications across industries.",
+    "category": "AI & Machine Learning",
+    "tags": [
+      "GPT-5",
+      "OpenAI",
+      "Next-Gen AI",
+      "AI Capabilities",
+      "Business AI"
+    ],
+    "publishedAt": "2025-11-07T16:53:24.205841+00:00",
+    "readingTime": 10,
+    "featuredImage": "https://images.unsplash.com/photo-1676299081847-824916de030a?w=800&auto=format&fit=crop",
+    "url": "/blog/gpt-5-unleashed-openai-next-gen-capabilities",
+    "searchText": "gpt-5 openai next generation ai capabilities business transformation"
+  }
+]
