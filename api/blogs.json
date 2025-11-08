@@ -1,0 +1,116 @@
+[
+  {
+    "id": "1",
+    "title": "AI Video Generation Showdown: Sora vs. Runway vs. Pika - The Future of Visual Storytelling",
+    "slug": "ai-video-generation-showdown-sora-runway-pika",
+    "excerpt": "Compare the latest AI video generation tools and discover which platform leads in creating compelling visual content for businesses and creators.",
+    "category": "AI & Machine Learning",
+    "tags": [
+      "AI Video",
+      "Sora",
+      "Runway",
+      "Visual AI",
+      "Content Creation"
+    ],
+    "publishedAt": "2025-11-07T16:54:49.514654+00:00",
+    "readingTime": 8,
+    "featuredImage": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop",
+    "url": "/blog/ai-video-generation-showdown-sora-runway-pika",
+    "searchText": "ai video generation showdown sora runway pika visual storytelling content creation"
+  },
+  {
+    "id": "2",
+    "title": "Unleashing the Power: A Deep Dive into Anthropic Claude 3 Sonnet Performance Benchmarks",
+    "slug": "anthropic-claude-3-sonnet-performance-benchmarks",
+    "excerpt": "Comprehensive analysis of Claude 3 Sonnet's capabilities, performance metrics, and real-world applications for enterprise automation.",
+    "category": "AI & Machine Learning",
+    "tags": [
+      "Claude 3",
+      "Anthropic",
+      "AI Benchmarks",
+      "Enterprise AI",
+      "Performance"
+    ],
+    "publishedAt": "2025-11-07T16:54:49.514654+00:00",
+    "readingTime": 12,
+    "featuredImage": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop",
+    "url": "/blog/anthropic-claude-3-sonnet-performance-benchmarks",
+    "searchText": "anthropic claude 3 sonnet performance benchmarks ai enterprise automation"
+  },
+  {
+    "id": "3",
+    "title": "GPT-5 Unleashed: Exploring OpenAI's Next-Gen AI and Its Transformative Capabilities",
+    "slug": "gpt-5-unleashed-openai-next-gen-capabilities",
+    "excerpt": "Discover the revolutionary features of GPT-5 and how it's reshaping artificial intelligence applications across industries.",
+    "category": "AI & Machine Learning",
+    "tags": [
+      "GPT-5",
+      "OpenAI",
+      "Next-Gen AI",
+      "AI Capabilities",
+      "Business AI"
+    ],
+    "publishedAt": "2025-11-07T16:53:24.205841+00:00",
+    "readingTime": 10,
+    "featuredImage": "https://images.unsplash.com/photo-1676299081847-824916de030a?w=800&auto=format&fit=crop",
+    "url": "/blog/gpt-5-unleashed-openai-next-gen-capabilities",
+    "searchText": "gpt-5 openai next generation ai capabilities business transformation"
+  },
+  {
+    "id": "4",
+    "title": "Unleashing the Power of Gemini 2.5 Pro: Advanced Features for AI Innovation",
+    "slug": "gemini-2-5-pro-advanced-features-ai-innovation",
+    "excerpt": "Explore Google's Gemini 2.5 Pro and its advanced features that are driving the next wave of AI innovation in business automation.",
+    "category": "AI & Machine Learning",
+    "tags": [
+      "Gemini 2.5 Pro",
+      "Google AI",
+      "AI Innovation",
+      "Advanced Features",
+      "Business Innovation"
+    ],
+    "publishedAt": "2025-11-07T16:53:24.205841+00:00",
+    "readingTime": 9,
+    "featuredImage": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop",
+    "url": "/blog/gemini-2-5-pro-advanced-features-ai-innovation",
+    "searchText": "gemini 2.5 pro google ai innovation advanced features business automation"
+  },
+  {
+    "id": "5",
+    "title": "Quantum-Augmented Edge AI: Revolutionizing Business Automation",
+    "slug": "quantum-augmented-edge-ai-business-automation",
+    "excerpt": "Discover how quantum-enhanced edge AI is transforming business processes with unprecedented speed and efficiency.",
+    "category": "Edge AI",
+    "tags": [
+      "Quantum Computing",
+      "Edge AI",
+      "Business Automation",
+      "Quantum AI",
+      "Innovation"
+    ],
+    "publishedAt": "2025-11-01T09:54:19.027+00:00",
+    "readingTime": 11,
+    "featuredImage": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800&auto=format&fit=crop",
+    "url": "/blog/quantum-augmented-edge-ai-business-automation",
+    "searchText": "quantum augmented edge ai business automation quantum computing innovation"
+  },
+  {
+    "id": "6",
+    "title": "From Lab Breakthroughs to Real-Time Action: How 2025's AI Advances Are Supercharging Business Automation at the Edge",
+    "slug": "ai-advances-2025-business-automation-edge",
+    "excerpt": "Explore the latest AI breakthroughs of 2025 and their practical applications in real-time business automation systems.",
+    "category": "Edge AI",
+    "tags": [
+      "AI Advances",
+      "2025 Technology",
+      "Business Automation",
+      "Edge Computing",
+      "Real-Time AI"
+    ],
+    "publishedAt": "2025-10-31T11:38:40.899+00:00",
+    "readingTime": 13,
+    "featuredImage": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop",
+    "url": "/blog/ai-advances-2025-business-automation-edge",
+    "searchText": "ai advances 2025 business automation edge computing real-time technology"
+  }
+]

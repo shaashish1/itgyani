@@ -1,0 +1,40 @@
+
+<svg width="200" height="60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+  
+  <rect 
+    width="200" 
+    height="60" 
+    rx="12" 
+    fill="linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)" 
+    stroke="#cbd5e1"
+    stroke-width="1px"
+    filter="url(#shadow)"
+  />
+  
+  <text 
+    x="100" 
+    y="35" 
+    text-anchor="middle" 
+    dominant-baseline="middle"
+    font-family="system-ui, -apple-system, sans-serif" 
+    font-size="16" 
+    font-weight="600"
+    fill="#1e293b"
+  >
+    Read More
+  </text>
+  
+  <path 
+    d="M160 25 L170 30 L160 35" 
+    stroke="#1e293b" 
+    stroke-width="2" 
+    fill="none"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
