@@ -1,32 +1,38 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://itgyani.com/sitemap.xml
+Sitemap: https://itgyani.com/blog-sitemap.xml
+
+# Block admin and private areas
+Disallow: /admin/
+Disallow: /auth/
+Disallow: /api/
+
+# Allow important resources
+Allow: /assets/
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.gif$
+Allow: /*.webp$
+Allow: /*.svg$
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
+
+# Specific rules for different bots
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: Twitterbot
 Allow: /
-Disallow: /admin/
-Disallow: /auth/
-Disallow: /*.json$
-
-# Sitemap location
-Sitemap: https://itgyani.com/sitemap.xml
-
-# Crawl-delay for polite crawling
-Crawl-delay: 1
-
-# Google-specific
-User-agent: Googlebot
-Allow: /
-
-# Bing-specific  
-User-agent: Bingbot
-Allow: /
-
