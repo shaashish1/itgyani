@@ -717,14 +717,15 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                   />
                 </div>
 
-                {/* AdSense - Top of Content */}
-                <LazyAd className="mb-10">
+                {/* AdSense - Top of Content (After Title, Before Content) */}
+                <div className="my-8 flex justify-center">
                   <AdSenseAd 
                     slot="content-top" 
-                    format="horizontal"
+                    format="leaderboard"
                     responsive={true}
+                    style={{ maxWidth: '728px' }}
                   />
-                </LazyAd>
+                </div>
 
                 {/* Author Info */}
                 <div className="flex items-center gap-4 mb-10 p-6 bg-accent/5 rounded-xl border border-border/50">
@@ -760,11 +761,12 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                           <>
                             <h2 className="text-4xl md:text-5xl font-bold mt-14 mb-7 leading-tight text-foreground bg-gradient-to-r from-accent/15 to-secondary/10 p-5 rounded-xl border-l-8 border-secondary shadow-sm" {...props} />
                             {showAd && (
-                              <div className="my-12">
+                              <div className="my-16 flex justify-center">
                                 <AdSenseAd 
                                   slot="content-mid" 
                                   format="rectangle"
-                                  responsive={true}
+                                  responsive={false}
+                                  style={{ width: '300px', height: '250px' }}
                                 />
                               </div>
                             )}
@@ -831,14 +833,15 @@ Ready to begin your AI automation journey? Contact our experts for a free consul
                   </ReactMarkdown>
                 </article>
 
-                {/* AdSense - Bottom of Content */}
-                <LazyAd className="my-10">
+                {/* AdSense - Bottom of Content (After Article, Before Related) */}
+                <div className="my-10 flex justify-center border-t border-border/30 pt-8">
                   <AdSenseAd 
                     slot="content-bottom" 
-                    format="horizontal"
+                    format="leaderboard"
                     responsive={true}
+                    style={{ maxWidth: '728px' }}
                   />
-                </LazyAd>
+                </div>
 
                 {/* Share Section */}
                 <div className="mt-16 pt-8 border-t border-border">

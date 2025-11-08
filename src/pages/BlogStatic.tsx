@@ -6,7 +6,7 @@ import PopupManager from "@/components/PopupManager";
 import AdSenseAd from "@/components/AdSenseAd";
 import SEO from "@/components/SEO";
 import OptimizedImage from "@/components/OptimizedImage";
-import { LazyAd } from "@/components/LazyAd";
+// LazyAd removed - AdSenseAd now has built-in lazy loading
 import { Breadcrumbs, generateBreadcrumbs } from "@/components/Breadcrumbs";
 import { PopularPosts } from "@/components/RelatedPosts";
 import { Button } from "@/components/ui/button";
@@ -196,16 +196,31 @@ const BlogStatic = () => {
           </div>
         </section>
 
-        {/* AdSense - Top Banner */}
-        <div className="container mx-auto px-6 py-4">
-          <LazyAd minHeight="250px">
-            <AdSenseAd 
-              slot="content-top" 
-              format="horizontal"
-              responsive={true}
-              className="w-full max-w-4xl mx-auto"
-            />
-          </LazyAd>
+        {/* AdSense - Top Banner (Responsive: Leaderboard on Desktop, Mobile Banner on Mobile) */}
+        <div className="container mx-auto px-6 py-6">
+          <div className="max-w-4xl mx-auto">
+            {/* Desktop Leaderboard */}
+            <div className="hidden md:block">
+              <AdSenseAd 
+                slot="content-top" 
+                format="leaderboard"
+                responsive={true}
+                className="mb-8"
+                style={{ maxWidth: '728px', margin: '0 auto' }}
+              />
+            </div>
+            
+            {/* Mobile Banner */}
+            <div className="block md:hidden">
+              <AdSenseAd 
+                slot="mobile-header" 
+                format="mobile"
+                responsive={true}
+                className="mb-8"
+                style={{ maxWidth: '320px', margin: '0 auto' }}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Filters Section */}
@@ -387,17 +402,29 @@ const BlogStatic = () => {
                       ))}
                     </div>
 
-                    {/* AdSense - Middle Content */}
+                    {/* AdSense - Middle Content (After 6 Articles) */}
                     {currentPage === 1 && paginatedBlogs.length > 6 && (
-                      <div className="my-12">
-                        <LazyAd minHeight="250px">
+                      <div className="my-16">
+                        {/* Desktop Rectangle */}
+                        <div className="hidden md:flex justify-center">
                           <AdSenseAd
-                            slot="content-middle"
+                            slot="content-mid"
                             format="rectangle"
-                            responsive={true}
-                            className="w-full max-w-2xl mx-auto"
+                            responsive={false}
+                            className="max-w-xs mx-auto"
+                            style={{ width: '300px', height: '250px' }}
                           />
-                        </LazyAd>
+                        </div>
+                        
+                        {/* Mobile Content Ad */}
+                        <div className="block md:hidden flex justify-center">
+                          <AdSenseAd
+                            slot="mobile-content"
+                            format="mobile"
+                            responsive={true}
+                            style={{ maxWidth: '320px', margin: '0 auto' }}
+                          />
+                        </div>
                       </div>
                     )}
 
@@ -441,16 +468,15 @@ const BlogStatic = () => {
               
               {/* Sidebar */}
               <div className="lg:col-span-1 space-y-8">
-                {/* AdSense - Sidebar */}
-                <div className="sticky top-4">
-                  <LazyAd minHeight="600px">
-                    <AdSenseAd
-                      slot="sidebar"
-                      format="vertical"
-                      responsive={true}
-                      className="w-full"
-                    />
-                  </LazyAd>
+                {/* AdSense - Sidebar (Desktop Only) */}
+                <div className="hidden lg:block sticky top-4">
+                  <AdSenseAd
+                    slot="sidebar-top"
+                    format="rectangle"
+                    responsive={false}
+                    className="w-full mb-8"
+                    style={{ width: '300px', height: '250px' }}
+                  />
                 </div>
 
                 {/* Popular Posts */}
@@ -539,6 +565,33 @@ const BlogStatic = () => {
             </div>
           </div>
         </section>
+
+        {/* AdSense - Bottom Content (Before Footer) */}
+        <div className="container mx-auto px-6 py-8">
+          <div className="max-w-4xl mx-auto border-t border-border/30 pt-8">
+            {/* Desktop Leaderboard */}
+            <div className="hidden md:block">
+              <AdSenseAd 
+                slot="content-bottom" 
+                format="leaderboard"
+                responsive={true}
+                className="mb-8"
+                style={{ maxWidth: '728px', margin: '0 auto' }}
+              />
+            </div>
+            
+            {/* Mobile Footer Ad */}
+            <div className="block md:hidden">
+              <AdSenseAd 
+                slot="mobile-footer" 
+                format="mobile"
+                responsive={true}
+                className="mb-8"
+                style={{ maxWidth: '320px', margin: '0 auto' }}
+              />
+            </div>
+          </div>
+        </div>
 
         <Footer />
         <PopupManager />

@@ -87,36 +87,71 @@ export const ADSENSE_CONFIG = {
   },
   
   // === AD FORMATS (GOOGLE APPROVED SIZES) ===
+  // Reference: https://support.google.com/google-ads/answer/13676244
   formats: {
-    // Standard IAB formats (Google recommended)
+    // Standard Display Ad Sizes (Most Popular - Google Recommended)
     leaderboard: {
       width: 728,
       height: 90,
-      format: "horizontal",
-      placement: "header/footer"
+      format: "leaderboard",
+      placement: "header/footer",
+      description: "Most common header/footer ad"
     },
     mediumRectangle: {
       width: 300, 
       height: 250,
       format: "rectangle",
-      placement: "content/sidebar"
+      placement: "content/sidebar",
+      description: "Best performing content ad"
     },
-    skyscraper: {
+    
+    // Mobile Optimized Formats
+    mobileBanner: {
+      width: 320,
+      height: 50,
+      format: "banner",
+      placement: "mobile-header",
+      description: "Mobile banner ad"
+    },
+    mobileMedium: {
+      width: 320,
+      height: 100,
+      format: "mobile",
+      placement: "mobile-content",
+      description: "Mobile content ad"
+    },
+    
+    // Sidebar Formats
+    halfPage: {
       width: 300,
       height: 600,
       format: "vertical",
-      placement: "sidebar"
+      placement: "sidebar-desktop",
+      description: "Desktop sidebar ad"
     },
-    banner: {
-      width: 320,
-      height: 50,
-      format: "mobile",
-      placement: "mobile-only"
+    square: {
+      width: 250,
+      height: 250,
+      format: "square",
+      placement: "sidebar/content",
+      description: "Compact square ad"
     },
+    
+    // Large Format Ads
+    billboard: {
+      width: 970,
+      height: 250,
+      format: "horizontal",
+      placement: "above-content",
+      description: "Large banner for high visibility"
+    },
+    
+    // Responsive Format
     responsive: {
       format: "auto",
       fullWidth: true,
-      placement: "any"
+      placement: "any",
+      description: "Auto-sizing responsive ad"
     }
   },
 
