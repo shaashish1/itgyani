@@ -68,7 +68,7 @@ export const blogs = [
   {
     id: "6",
     title: "From Lab Breakthroughs to Real-Time Action: How 2025's AI Advances Are Supercharging Business Automation at the Edge",
-    slug: "ai-advances-2025-business-automation-edge",
+    slug: "ai-advances-2025-business-automation-edge",  
     excerpt: "Explore the latest AI breakthroughs of 2025 and their practical applications in real-time business automation systems.",
     category: "Edge AI",
     tags: ["AI Advances", "2025 Technology", "Business Automation", "Edge Computing", "Real-Time AI"],
@@ -301,7 +301,7 @@ export const blogs = [
   },
   {
     id: "24",
-    title: "AI Innovation Alert: Nvidia AI chip ban: Can tech giants navigate a geopolitical ... and What It Means for n8n Users",
+    title: "AI Innovation Alert: Nvidia AI chip ban and geopolitical implications for n8n Users",
     slug: "ai-innovation-alert-nvidia-ai-chip-ban-can-tech-giants-navig",
     excerpt: "Latest analysis of recent AI developments and their practical applications in business automation, n8n workflows, and intelligent systems integration.",
     category: "Quantum Computing",
@@ -314,7 +314,7 @@ export const blogs = [
   },
   {
     id: "25",
-    title: "Breaking: Exclusive: Dubai’s Digital Government chief says speed trumps spending in AI efficiency race - Impact on Business Automation",
+    title: "Breaking: Dubai's Digital Government chief says speed trumps spending in AI efficiency race - Impact on Business Automation",
     slug: "breaking-exclusive-dubais-digital-government-chief-says-spee",
     excerpt: "Latest analysis of recent AI developments and their practical applications in business automation, n8n workflows, and intelligent systems integration.",
     category: "AI & Machine Learning",

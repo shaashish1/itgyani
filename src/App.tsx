@@ -37,7 +37,7 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const AboutPage = lazy(() => import("./pages/About"));
 const ContactPage = lazy(() => import("./pages/Contact"));
-const AdminBlogPage = lazy(() => import("./pages/AdminBlogPage"));
+const AdminBlogPage = lazy(() => import("./pages/AdminBlogPageStatic"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const LearningTrackDetail = lazy(() => import("./pages/LearningTrackDetail"));
 const ImageShowcase = lazy(() => import("./pages/ImageShowcase"));

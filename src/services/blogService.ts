@@ -27,7 +27,7 @@ export interface BlogPagination {
 
 class BlogService {
   private blogs: Blog[] = blogs;
-  private blogsPerPage = 6;
+  private blogsPerPage = 12;
 
   // Get all blogs
   getAllBlogs(): Blog[] {

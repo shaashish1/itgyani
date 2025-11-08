@@ -1,8 +1,8 @@
 export const siteMetadata = {
   totalBlogs: 32,
   lastUpdated: "2025-11-08T17:00:00.000Z",
-  totalPages: 6,
-  blogsPerPage: 6,
+  totalPages: 3,
+  blogsPerPage: 12,
   categories: [
     {
       id: "1",
