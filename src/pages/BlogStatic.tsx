@@ -7,15 +7,19 @@ import AdSenseAd from "@/components/AdSenseAd";
 import SEO from "@/components/SEO";
 import OptimizedImage from "@/components/OptimizedImage";
 import { LazyAd } from "@/components/LazyAd";
+import { Breadcrumbs, generateBreadcrumbs } from "@/components/Breadcrumbs";
+import { PopularPosts } from "@/components/RelatedPosts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Search, Clock, User, ArrowRight } from "lucide-react";
+import { ArrowLeft, Search, Clock, User, ArrowRight, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { blogService, Blog } from "@/services/blogService";
 import { PageHeader } from "@/components/ImageComponents";
+import { SEOUtils } from "@/utils/seoUtils";
+import { InternalLinkingService } from "@/utils/internalLinking";
 
 const BlogStatic = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,7 +59,7 @@ const BlogStatic = () => {
   }, [searchTerm, selectedCategory, selectedTags, allBlogs]);
 
   // Pagination logic
-  const postsPerPage = 6;
+  const postsPerPage = 12;
   const totalPages = Math.ceil(filteredBlogs.length / postsPerPage);
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -97,37 +101,30 @@ const BlogStatic = () => {
     });
   };
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Blog",
-    "name": "ITGYANI AI Automation Blog",
-    "description": "Expert insights on AI automation, training, and business transformation",
-    "url": "https://itgyani.com/blog",
-    "publisher": {
-      "@type": "Organization",
-      "name": "ITGYANI",
-      "url": "https://itgyani.com"
-    },
-    "blogPost": filteredBlogs.slice(0, 10).map(post => ({
-      "@type": "BlogPosting",
-      "headline": post.title,
-      "description": post.excerpt,
-      "datePublished": post.publishedAt,
-      "author": {
-        "@type": "Organization",
-        "name": "ITGYANI"
-      }
-    }))
-  };
+    // Enhanced structured data for better SEO
+  const structuredData = useMemo(() => {
+    const blogListSchema = SEOUtils.generateBlogListSchema(allBlogs);
+    const organizationSchema = SEOUtils.generateOrganizationSchema();
+    const websiteSchema = SEOUtils.generateWebsiteSchema();
+    
+    return [blogListSchema, organizationSchema, websiteSchema];
+  }, [allBlogs]);
+
+  // Get popular posts for sidebar
+  const popularPosts = useMemo(() => 
+    InternalLinkingService.getPopularPosts(allBlogs, 5), 
+    [allBlogs]
+  );
 
   return (
     <>
       <SEO
-        title="AI Automation Blog - Expert Insights & Best Practices"
-        description="Stay ahead with the latest AI automation trends, best practices, and implementation guides. Expert insights on AI training, workflow automation, and business transformation strategies."
-        keywords="AI automation blog, AI training guides, workflow automation tips, business automation insights, artificial intelligence articles, n8n tutorials, automation best practices"
-        canonicalUrl="https://itgyani.com/blog"
+        title="AI Automation Insights & Guides"
+        description="Expert insights, practical guides, and proven strategies to help you master AI automation and AI training for business success. Latest trends in workflow automation and intelligent business processes."
+        keywords={`AI automation blog, machine learning guides, business automation, n8n workflows, artificial intelligence, automation strategies, ${allBlogs.slice(0,10).map(b => b.tags.slice(0,2).join(', ')).join(', ')}`}
+        canonicalUrl={SEOUtils.generateCanonicalUrl('/blog')}
         structuredData={structuredData}
+        ogImage="https://itgyani.com/blog-og-image.jpg"
       />
       
       <div className="min-h-screen bg-background">
@@ -138,12 +135,7 @@ const BlogStatic = () => {
           <PageHeader type="blog" className="w-full" />
           
           <div className="container mx-auto px-6 relative py-12">
-            <div className="flex items-center gap-4 mb-8">
-              <Link to="/" className="flex items-center gap-2 text-foreground/70 hover:text-primary transition-colors">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Home
-              </Link>
-            </div>
+            <Breadcrumbs items={generateBreadcrumbs.blog()} className="mb-8" />
             
             <div className="max-w-4xl mx-auto text-center">
               <h1 className="text-5xl md:text-6xl font-bold mb-6">
@@ -274,20 +266,23 @@ const BlogStatic = () => {
           </div>
         </section>
 
-        {/* Blog Posts Grid */}
+        {/* Blog Posts Grid with Sidebar */}
         <section className="py-16">
           <div className="container mx-auto px-6">
-            {filteredBlogs.length === 0 ? (
-              <div className="text-center py-12">
-                <h3 className="text-xl font-semibold mb-2">No articles found</h3>
-                <p className="text-muted-foreground mb-4">
-                  Try adjusting your search terms or filters
-                </p>
-                <Button onClick={clearFilters} variant="outline">
-                  Clear Filters
-                </Button>
-              </div>
-            ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+              {/* Main Content */}
+              <div className="lg:col-span-3">
+                {filteredBlogs.length === 0 ? (
+                  <div className="text-center py-12">
+                    <h3 className="text-xl font-semibold mb-2">No articles found</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Try adjusting your search terms or filters
+                    </p>
+                    <Button onClick={clearFilters} variant="outline">
+                      Clear Filters
+                    </Button>
+                  </div>
+                ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {paginatedBlogs.map((post) => (
                   <Card key={post.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-border/50 group">
@@ -342,28 +337,83 @@ const BlogStatic = () => {
               </div>
             )}
             
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-12">
-                <button
-                  onClick={handlePreviousPage}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 rounded-md border border-primary/20 bg-background hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                >
-                  Previous
-                </button>
-                <span className="text-foreground/80">
-                  Page {currentPage} of {totalPages} ({filteredBlogs.length} articles)
-                </span>
-                <button
-                  onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 rounded-md border border-primary/20 bg-background hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                >
-                  Next
-                </button>
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center gap-4 mt-12">
+                    <button
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 rounded-md border border-primary/20 bg-background hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      Previous
+                    </button>
+                    <span className="text-foreground/80">
+                      Page {currentPage} of {totalPages} ({filteredBlogs.length} articles)
+                    </span>
+                    <button
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 rounded-md border border-primary/20 bg-background hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
+              
+              {/* Sidebar */}
+              <div className="lg:col-span-1 space-y-8">
+                {/* Popular Posts */}
+                <PopularPosts posts={popularPosts} title="🔥 Trending Articles" />
+                
+                {/* Categories */}
+                <div className="bg-muted/30 rounded-lg p-6">
+                  <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-primary" />
+                    Categories
+                  </h4>
+                  <div className="space-y-2">
+                    {categories.slice(1).map((category, index) => {
+                      const categoryCount = allBlogs.filter(blog => blog.category === category).length;
+                      return (
+                        <div 
+                          key={category}
+                          className="flex items-center justify-between p-2 rounded-md hover:bg-background transition-colors cursor-pointer"
+                          onClick={() => {
+                            setSelectedCategory(category);
+                            setCurrentPage(1);
+                          }}
+                        >
+                          <span className={`text-sm ${selectedCategory === category ? 'text-primary font-medium' : 'text-foreground'}`}>
+                            {category}
+                          </span>
+                          <Badge variant="outline" className="text-xs">
+                            {categoryCount}
+                          </Badge>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                {/* Popular Tags */}
+                <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg p-6">
+                  <h4 className="text-lg font-semibold text-foreground mb-4">Popular Tags</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {allTags.slice(0, 15).map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant={selectedTags.includes(tag) ? "default" : "outline"}
+                        className="cursor-pointer hover:bg-primary/10 transition-colors text-xs"
+                        onClick={() => toggleTag(tag)}
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
