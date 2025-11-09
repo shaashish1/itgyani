@@ -9,7 +9,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
 
 // Lazy load pages for better performance
-const FutureFlowIndex = lazy(() => import("./pages/FutureFlowIndex"));
+const FutureFlowIndex = lazy(() => import("./pages/NewFutureFlowIndex"));
 const ServicesPage = lazy(() => import("./pages/Services"));
 const AIStudio = lazy(() => import("./pages/AIStudio"));
 const AuthPage = lazy(() => import("./components/auth/AuthPage"));
@@ -38,6 +38,8 @@ const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const AboutPage = lazy(() => import("./pages/About"));
 const ContactPage = lazy(() => import("./pages/Contact"));
 const AdminBlogPage = lazy(() => import("./pages/AdminBlogPageStatic"));
+const APIDocumentationPage = lazy(() => import("./pages/APIDocumentationPage"));
+const APIBackendDocumentation = lazy(() => import("./pages/APIBackendDocumentation"));
 const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const LearningTrackDetail = lazy(() => import("./pages/LearningTrackDetail"));
 const ImageShowcase = lazy(() => import("./pages/ImageShowcase"));
@@ -129,6 +131,8 @@ const App = () => (
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/auth/reset-password" element={<ResetPassword />} />
               <Route path="/admin/blog" element={<AdminBlogPage />} />
+              <Route path="/api-docs" element={<APIDocumentationPage />} />
+              <Route path="/backend-api" element={<APIBackendDocumentation />} />
               <Route path="/images" element={<ImageShowcase />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
