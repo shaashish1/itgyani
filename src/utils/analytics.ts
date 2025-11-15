@@ -1,7 +1,7 @@
 // Google Analytics and Search Console integration utilities
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void;
+    gtag?: (...args: any[]) => void;
     dataLayer: any[];
   }
 }

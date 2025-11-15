@@ -48,7 +48,7 @@ const BlogStatic = () => {
       blogs = blogs.filter(blog =>
         blog.title.toLowerCase().includes(searchLower) ||
         blog.excerpt.toLowerCase().includes(searchLower) ||
-        blog.searchText.toLowerCase().includes(searchLower) ||
+        (blog.content || '').toLowerCase().includes(searchLower) ||
         blog.category.toLowerCase().includes(searchLower) ||
         blog.tags.some(tag => tag.toLowerCase().includes(searchLower))
       );
@@ -594,7 +594,7 @@ const BlogStatic = () => {
         </div>
 
         <Footer />
-        <PopupManager />
+        <PopupManager page="blog" />
       </div>
     </>
   );

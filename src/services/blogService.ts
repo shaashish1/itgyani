@@ -23,6 +23,7 @@ export interface Blog {
   status?: 'published' | 'draft' | 'archived';
   views?: number;
   likes?: number;
+  url?: string;
 }
 
 export interface BlogsPaginatedResult {
@@ -57,7 +58,8 @@ class BlogService {
           ...blog,
           created_at: blog.publishedAt,
           read_time: blog.readingTime,
-          status: blog.status || 'published'
+          status: (blog.status || 'published') as 'published' | 'draft' | 'archived',
+          url: `/blog/${blog.slug}`
         }));
         console.log(`📚 BlogService: Initialized with ${this.blogData.length} blogs`);
       } else {
@@ -210,6 +212,11 @@ class BlogService {
     }
   }
 
+  // Alias for getStatistics
+  getStats(): BlogStats {
+    return this.getStatistics();
+  }
+
   // Search blogs
   searchBlogs(query: string): Blog[] {
     try {
@@ -229,6 +236,60 @@ class BlogService {
       return results;
     } catch (error) {
       console.error('❌ BlogService.searchBlogs(): Error:', error);
+      return [];
+    }
+  }
+
+  // Get all unique tags
+  getTags(): string[] {
+    try {
+      const allTags = this.blogData.flatMap(blog => blog.tags || []);
+      const uniqueTags = [...new Set(allTags)];
+      console.log(`🏷️ BlogService.getTags(): Found ${uniqueTags.length} unique tags`);
+      return uniqueTags;
+    } catch (error) {
+      console.error('❌ BlogService.getTags(): Error:', error);
+      return [];
+    }
+  }
+
+  // Get metadata (categories, tags, stats)
+  getMetadata() {
+    try {
+      const categories = [...new Set(this.blogData.map(blog => blog.category))];
+      const tags = this.getTags();
+      const stats = this.getStats();
+      
+      const metadata = {
+        categories,
+        tags,
+        stats,
+        totalBlogs: this.blogData.length
+      };
+      
+      console.log('📋 BlogService.getMetadata():', metadata);
+      return metadata;
+    } catch (error) {
+      console.error('❌ BlogService.getMetadata(): Error:', error);
+      return {
+        categories: [],
+        tags: [],
+        stats: this.getStats(),
+        totalBlogs: 0
+      };
+    }
+  }
+
+  // Get recent blogs
+  getRecentBlogs(limit: number = 5): Blog[] {
+    try {
+      const recent = [...this.blogData]
+        .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+        .slice(0, limit);
+      console.log(`🕒 BlogService.getRecentBlogs(${limit}): Returning ${recent.length} blogs`);
+      return recent;
+    } catch (error) {
+      console.error('❌ BlogService.getRecentBlogs(): Error:', error);
       return [];
     }
   }

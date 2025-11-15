@@ -45,7 +45,7 @@ const logger = {
   }
 };
 
-export function AdminBlogPageStatic() {
+const AdminBlogPageStatic = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [debugLogs, setDebugLogs] = useState<any[]>([]);
@@ -451,4 +451,6 @@ export function AdminBlogPageStatic() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminBlogPageStatic;
