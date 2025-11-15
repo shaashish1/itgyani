@@ -225,10 +225,15 @@ const APIDocumentationPage: React.FC = () => {
             ? `${service.endpoint}/health`
             : `${service.endpoint}/toolkit/test`;
           
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          
           const response = await fetch(healthEndpoint, { 
             method: 'GET',
-            timeout: 5000 
+            signal: controller.signal
           });
+          
+          clearTimeout(timeoutId);
           
           return {
             ...service,

@@ -79,9 +79,3 @@ export const deferScript = (src: string) => {
   script.defer = true;
   document.body.appendChild(script);
 };
-
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}

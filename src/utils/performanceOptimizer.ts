@@ -129,12 +129,14 @@ export class PerformanceOptimizer {
       // Monitor First Input Delay
       const fidObserver = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          console.log('FID:', entry.processingStart - entry.startTime);
+          const fidEntry = entry as any; // Type assertion for FID entry
+          const fidValue = fidEntry.processingStart ? fidEntry.processingStart - entry.startTime : 0;
+          console.log('FID:', fidValue);
           
           if (typeof window !== 'undefined' && (window as any).gtag) {
             (window as any).gtag('event', 'timing_complete', {
               name: 'FID',
-              value: Math.round(entry.processingStart - entry.startTime)
+              value: Math.round(fidValue)
             });
           }
         }

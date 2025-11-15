@@ -15,7 +15,16 @@ export const DailyBlogAutomation: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [providers, setProviders] = useState(aiProviderService.getProviders());
   const [activeProvider, setActiveProviderState] = useState(aiProviderService.getActiveProvider());
-  const [generationHistory, setGenerationHistory] = useState([
+  const [generationHistory, setGenerationHistory] = useState<Array<{
+    id: string;
+    timestamp: string;
+    status: 'success' | 'failed';
+    provider: string;
+    error?: string;
+    published: number;
+    failed: number;
+    content?: string;
+  }>>([
     {
       id: '1',
       timestamp: '11/8/2025, 9:14:49 PM',
@@ -127,7 +136,7 @@ export const DailyBlogAutomation: React.FC = () => {
           timestamp: new Date().toLocaleString(),
           status: 'failed' as const,
           provider: activeProvider?.displayName || 'Unknown',
-          error: response.error,
+          error: response.error || 'Unknown error',
           published: 0,
           failed: 1
         };
