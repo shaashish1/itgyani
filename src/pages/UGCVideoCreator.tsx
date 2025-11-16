@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Video, History, RotateCcw, Trash2, Sparkles, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
+import { Loader2, Upload, Video, History, RotateCcw, Trash2, Sparkles, CheckCircle2, AlertCircle, RefreshCw, Activity } from "lucide-react";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,6 +36,15 @@ interface HistoryItem {
   timestamp: string;
 }
 
+interface WebhookTestResult {
+  url: string;
+  status: number;
+  statusText: string;
+  body: string;
+  error?: string;
+  timestamp: string;
+}
+
 const UGCVideoCreator = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGeneratingPrompt, setIsGeneratingPrompt] = useState(false);
@@ -44,6 +53,9 @@ const UGCVideoCreator = () => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [webhookStatus, setWebhookStatus] = useState<"live" | "test_mode" | "checking" | "error">("checking");
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
+  const [diagnosticResults, setDiagnosticResults] = useState<WebhookTestResult[]>([]);
+  const [isRunningDiagnostics, setIsRunningDiagnostics] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<FormData>({
@@ -68,6 +80,68 @@ const UGCVideoCreator = () => {
       setWebhookStatus("error");
       setLastChecked(new Date());
     }
+  };
+
+  // Run detailed diagnostics on both webhook URLs
+  const runWebhookDiagnostics = async () => {
+    setIsRunningDiagnostics(true);
+    setDiagnosticResults([]);
+    
+    const urls = [
+      { name: "Production Webhook", url: "https://n8n.itgyani.com/webhook/31abdab0-4859-46e6-8a16-867b79604ff1" },
+      { name: "Test Webhook", url: "https://n8n.itgyani.com/webhook-test/31abdab0-4859-46e6-8a16-867b79604ff1" }
+    ];
+    
+    const results: WebhookTestResult[] = [];
+    
+    for (const { name, url } of urls) {
+      try {
+        const startTime = Date.now();
+        const response = await fetch(url, {
+          method: 'GET',
+          signal: AbortSignal.timeout(10000),
+        });
+        
+        const responseTime = Date.now() - startTime;
+        let body = '';
+        
+        try {
+          const contentType = response.headers.get('content-type');
+          if (contentType?.includes('application/json')) {
+            body = JSON.stringify(await response.json(), null, 2);
+          } else {
+            body = await response.text();
+          }
+        } catch {
+          body = '[Unable to parse response body]';
+        }
+        
+        results.push({
+          url: `${name}: ${url}`,
+          status: response.status,
+          statusText: response.statusText,
+          body: body || '[Empty response]',
+          timestamp: `${new Date().toLocaleString()} (${responseTime}ms)`,
+        });
+      } catch (error: any) {
+        results.push({
+          url: `${name}: ${url}`,
+          status: 0,
+          statusText: 'Network Error',
+          body: '',
+          error: error.message || 'Unknown error',
+          timestamp: new Date().toLocaleString(),
+        });
+      }
+    }
+    
+    setDiagnosticResults(results);
+    setIsRunningDiagnostics(false);
+    
+    toast({
+      title: "Diagnostics Complete",
+      description: `Tested ${results.length} webhook URLs`,
+    });
   };
 
   // Load history from localStorage on mount
@@ -318,6 +392,138 @@ const UGCVideoCreator = () => {
               <p className="text-xs text-muted-foreground mt-2">
                 Last checked: {lastChecked.toLocaleTimeString()}
               </p>
+            )}
+            
+            {/* Diagnostic Panel Toggle */}
+            <div className="mt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowDiagnostics(!showDiagnostics)}
+                className="gap-2"
+              >
+                <Activity className="w-4 h-4" />
+                {showDiagnostics ? "Hide" : "Show"} Webhook Diagnostics
+              </Button>
+            </div>
+            
+            {/* Diagnostic Panel */}
+            {showDiagnostics && (
+              <Card className="mt-6 max-w-4xl mx-auto">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <Activity className="w-5 h-5" />
+                        Webhook Diagnostics
+                      </CardTitle>
+                      <CardDescription>
+                        Test both webhook URLs and view detailed HTTP responses
+                      </CardDescription>
+                    </div>
+                    <Button
+                      onClick={runWebhookDiagnostics}
+                      disabled={isRunningDiagnostics}
+                      size="sm"
+                    >
+                      {isRunningDiagnostics ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Testing...
+                        </>
+                      ) : (
+                        "Run Diagnostics"
+                      )}
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {diagnosticResults.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Activity className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                      <p>Click "Run Diagnostics" to test webhook endpoints</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {diagnosticResults.map((result, index) => (
+                        <Card key={index} className={`border-2 ${
+                          result.status === 200 
+                            ? "border-green-200 bg-green-50/50" 
+                            : result.error 
+                            ? "border-red-200 bg-red-50/50"
+                            : "border-yellow-200 bg-yellow-50/50"
+                        }`}>
+                          <CardHeader className="pb-3">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  {result.status === 200 ? (
+                                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+                                  ) : (
+                                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                                  )}
+                                  <h3 className="font-semibold text-sm truncate">{result.url.split(': ')[0]}</h3>
+                                </div>
+                                <p className="text-xs text-muted-foreground font-mono break-all">
+                                  {result.url.split(': ')[1]}
+                                </p>
+                              </div>
+                              <Badge 
+                                variant={result.status === 200 ? "default" : "destructive"}
+                                className="flex-shrink-0"
+                              >
+                                {result.status === 0 ? 'ERROR' : result.status}
+                              </Badge>
+                            </div>
+                          </CardHeader>
+                          <CardContent className="space-y-3">
+                            <div className="grid grid-cols-2 gap-3 text-sm">
+                              <div>
+                                <p className="text-muted-foreground mb-1">Status</p>
+                                <p className="font-medium">
+                                  {result.status === 0 ? 'Network Error' : `${result.status} ${result.statusText}`}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-muted-foreground mb-1">Tested At</p>
+                                <p className="font-medium">{result.timestamp}</p>
+                              </div>
+                            </div>
+                            
+                            {result.error && (
+                              <div className="bg-red-100 border border-red-200 rounded-lg p-3">
+                                <p className="text-xs font-semibold text-red-800 mb-1">Error Details</p>
+                                <p className="text-xs text-red-700 font-mono">{result.error}</p>
+                              </div>
+                            )}
+                            
+                            {result.body && (
+                              <div className="bg-muted/50 rounded-lg p-3">
+                                <p className="text-xs font-semibold text-foreground mb-2">Response Body</p>
+                                <ScrollArea className="h-32 w-full">
+                                  <pre className="text-xs font-mono whitespace-pre-wrap break-all">
+                                    {result.body}
+                                  </pre>
+                                </ScrollArea>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))}
+                      
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                        <h4 className="font-semibold text-sm text-blue-900 mb-2">💡 Troubleshooting Tips</h4>
+                        <ul className="text-xs text-blue-800 space-y-1 list-disc list-inside">
+                          <li><strong>404 Not Found:</strong> Webhook is not active in n8n. Activate your workflow and ensure it's in listening mode.</li>
+                          <li><strong>200 OK:</strong> Webhook is active and responding correctly.</li>
+                          <li><strong>Network Error:</strong> Cannot reach the n8n server. Check your n8n instance URL and network connection.</li>
+                          <li><strong>Test vs Production:</strong> Test URL is for testing in n8n editor. Production URL is used when workflow is active.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             )}
           </div>
 
