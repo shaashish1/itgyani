@@ -89,6 +89,7 @@ const FutureFlowHeader = () => {
         { title: "Backend API", href: "/backend-api", description: "Comprehensive API documentation for all services" },
         { title: "AI Studio", href: "/ai-studio", description: "Interactive AI model playground" },
         { title: "N8N Workflows", href: "/services/n8n-workflow", description: "Visual workflow automation" },
+        { title: "UGC Video Creator", href: "/ugc-video-creator", description: "Create AI-powered UGC videos" },
         { title: "Media Toolkit", href: "/backend-api", description: "Advanced media processing APIs" },
       ]
     },
