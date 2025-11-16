@@ -103,16 +103,16 @@ const UGCVideoCreator = () => {
         saveHistory(updatedHistory);
       }
 
-      const response = await fetch(
-        "https://n8n.itgyani.com/webhook/31abdab0-4859-46e6-8a16-867b79604ff1",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const { data: result, error } = await supabase.functions.invoke('submit-ugc-video', {
+        body: formData,
+      });
 
-      if (!response.ok) {
-        throw new Error("Failed to submit video request");
+      if (error) {
+        throw error;
+      }
+
+      if (result?.error) {
+        throw new Error(result.error);
       }
 
       toast({
@@ -122,6 +122,7 @@ const UGCVideoCreator = () => {
 
       form.reset();
       setSelectedFileName("");
+      setSelectedImageDataUrl("");
     } catch (error) {
       console.error("Error submitting form:", error);
       toast({
