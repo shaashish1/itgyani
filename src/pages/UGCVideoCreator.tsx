@@ -33,7 +33,6 @@ interface HistoryItem {
   id: string;
   description: string;
   imageName: string;
-  imageDataUrl: string;
   timestamp: string;
 }
 
@@ -88,8 +87,22 @@ const UGCVideoCreator = () => {
 
   // Save history to localStorage whenever it changes
   const saveHistory = (newHistory: HistoryItem[]) => {
-    localStorage.setItem("ugc_video_history", JSON.stringify(newHistory));
-    setHistory(newHistory);
+    try {
+      localStorage.setItem("ugc_video_history", JSON.stringify(newHistory));
+      setHistory(newHistory);
+    } catch (error) {
+      console.error("Error saving history:", error);
+      // If quota exceeded, keep only last 5 items and try again
+      if (error.name === 'QuotaExceededError') {
+        const reducedHistory = newHistory.slice(0, 5);
+        try {
+          localStorage.setItem("ugc_video_history", JSON.stringify(reducedHistory));
+          setHistory(reducedHistory);
+        } catch (retryError) {
+          console.error("Failed to save even reduced history:", retryError);
+        }
+      }
+    }
   };
 
   const convertFileToDataUrl = (file: File): Promise<string> => {
@@ -111,13 +124,11 @@ const UGCVideoCreator = () => {
       if (data.image && data.image[0]) {
         formData.append("image", data.image[0]);
         
-        // Save to history
-        const imageDataUrl = await convertFileToDataUrl(data.image[0]);
+        // Save to history (without image to prevent quota issues)
         const newHistoryItem: HistoryItem = {
           id: Date.now().toString(),
           description: data.description,
           imageName: data.image[0].name,
-          imageDataUrl: imageDataUrl,
           timestamp: new Date().toISOString(),
         };
         
@@ -157,26 +168,21 @@ const UGCVideoCreator = () => {
     }
   };
 
-  const loadFromHistory = async (item: HistoryItem) => {
-    // Convert data URL back to File object
-    const response = await fetch(item.imageDataUrl);
-    const blob = await response.blob();
-    const file = new File([blob], item.imageName, { type: blob.type });
-    
-    // Create FileList-like object
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(file);
-    
+  const loadFromHistory = (item: HistoryItem) => {
+    // Load description only (image is not stored to save space)
     form.setValue("description", item.description);
-    form.setValue("image", dataTransfer.files);
-    setSelectedFileName(item.imageName);
+    
+    // Clear the image field since we don't have it saved
+    form.resetField("image");
+    setSelectedFileName("");
+    setSelectedImageDataUrl("");
     
     // Scroll to top
     window.scrollTo({ top: 0, behavior: "smooth" });
     
     toast({
       title: "Loaded from history",
-      description: "Form populated with previous submission. You can edit and resubmit.",
+      description: "Description loaded. Please upload the image again.",
     });
   };
 
@@ -478,14 +484,11 @@ const UGCVideoCreator = () => {
                       <div className="space-y-4">
                         {history.map((item) => (
                           <Card key={item.id} className="overflow-hidden hover:shadow-md transition-shadow">
-                            <div className="relative aspect-video bg-muted">
-                              <img
-                                src={item.imageDataUrl}
-                                alt={item.imageName}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div className="p-3 space-y-2">
+                            <div className="p-4 space-y-2">
+                              <div className="flex items-start gap-2 mb-2">
+                                <Video className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                                <p className="text-sm font-medium text-muted-foreground">{item.imageName}</p>
+                              </div>
                               <p className="text-sm line-clamp-3 text-foreground">
                                 {item.description}
                               </p>
