@@ -44,6 +44,7 @@ const CourseDetail = lazy(() => import("./pages/CourseDetail"));
 const LearningTrackDetail = lazy(() => import("./pages/LearningTrackDetail"));
 const ImageShowcase = lazy(() => import("./pages/ImageShowcase"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const UGCVideoCreator = lazy(() => import("./pages/UGCVideoCreator"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Loading component with Skeleton
@@ -134,6 +135,7 @@ const App = () => (
               <Route path="/api-docs" element={<APIDocumentationPage />} />
               <Route path="/backend-api" element={<APIBackendDocumentation />} />
               <Route path="/images" element={<ImageShowcase />} />
+              <Route path="/ugc-video-creator" element={<UGCVideoCreator />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
