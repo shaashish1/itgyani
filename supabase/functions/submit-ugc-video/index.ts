@@ -29,42 +29,45 @@ serve(async (req) => {
       imageType: imageFile.type
     });
 
-    // For testing: Log the data instead of calling the external webhook
-    // Uncomment the lines below to use the actual n8n webhook when it's active
-    
-    console.log('UGC Video Request Data:', {
-      description: description,
-      imageFileName: imageFile.name,
-      imageSize: imageFile.size,
-      imageType: imageFile.type
-    });
-
-    // Mock successful response for testing
-    const mockResponse = {
-      success: true,
-      message: "Video request received successfully",
-      data: {
-        description: description,
-        image: imageFile.name
-      }
-    };
-
-    /* 
-    // Uncomment this block when n8n webhook is active:
-    
-    const response = await fetch(
-      'https://n8n.itgyani.com/webhook/31abdab0-4859-46e6-8a16-867b79604ff1',
+    // Check webhook status to determine which endpoint to use
+    const statusCheck = await fetch(
+      `${Deno.env.get('SUPABASE_URL')}/functions/v1/check-webhook-status`,
       {
-        method: 'POST',
-        body: webhookFormData,
+        headers: {
+          'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`,
+        },
       }
     );
+    
+    const statusData = await statusCheck.json();
+    const isLive = statusData.isLive;
+    
+    // Use test endpoint when not live, production endpoint when live
+    const webhookUrl = isLive 
+      ? 'https://n8n.itgyani.com/webhook/31abdab0-4859-46e6-8a16-867b79604ff1'
+      : 'https://n8n.itgyani.com/webhook-test/31abdab0-4859-46e6-8a16-867b79604ff1';
+    
+    console.log(`Using ${isLive ? 'LIVE' : 'TEST'} webhook endpoint:`, webhookUrl);
+
+    // Create FormData for the webhook
+    const webhookFormData = new FormData();
+    webhookFormData.append('description', description);
+    
+    // Create a Blob from the file data
+    const imageBlob = new Blob([await imageFile.arrayBuffer()], { type: imageFile.type });
+    webhookFormData.append('image', imageBlob, imageFile.name);
+
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      body: webhookFormData,
+    });
 
     const responseText = await response.text();
     console.log('n8n webhook response:', {
       status: response.status,
       statusText: response.statusText,
-      body: responseText
+      body: responseText,
+      mode: isLive ? 'LIVE' : 'TEST'
     });
 
     if (!response.ok) {
@@ -73,17 +76,21 @@ serve(async (req) => {
         JSON.stringify({ 
           error: 'Failed to submit video request to n8n',
           details: responseText,
-          status: response.status
+          status: response.status,
+          mode: isLive ? 'live' : 'test'
         }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-    */
 
-    console.log('Successfully processed UGC video request');
+    console.log(`Successfully submitted UGC video request in ${isLive ? 'LIVE' : 'TEST'} mode`);
 
     return new Response(
-      JSON.stringify(mockResponse),
+      JSON.stringify({ 
+        success: true, 
+        response: responseText,
+        mode: isLive ? 'live' : 'test'
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
