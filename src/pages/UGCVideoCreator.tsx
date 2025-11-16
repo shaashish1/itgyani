@@ -15,8 +15,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Video, History, RotateCcw, Trash2 } from "lucide-react";
+import { Loader2, Upload, Video, History, RotateCcw, Trash2, Sparkles } from "lucide-react";
 import SEO from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -38,7 +39,9 @@ interface HistoryItem {
 
 const UGCVideoCreator = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGeneratingPrompt, setIsGeneratingPrompt] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const [selectedImageDataUrl, setSelectedImageDataUrl] = useState<string>("");
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const { toast } = useToast();
 
@@ -171,6 +174,59 @@ const UGCVideoCreator = () => {
     });
   };
 
+  const generatePromptWithAI = async () => {
+    if (!selectedImageDataUrl) {
+      toast({
+        title: "No image uploaded",
+        description: "Please upload an image first to use AI magic.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGeneratingPrompt(true);
+
+    try {
+      const currentPrompt = form.getValues("description");
+      
+      const { data, error } = await supabase.functions.invoke('generate-video-prompt', {
+        body: { 
+          imageDataUrl: selectedImageDataUrl,
+          currentPrompt: currentPrompt || ""
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      const generatedPrompt = data?.prompt;
+      
+      if (generatedPrompt) {
+        form.setValue("description", generatedPrompt);
+        toast({
+          title: "✨ AI Magic Complete!",
+          description: currentPrompt 
+            ? "Your prompt has been refined and enhanced."
+            : "A video prompt has been generated from your image.",
+        });
+      }
+    } catch (error) {
+      console.error('Error generating prompt:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate prompt. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingPrompt(false);
+    }
+  };
+
   return (
     <>
       <SEO 
@@ -204,12 +260,34 @@ const UGCVideoCreator = () => {
                       name="description"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-lg font-semibold">
-                            Describe The Video You Want
-                          </FormLabel>
+                          <div className="flex items-center justify-between mb-2">
+                            <FormLabel className="text-lg font-semibold">
+                              Describe The Video You Want
+                            </FormLabel>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={generatePromptWithAI}
+                              disabled={isGeneratingPrompt || !selectedImageDataUrl}
+                              className="gap-2"
+                            >
+                              {isGeneratingPrompt ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  Generating...
+                                </>
+                              ) : (
+                                <>
+                                  <Sparkles className="w-4 h-4" />
+                                  AI Magic
+                                </>
+                              )}
+                            </Button>
+                          </div>
                           <FormControl>
                             <Textarea
-                              placeholder="Describe your video in detail... (e.g., 'A product demo showing our new smartwatch with a professional presenter explaining features')"
+                              placeholder="Describe your video in detail... Or use AI Magic to generate a prompt from your image!"
                               className="min-h-[150px] resize-none"
                               {...field}
                             />
@@ -246,11 +324,18 @@ const UGCVideoCreator = () => {
                                 accept="image/*"
                                 className="hidden"
                                 {...field}
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   onChange(e.target.files);
-                                  setSelectedFileName(
-                                    e.target.files?.[0]?.name || ""
-                                  );
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    setSelectedFileName(file.name);
+                                    // Convert to data URL for AI analysis
+                                    const dataUrl = await convertFileToDataUrl(file);
+                                    setSelectedImageDataUrl(dataUrl);
+                                  } else {
+                                    setSelectedFileName("");
+                                    setSelectedImageDataUrl("");
+                                  }
                                 }}
                               />
                             </div>
