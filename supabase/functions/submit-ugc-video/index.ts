@@ -12,22 +12,30 @@ serve(async (req) => {
 
   try {
     const formData = await req.formData();
-    const description = formData.get('description');
-    const image = formData.get('image');
+    const description = formData.get('description') as string;
+    const imageFile = formData.get('image') as File;
 
-    if (!description || !image) {
+    if (!description || !imageFile) {
       return new Response(
         JSON.stringify({ error: 'Description and image are required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Submitting UGC video request to n8n webhook');
+    console.log('Submitting UGC video request to n8n webhook', {
+      descriptionLength: description.length,
+      imageFileName: imageFile.name,
+      imageSize: imageFile.size,
+      imageType: imageFile.type
+    });
 
-    // Forward the request to n8n webhook
+    // Create new FormData for forwarding
     const webhookFormData = new FormData();
     webhookFormData.append('description', description);
-    webhookFormData.append('image', image);
+    
+    // Create a new Blob from the file data to ensure proper forwarding
+    const imageBlob = new Blob([await imageFile.arrayBuffer()], { type: imageFile.type });
+    webhookFormData.append('image', imageBlob, imageFile.name);
 
     const response = await fetch(
       'https://n8n.itgyani.com/webhook/31abdab0-4859-46e6-8a16-867b79604ff1',
@@ -37,18 +45,29 @@ serve(async (req) => {
       }
     );
 
+    const responseText = await response.text();
+    console.log('n8n webhook response:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: responseText
+    });
+
     if (!response.ok) {
-      console.error('n8n webhook error:', response.status, await response.text());
+      console.error('n8n webhook error:', response.status, responseText);
       return new Response(
-        JSON.stringify({ error: 'Failed to submit video request to n8n' }),
-        { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ 
+          error: 'Failed to submit video request to n8n',
+          details: responseText,
+          status: response.status
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     console.log('Successfully submitted UGC video request');
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, response: responseText }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
