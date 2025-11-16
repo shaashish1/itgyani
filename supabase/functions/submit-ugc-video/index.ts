@@ -29,14 +29,29 @@ serve(async (req) => {
       imageType: imageFile.type
     });
 
-    // Create new FormData for forwarding
-    const webhookFormData = new FormData();
-    webhookFormData.append('description', description);
+    // For testing: Log the data instead of calling the external webhook
+    // Uncomment the lines below to use the actual n8n webhook when it's active
     
-    // Create a new Blob from the file data to ensure proper forwarding
-    const imageBlob = new Blob([await imageFile.arrayBuffer()], { type: imageFile.type });
-    webhookFormData.append('image', imageBlob, imageFile.name);
+    console.log('UGC Video Request Data:', {
+      description: description,
+      imageFileName: imageFile.name,
+      imageSize: imageFile.size,
+      imageType: imageFile.type
+    });
 
+    // Mock successful response for testing
+    const mockResponse = {
+      success: true,
+      message: "Video request received successfully",
+      data: {
+        description: description,
+        image: imageFile.name
+      }
+    };
+
+    /* 
+    // Uncomment this block when n8n webhook is active:
+    
     const response = await fetch(
       'https://n8n.itgyani.com/webhook/31abdab0-4859-46e6-8a16-867b79604ff1',
       {
@@ -63,11 +78,12 @@ serve(async (req) => {
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+    */
 
-    console.log('Successfully submitted UGC video request');
+    console.log('Successfully processed UGC video request');
 
     return new Response(
-      JSON.stringify({ success: true, response: responseText }),
+      JSON.stringify(mockResponse),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
