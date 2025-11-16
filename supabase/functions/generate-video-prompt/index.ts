@@ -34,10 +34,12 @@ serve(async (req) => {
          Analyze the image and refine/enhance their prompt to create a compelling UGC video description. 
          Keep the user's intent but make it more detailed, engaging, and production-ready. 
          Include specifics about visual style, tone, pacing, and key selling points visible in the image.
+         CRITICAL: Keep your response under 500 characters maximum.
          Return only the refined prompt text, nothing else.`
       : `You are a UGC video script expert. Analyze this product image and generate a detailed, compelling UGC video creation prompt.
          Describe what kind of video should be created: the visual style, tone, pacing, key features to highlight, 
          target audience appeal, and any specific calls-to-action. Make it detailed and production-ready.
+         CRITICAL: Keep your response under 500 characters maximum.
          Return only the video prompt text, nothing else.`;
 
     console.log('Calling Lovable AI Gateway with vision model');
