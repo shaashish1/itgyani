@@ -83,3 +83,6 @@ verify_jwt = false
 
 [functions.queue-runner]
 verify_jwt = false
+
+[functions.generate-video-prompt]
+verify_jwt = false
