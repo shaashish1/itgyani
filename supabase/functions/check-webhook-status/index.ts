@@ -13,10 +13,10 @@ serve(async (req) => {
   try {
     console.log('Checking webhook status...');
     
-    const webhookTestUrl = 'https://n8n.itgyani.com/webhook-test/31abdab0-4859-46e6-8a16-867b79604ff1';
+    const webhookUrl = 'https://n8n.itgyani.com/webhook/31abdab0-4859-46e6-8a16-867b79604ff1';
     
-    // Make a lightweight GET request to the test endpoint
-    const response = await fetch(webhookTestUrl, {
+    // Make a lightweight GET request to check if webhook is active
+    const response = await fetch(webhookUrl, {
       method: 'GET',
       signal: AbortSignal.timeout(5000), // 5 second timeout
     });
