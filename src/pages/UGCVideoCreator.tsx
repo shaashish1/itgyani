@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Video, History, RotateCcw, Trash2, Sparkles } from "lucide-react";
+import { Loader2, Upload, Video, History, RotateCcw, Trash2, Sparkles, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,6 +43,8 @@ const UGCVideoCreator = () => {
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [selectedImageDataUrl, setSelectedImageDataUrl] = useState<string>("");
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [webhookStatus, setWebhookStatus] = useState<"live" | "test_mode" | "checking" | "error">("checking");
+  const [lastChecked, setLastChecked] = useState<Date | null>(null);
   const { toast } = useToast();
 
   const form = useForm<FormData>({
@@ -51,6 +53,23 @@ const UGCVideoCreator = () => {
       description: "",
     },
   });
+
+  // Check webhook status
+  const checkWebhookStatus = async () => {
+    setWebhookStatus("checking");
+    try {
+      const { data, error } = await supabase.functions.invoke('check-webhook-status');
+      
+      if (error) throw error;
+      
+      setWebhookStatus(data.status);
+      setLastChecked(new Date());
+    } catch (error) {
+      console.error('Error checking webhook status:', error);
+      setWebhookStatus("error");
+      setLastChecked(new Date());
+    }
+  };
 
   // Load history from localStorage on mount
   useEffect(() => {
@@ -62,6 +81,9 @@ const UGCVideoCreator = () => {
         console.error("Error loading history:", error);
       }
     }
+    
+    // Check webhook status on mount
+    checkWebhookStatus();
   }, []);
 
   // Save history to localStorage whenever it changes
@@ -248,6 +270,49 @@ const UGCVideoCreator = () => {
             <p className="text-lg text-muted-foreground">
               Transform your ideas into engaging UGC videos powered by AI
             </p>
+            
+            {/* Webhook Status Badge */}
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <Badge 
+                variant="outline" 
+                className={`px-4 py-2 flex items-center gap-2 ${
+                  webhookStatus === "live" 
+                    ? "bg-green-50 text-green-700 border-green-200" 
+                    : webhookStatus === "test_mode"
+                    ? "bg-yellow-50 text-yellow-700 border-yellow-200"
+                    : webhookStatus === "checking"
+                    ? "bg-gray-50 text-gray-700 border-gray-200"
+                    : "bg-red-50 text-red-700 border-red-200"
+                }`}
+              >
+                {webhookStatus === "live" && <CheckCircle2 className="w-4 h-4" />}
+                {webhookStatus === "test_mode" && <AlertCircle className="w-4 h-4" />}
+                {webhookStatus === "checking" && <Loader2 className="w-4 h-4 animate-spin" />}
+                {webhookStatus === "error" && <AlertCircle className="w-4 h-4" />}
+                <span className="font-semibold">
+                  {webhookStatus === "live" && "Live"}
+                  {webhookStatus === "test_mode" && "Test Mode"}
+                  {webhookStatus === "checking" && "Checking..."}
+                  {webhookStatus === "error" && "Connection Error"}
+                </span>
+              </Badge>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={checkWebhookStatus}
+                disabled={webhookStatus === "checking"}
+                className="h-8"
+              >
+                <RefreshCw className={`w-3 h-3 ${webhookStatus === "checking" ? "animate-spin" : ""}`} />
+              </Button>
+            </div>
+            
+            {lastChecked && (
+              <p className="text-xs text-muted-foreground mt-2">
+                Last checked: {lastChecked.toLocaleTimeString()}
+              </p>
+            )}
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
