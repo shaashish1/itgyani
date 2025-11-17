@@ -6,53 +6,56 @@
 
 @layer base {
   :root {
-    /* Core Brand Colors - Deep tech vibes with electric accents */
-    --background: 240 10% 8%;
-    --foreground: 210 40% 98%;
+    /* ITGyani Dark Premium Theme - Onyx Black with Neon Accents */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 100%;
+    --onyx: 0 0% 4%;
+    --neon-green: 164 100% 50%;
+    --electric-blue: 210 100% 55%;
 
-    --card: 240 8% 12%;
-    --card-foreground: 210 40% 95%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 240 8% 12%;
-    --popover-foreground: 210 40% 95%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 100%;
 
-    /* AI Electric Purple Theme */
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 262 83% 68%;
+    /* Neon Green Primary */
+    --primary: 164 100% 50%;
+    --primary-foreground: 0 0% 0%;
+    --primary-glow: 164 100% 60%;
 
-    /* Cyberpunk Cyan Accents */
-    --secondary: 180 100% 50%;
-    --secondary-foreground: 240 10% 8%;
+    /* Electric Blue Secondary */
+    --secondary: 210 100% 55%;
+    --secondary-foreground: 0 0% 100%;
 
-    /* Subtle Grays */
-    --muted: 240 5% 20%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Dark Grays */
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 63%;
 
-    --accent: 262 83% 58%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 164 100% 50%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5% 20%;
-    --input: 240 5% 15%;
-    --ring: 262 83% 58%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 164 100% 50%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     /* Custom Design System Tokens */
-    --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(180 100% 50%) 50%, hsl(262 83% 68%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(240 8% 12% / 0.8) 0%, hsl(240 5% 15% / 0.6) 100%);
-    --gradient-button: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(262 83% 68%) 100%);
-    --gradient-glow: radial-gradient(600px circle at 50% 50%, hsl(262 83% 58% / 0.15), transparent 40%);
+    --gradient-hero: linear-gradient(135deg, hsl(164 100% 50%) 0%, hsl(210 100% 55%) 50%, hsl(164 100% 60%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 8% / 0.8) 0%, hsl(0 0% 10% / 0.6) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(164 100% 50%) 0%, hsl(210 100% 55%) 100%);
+    --gradient-glow: radial-gradient(600px circle at 50% 50%, hsl(164 100% 50% / 0.15), transparent 40%);
     
-    --shadow-glow: 0 0 40px hsl(262 83% 58% / 0.3);
-    --shadow-card: 0 8px 32px hsl(240 10% 8% / 0.4);
-    --shadow-brutal: 0 25px 50px -12px hsl(240 10% 8% / 0.8);
+    --shadow-glow: 0 0 40px hsl(164 100% 50% / 0.3);
+    --shadow-card: 0 8px 32px hsl(0 0% 4% / 0.4);
+    --shadow-brutal: 0 25px 50px -12px hsl(0 0% 4% / 0.8);
 
-    --glass-bg: hsl(240 8% 12% / 0.7);
-    --glass-border: hsl(262 83% 58% / 0.2);
+    --glass-bg: hsl(0 0% 8% / 0.7);
+    --glass-border: hsl(164 100% 50% / 0.2);
 
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -77,48 +80,51 @@
 
   /* Light mode variant */
   .light {
-    --background: 210 40% 98%;
-    --foreground: 240 10% 8%;
-    --header-bg: 240 100% 99%; /* ghostwhite equivalent */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 4%;
+    --onyx: 0 0% 96%;
+    --neon-green: 164 100% 45%;
+    --electric-blue: 210 100% 50%;
+    --header-bg: 0 0% 100%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 8%;
+    --card-foreground: 0 0% 4%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 8%;
+    --popover-foreground: 0 0% 4%;
 
-    --primary: 262 83% 58%;
-    --primary-foreground: 210 40% 98%;
-    --primary-glow: 262 83% 68%;
+    --primary: 164 100% 45%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 164 100% 55%;
 
-    --secondary: 180 100% 50%;
-    --secondary-foreground: 240 10% 8%;
+    --secondary: 210 100% 50%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 215 20.2% 35.1%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
 
-    --accent: 262 83% 58%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 164 100% 45%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5% 90%;
-    --input: 240 5% 96%;
-    --ring: 262 83% 58%;
+    --border: 0 0% 90%;
+    --input: 0 0% 96%;
+    --ring: 164 100% 45%;
 
     /* Light theme custom tokens */
-    --gradient-hero: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(180 100% 50%) 50%, hsl(262 83% 68%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.9) 0%, hsl(240 5% 96% / 0.8) 100%);
-    --gradient-button: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(262 83% 68%) 100%);
-    --gradient-glow: radial-gradient(600px circle at 50% 50%, hsl(262 83% 58% / 0.08), transparent 40%);
+    --gradient-hero: linear-gradient(135deg, hsl(164 100% 45%) 0%, hsl(210 100% 50%) 50%, hsl(164 100% 55%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.9) 0%, hsl(0 0% 96% / 0.8) 100%);
+    --gradient-button: linear-gradient(135deg, hsl(164 100% 45%) 0%, hsl(210 100% 50%) 100%);
+    --gradient-glow: radial-gradient(600px circle at 50% 50%, hsl(164 100% 45% / 0.08), transparent 40%);
     
-    --shadow-glow: 0 0 40px hsl(262 83% 58% / 0.15);
-    --shadow-card: 0 8px 32px hsl(240 10% 8% / 0.1);
-    --shadow-brutal: 0 25px 50px -12px hsl(240 10% 8% / 0.15);
+    --shadow-glow: 0 0 40px hsl(164 100% 45% / 0.15);
+    --shadow-card: 0 8px 32px hsl(0 0% 4% / 0.1);
+    --shadow-brutal: 0 25px 50px -12px hsl(0 0% 4% / 0.15);
 
     --glass-bg: hsl(0 0% 100% / 0.8);
-    --glass-border: hsl(262 83% 58% / 0.2);
+    --glass-border: hsl(164 100% 45% / 0.2);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;

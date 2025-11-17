@@ -9,6 +9,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
 
 // Lazy load pages for better performance
+const NewITGyaniIndex = lazy(() => import("./pages/NewITGyaniIndex"));
+const Index = lazy(() => import("./pages/Index"));
 const FutureFlowIndex = lazy(() => import("./pages/NewFutureFlowIndex"));
 const ServicesPage = lazy(() => import("./pages/Services"));
 const AIStudio = lazy(() => import("./pages/AIStudio"));
@@ -98,7 +100,9 @@ const App = () => (
               <ScrollToTop />
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-              <Route path="/" element={<FutureFlowIndex />} />
+              <Route path="/" element={<NewITGyaniIndex />} />
+              <Route path="/old" element={<Index />} />
+              <Route path="/future-flow" element={<FutureFlowIndex />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/ai-studio" element={<AIStudio />} />
               <Route path="/services/business-automation" element={<BusinessAutomation />} />
